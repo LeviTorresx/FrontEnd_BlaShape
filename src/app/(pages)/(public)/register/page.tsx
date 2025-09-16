@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import CarpenterForm from "@/app/components/forms/CarpenterForm";
 import { CarpenterDTO } from "@/app/types/Carpenter";
@@ -11,7 +11,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 px-4">
+    <div
+      className="min-h-screen flex flex-col justify-center items-center bg-gray-100 px-4"
+      style={{
+        backgroundImage: "url('/images/background-login.svg')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <div className="w-full max-w-md bg-gray-200 shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
           Registrarse
@@ -39,7 +46,6 @@ export default function RegisterPage() {
           height={80}
           className="mx-auto"
         />
-        
       </div>
     </div>
   );

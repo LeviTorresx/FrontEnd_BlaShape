@@ -2,8 +2,9 @@
 
 import { CarpenterDTO } from "@/app/types/Carpenter";
 import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
+import PasswordInput from "../ui/PasswordInput";
 
 type UserFormProps = {
   initialData?: {
@@ -35,7 +36,6 @@ export default function UserForm({
     phone: initialData.phone || "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,139 +56,93 @@ export default function UserForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Nombre y Apellido */}
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-gray-800 mb-1">Nombre</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-            placeholder="Tu nombre"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-gray-800 mb-1">Apellido</label>
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-            placeholder="Tu apellido"
-            required
-          />
-        </div>
+        <Input
+          label="Nombre"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Tu nombre"
+          required
+        />
+        <Input
+          label="Apellido"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          placeholder="Tu apellido"
+          required
+        />
       </div>
 
       {/* Documento & RUT */}
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-gray-800 mb-1">Cédula</label>
-          <input
-            type="text"
-            name="idNumber"
-            value={formData.idNumber}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-            placeholder="Ej: 1234567890"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-gray-800 mb-1">RUT</label>
-          <input
-            type="text"
-            name="rut"
-            value={formData.rut}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-            placeholder="Ej: 12345678-9"
-          />
-        </div>
+        <Input
+          label="Cédula"
+          name="idNumber"
+          value={formData.idNumber}
+          onChange={handleChange}
+          placeholder="Ej: 1234567890"
+          required
+        />
+        <Input
+          label="RUT"
+          name="rut"
+          value={formData.rut}
+          onChange={handleChange}
+          placeholder="Ej: 12345678-9"
+        />
       </div>
 
       {/* Correo */}
-      <div>
-        <label className="block text-gray-800 mb-1">Correo Electrónico</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-          placeholder="ejemplo@correo.com"
-          required
-        />
-      </div>
+      <Input
+        label="Correo Electrónico"
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="ejemplo@correo.com"
+        required
+      />
 
       {/* Teléfono */}
-      <div>
-        <label className="block text-gray-800 mb-1">Teléfono</label>
-        <input
-          type="text"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-          placeholder="+57 300 000 0000"
-          required
-        />
-      </div>
+      <Input
+        label="Teléfono"
+        name="phone"
+        value={formData.phone}
+        onChange={handleChange}
+        placeholder="+57 300 000 0000"
+        required
+      />
 
       {/* Contraseña */}
-      <div className="relative">
-        <label className="block text-gray-800 mb-1">Contraseña</label>
-        <input
-          type={showPassword ? "text" : "password"}
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full px-4 py-2 pr-10 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-          placeholder="********"
-          required
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-9 text-gray-600 hover:text-gray-900"
-        >
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
-        </button>
-      </div>
+      <PasswordInput
+        label="Contraseña"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        placeholder="********"
+        required
+      />
 
       {/* Confirmar contraseña */}
-      <div className="relative">
-        <label className="block text-gray-800 mb-1">Confirmar Contraseña</label>
-        <input
-          type={showPassword ? "text" : "password"}
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          className="w-full px-4 py-2 pr-10 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-          placeholder="********"
-          required
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-9 text-gray-600 hover:text-gray-900"
-        >
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
-        </button>
-      </div>
+      <PasswordInput
+        label="Confirmar Contraseña"
+        name="confirmPassword"
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        placeholder="********"
+        required
+      />
 
       {/* Error */}
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
       {/* Botón */}
       <Button
-      label={submitLabel}
+        label={submitLabel}
         type="submit"
         className="w-full py-2 rounded-md bg-purple-900 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
-      >
-      </Button>
+      />
     </form>
   );
 }

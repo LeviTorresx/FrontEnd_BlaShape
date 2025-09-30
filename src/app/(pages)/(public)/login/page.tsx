@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Button from "@/app/components/ui/Button";
+import Input from "@/app/components/ui/Input";
+import PasswordInput from "@/app/components/ui/PasswordInput";
 
 export default function LoginPage() {
   const [loginRequest, setLoginRequest] = useState({ email: "", password: "" });
@@ -15,6 +17,10 @@ export default function LoginPage() {
       "Contraseña:",
       loginRequest.password
     );
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginRequest({ ...loginRequest, [e.target.name]: e.target.value });
   };
 
   return (
@@ -34,43 +40,32 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Correo */}
-          <div>
-            <label className="block text-gray-800 mb-1">
-              Correo Electrónico
-            </label>
-            <input
-              type="email"
-              value={loginRequest.email}
-              onChange={(e) =>
-                setLoginRequest({ ...loginRequest, email: e.target.value })
-              }
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-              placeholder="ejemplo@correo.com"
-              required
-            />
-          </div>
+          <Input
+            label="Correo Electrónico"
+            name="email"
+            type="email"
+            value={loginRequest.email}
+            onChange={handleChange}
+            placeholder="ejemplo@correo.com"
+            required
+          />
 
           {/* Contraseña */}
-          <div>
-            <label className="block text-gray-800 mb-1">Contraseña</label>
-            <input
-              type="password"
-              value={loginRequest.password}
-              onChange={(e) =>
-                setLoginRequest({ ...loginRequest, password: e.target.value })
-              }
-              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900"
-              placeholder="********"
-              required
-            />
-          </div>
+          <PasswordInput
+            label="Contraseña"
+            name="password"
+            value={loginRequest.password}
+            onChange={handleChange}
+            placeholder="********"
+            required
+          />
 
           {/* Botón */}
           <Button
             label="Entrar"
             type="submit"
             className="w-full py-2 rounded-md bg-purple-900 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
-          ></Button>
+          />
         </form>
 
         {/* Link registro */}

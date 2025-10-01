@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export default function ImageSection() {
-  const image = "/images/carpintero.webp";
+  const image = "/images/despiece_draw.jpg";
 
   return (
     <div className="relative flex justify-center">

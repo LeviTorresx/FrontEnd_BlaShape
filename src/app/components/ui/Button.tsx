@@ -25,6 +25,7 @@ export default function Button({
         text-white 
         bg-purple-900 
         hover:bg-purple-800 
+        cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed 
         transition-colors duration-300 ease-in-out
         shadow-md hover:shadow-lg

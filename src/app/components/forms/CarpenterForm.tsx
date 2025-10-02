@@ -92,27 +92,28 @@ export default function UserForm({
           placeholder="Ej: 12345678-9"
         />
       </div>
+      <div className="grid grid-cols-2 gap-4">
+        {/* Correo */}
+        <Input
+          label="Correo Electrónico"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="ejemplo@correo.com"
+          required
+        />
 
-      {/* Correo */}
-      <Input
-        label="Correo Electrónico"
-        name="email"
-        type="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="ejemplo@correo.com"
-        required
-      />
-
-      {/* Teléfono */}
-      <Input
-        label="Teléfono"
-        name="phone"
-        value={formData.phone}
-        onChange={handleChange}
-        placeholder="+57 300 000 0000"
-        required
-      />
+        {/* Teléfono */}
+        <Input
+          label="Teléfono"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="+57 300 000 0000"
+          required
+        />
+      </div>
 
       {/* Contraseña */}
       <PasswordInput

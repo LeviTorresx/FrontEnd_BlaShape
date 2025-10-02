@@ -5,22 +5,55 @@ import Image from "next/image";
 import Button from "@/app/components/ui/Button";
 import Input from "@/app/components/ui/Input";
 import PasswordInput from "@/app/components/ui/PasswordInput";
+import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
+import { MdErrorOutline } from "react-icons/md";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 export default function LoginPage() {
   const [loginRequest, setLoginRequest] = useState({ email: "", password: "" });
 
+  // estado para notificaciones
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "info" as "error" | "warning" | "info" | "success",
+    message: "",
+    icon: <MdErrorOutline fontSize="inherit" />,
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!loginRequest.email || !loginRequest.password) {
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: "Debes ingresar correo y contraseña",
+        icon: <MdErrorOutline fontSize="inherit" />,
+      });
+      return;
+    }
+
+    // Simulación de login exitoso
     console.log(
       "Correo:",
       loginRequest.email,
       "Contraseña:",
       loginRequest.password
     );
+    setSnackbar({
+      open: true,
+      severity: "success",
+      message: "¡Inicio de sesión exitoso!",
+      icon: <FaRegCheckCircle fontSize="inherit" />,
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginRequest({ ...loginRequest, [e.target.name]: e.target.value });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   return (
@@ -39,7 +72,6 @@ export default function LoginPage() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Correo */}
           <Input
             label="Correo Electrónico"
             name="email"
@@ -50,7 +82,6 @@ export default function LoginPage() {
             required
           />
 
-          {/* Contraseña */}
           <PasswordInput
             label="Contraseña"
             name="password"
@@ -60,7 +91,6 @@ export default function LoginPage() {
             required
           />
 
-          {/* Botón */}
           <Button
             label="Entrar"
             type="submit"
@@ -68,7 +98,6 @@ export default function LoginPage() {
           />
         </form>
 
-        {/* Link registro */}
         <p className="text-sm text-center text-gray-700 mt-4">
           ¿No tienes cuenta?{" "}
           <a
@@ -80,7 +109,6 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* Logo abajo */}
       <div className="mt-10">
         <Image
           src="/images/logo1CB.webp"
@@ -90,6 +118,15 @@ export default function LoginPage() {
           className="mx-auto"
         />
       </div>
+
+      {/* Snackbar */}
+      <NotificationSnackbar
+        open={snackbar.open}
+        onClose={handleCloseSnackbar}
+        severity={snackbar.severity}
+        icon={snackbar.icon}
+        message={snackbar.message}
+      />
     </div>
   );
 }

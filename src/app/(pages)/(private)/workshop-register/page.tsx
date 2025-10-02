@@ -2,6 +2,8 @@
 import Image from "next/image";
 import WorkshopForm from "@/app/components/forms/WorkshopForm";
 import Stepper from "../../../components/ui/Stepper";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const steps = [
   {
@@ -34,6 +36,22 @@ const steps = [
 ];
 
 export default function WorkshopRegister() {
+  const [activeStep, setActiveStep] = useState(0);
+  const router = useRouter();
+
+  const handleNext = () => {
+    if (activeStep === 1) {
+      // validación del formulario de taller
+      console.log("Validar datos del taller");
+    }
+    setActiveStep((prev) => prev + 1);
+  };
+
+  const handleBack = () => setActiveStep((prev) => prev - 1);
+  const handleEnd = () => {
+    router.push("/dashboard");
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6"
@@ -52,14 +70,26 @@ export default function WorkshopRegister() {
           height={100}
           priority
         />
-        <h2 className="mt-2 text-lg font-medium text-gray-800 text-center">
-          ¡Ya casi terminamos el proceso de registro!
-        </h2>
+        {activeStep - 1 === 2 ? (
+          <h2 className="mt-2 text-lg font-medium text-gray-800 text-center">
+            ¡Estas listo para utilizar nuestros servicios!
+          </h2>
+        ) : (
+          <h2 className="mt-2 text-lg font-medium text-gray-800 text-center">
+            ¡Ya casi terminamos el proceso de registro!
+          </h2>
+        )}
       </div>
 
       {/* Stepper */}
       <div className="w-full max-w-xl bg-white rounded-xl shadow-md p-6">
-        <Stepper steps={steps} />
+        <Stepper
+          steps={steps}
+          activeStep={activeStep}
+          handleNext={handleNext}
+          handleBack={handleBack}
+          handleEnd={handleEnd}
+        />
       </div>
     </div>
   );

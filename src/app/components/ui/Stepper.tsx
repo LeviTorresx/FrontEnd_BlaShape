@@ -1,4 +1,4 @@
-import { act, ReactNode } from "react";
+import { ReactNode } from "react";
 import Button from "./Button";
 import { Stepper, Step, StepLabel, StepIconProps } from "@mui/material";
 
@@ -52,13 +52,15 @@ export default function PurpleStepper({
       <div className="mt-4">{steps[activeStep]?.content}</div>
 
       <div className="mt-6 flex gap-3 justify-center">
-        {activeStep < steps.length && (<Button
-          disabled={activeStep === 0}
-          onClick={handleBack}
-          className="border border-gray-300 text-gray-700"
-          label="atrás"
-        />)}
-        
+        {activeStep < steps.length && (
+          <Button
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            className="border border-gray-300 text-gray-700"
+            label="atrás"
+          />
+        )}
+
         {activeStep === steps.length ? (
           <Button
             onClick={handleEnd}
@@ -69,7 +71,7 @@ export default function PurpleStepper({
           <Button
             onClick={handleNext}
             className="bg-purple-950 text-white hover:bg-purple-700"
-            label={steps.length - 1 === activeStep ? "Finalizar":"Siguiente"}
+            label={steps.length - 1 === activeStep ? "Finalizar" : "Siguiente"}
           />
         )}
       </div>

@@ -39,7 +39,7 @@ export default function PurpleStepper({
   handleEnd,
 }: Props) {
   return (
-    <div className="p-6 max-w-lg mx-auto bg-white rounded-xl shadow-md">
+    <div className="p-6 max-w-lg mx-auto bg-gray-200 rounded-xl shadow-md">
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map(({ step }) => (
           <Step key={step}>

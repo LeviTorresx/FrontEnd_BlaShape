@@ -82,7 +82,7 @@ export default function WorkshopRegister() {
       </div>
 
       {/* Stepper */}
-      <div className="w-full max-w-xl bg-white rounded-xl shadow-md p-6">
+      <div className="w-full max-w-xl bg-gray-200 rounded-xl shadow-md p-6">
         <Stepper
           steps={steps}
           activeStep={activeStep}

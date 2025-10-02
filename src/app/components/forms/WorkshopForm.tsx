@@ -88,7 +88,7 @@ export default function WorkshopForm({
       <Button
         label={submitLabel}
         type="submit"
-        className="w-full py-2 rounded-md bg-purple-900 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
+        className="w-full py-2 rounded-md bg-purple-950 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
       />
     </form>
   );

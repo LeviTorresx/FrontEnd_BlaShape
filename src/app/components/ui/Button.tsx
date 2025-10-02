@@ -23,7 +23,7 @@ export default function Button({
         rounded-xl 
         font-semibold 
         text-white 
-        bg-purple-900 
+        bg-purple-950 
         hover:bg-purple-800 
         cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed 

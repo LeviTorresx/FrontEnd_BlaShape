@@ -7,6 +7,7 @@ import Sidebar from "@/app/components/layout/Sidebar";
 import ProfileModule from "./modules/ProfileModule";
 import FurnitureModule from "./modules/FurnitureModule";
 import WorkshopModule from "./modules/WorkshopModule";
+import BottomMenu from "@/app/components/layout/ButtomMenu";
 
 export default function DashboardContent() {
   const [selected, setSelected] = useState("home");
@@ -34,9 +35,17 @@ export default function DashboardContent() {
   };
 
   return (
-    <div className="flex bg-gray-200 min-h-screen p-8 gap-2">
+    <div className="flex min-h-screen bg-gray-200 p-6 md:gap-4">
+      {/* 🖥 Sidebar (solo desktop) */}
       <Sidebar selected={selected} onSelect={setSelected} />
-      <main className="flex-1 p-6 bg-white rounded-2xl">{renderModule()}</main>
+      {/* 📱 Contenido principal */}
+      <main className="flex-1 p-4 md:p-6 bg-white rounded-2xl">
+        {renderModule()}
+      </main>
+      {/* 📱 Menú flotante (solo mobile) */}
+      <div className="md:hidden">
+        <BottomMenu selected={selected} onSelect={setSelected} />
+      </div>
     </div>
   );
 }

@@ -1,0 +1,119 @@
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+import {
+  FaHome,
+  FaUsers,
+  FaChartBar,
+  FaTools,
+  FaChevronUp,
+  FaChevronDown,
+  FaUserCircle,
+  FaBuilding,
+  FaSignOutAlt,
+} from "react-icons/fa";
+
+type Props = {
+  selected: string;
+  onSelect: (key: string) => void;
+};
+
+export default function BottomMenu({ selected, onSelect }: Props) {
+  const [open, setOpen] = useState(false);
+
+  const mainMenu = [
+    { key: "home", label: "Inicio", icon: <FaHome /> },
+    { key: "furniture", label: "Muebles", icon: <FaTools /> },
+    { key: "clients", label: "Clientes", icon: <FaUsers /> },
+    { key: "reports", label: "Reportes", icon: <FaChartBar /> },
+  ];
+
+  const bottomMenu = [
+    { key: "profile", label: "Perfil", icon: <FaUserCircle /> },
+    { key: "workshop", label: "Taller", icon: <FaBuilding /> },
+  ];
+
+  return (
+    <>
+      {/* Botón flotante */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-purple-900 text-white p-3 rounded-full shadow-lg hover:bg-purple-800 transition-colors"
+      >
+        {open ? <FaChevronDown /> : <FaChevronUp />}
+      </button>
+
+      {/* Fondo oscuro */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 bg-black/40 z-40"
+        />
+      )}
+
+      {/* Menú deslizable */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-50 bg-white text-gray-500 rounded-t-2xl shadow-xl transform transition-transform duration-300 ${
+          open ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <div className="h-16 flex items-center justify-center border-b border-gray-700">
+          <Image
+            src="/images/logo2W.webp"
+            alt="Logo"
+            width={30}
+            height={30}
+            className="mr-2"
+          />
+          <h1 className="text-2xl  text-gray-500">Blashape</h1>
+        </div>
+
+        <div className="p-2 pb-10">
+          {mainMenu.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => {
+                onSelect(item.key);
+                setOpen(false);
+              }}
+              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left transition-colors ${
+                selected === item.key
+                  ? "bg-purple-800 text-white"
+                  : "hover:bg-gray-800"
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+        <div className="border-t border-gray-700 p-4 pt-2">
+          <div className="pb-2 text-gray-400 text-sm">Cuenta</div>
+
+          {bottomMenu.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => {
+                onSelect(item.key);
+                setOpen(false);
+              }}
+              className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left transition-colors ${
+                selected === item.key
+                  ? "bg-purple-800 text-white"
+                  : "hover:bg-gray-800"
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+
+          <div className="pt-4 text-xs text-center text-gray-400 border-t">
+            © 2025 Blashape
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

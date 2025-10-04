@@ -27,11 +27,10 @@ export default function Sidebar({ selected, onSelect }: Props) {
   const bottomMenu = [
     { key: "profile", label: "Perfil", icon: <FaUserCircle /> },
     { key: "workshop", label: "Taller", icon: <FaBuilding /> },
-    { key: "logout", label: "Cerrar sesión", icon: <FaSignOutAlt /> },
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-md flex flex-col rounded-2xl">
+    <aside className="hidden md:flex w-64 bg-white shadow-md flex-col rounded-2xl">
       {/* Header */}
       <div className="h-16 flex items-center justify-center">
         <Image

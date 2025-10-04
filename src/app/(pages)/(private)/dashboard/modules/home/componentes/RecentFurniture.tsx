@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import FurnitureCard from "./FurnitureCard";
 
 interface FurnitureProps {
@@ -14,20 +11,6 @@ type Props = {
 };
 
 export default function RecentFurniture({ furnitureList }: Props) {
-  const [visibleCount, setVisibleCount] = useState(6);
-
-  // 🔹 Detectar tamaño de pantalla para ajustar cantidad visible
-  useEffect(() => {
-    const updateCount = () => {
-      if (window.innerWidth < 640) setVisibleCount(4); // móvil
-      else setVisibleCount(6); // tablet/desktop
-    };
-
-    updateCount(); // inicial
-    window.addEventListener("resize", updateCount);
-    return () => window.removeEventListener("resize", updateCount);
-  }, []);
-
   return (
     <div className="md:col-span-2 flex flex-col bg-gray-100 p-5 rounded-2xl shadow-sm border border-gray-100 h-full">
       {/* Título */}
@@ -40,7 +23,7 @@ export default function RecentFurniture({ furnitureList }: Props) {
 
       {/* Contenedor de cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto pr-1 flex-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
-        {furnitureList.slice(0, visibleCount).map((f, i) => (
+        {furnitureList.map((f, i) => (
           <FurnitureCard
             key={i}
             image={f.image}

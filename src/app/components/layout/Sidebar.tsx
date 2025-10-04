@@ -10,6 +10,7 @@ import {
   FaBuilding,
   FaSignOutAlt,
 } from "react-icons/fa";
+import Button from "../ui/Button";
 
 type Props = {
   selected: string;
@@ -53,7 +54,7 @@ export default function Sidebar({ selected, onSelect }: Props) {
           <button
             key={item.key}
             onClick={() => onSelect(item.key)}
-            className={`flex items-center w-full gap-3 px-4 py-2 rounded-md transition-colors
+            className={`flex items-center w-full gap-3 px-4 py-2 rounded-md transition-colors cursor-pointer
               ${
                 selected === item.key
                   ? "bg-purple-100 text-purple-950 font-medium"
@@ -74,7 +75,7 @@ export default function Sidebar({ selected, onSelect }: Props) {
           <button
             key={item.key}
             onClick={() => onSelect(item.key)}
-            className={`flex items-center w-full gap-3 px-4 py-2 rounded-md transition-colors
+            className={`flex items-center w-full gap-3 px-4 py-2 rounded-md transition-colors cursor-pointer
               ${
                 selected === item.key
                   ? "bg-purple-100 text-purple-950 font-medium"
@@ -85,6 +86,9 @@ export default function Sidebar({ selected, onSelect }: Props) {
             {item.label}
           </button>
         ))}
+        <div className="flex justify-center">
+          <Button label="Cerrar cesion" type="button" icon={<FaSignOutAlt />} />
+        </div>
 
         <div className="pt-4 text-xs text-center text-gray-400 border-t">
           © 2025 Blashape

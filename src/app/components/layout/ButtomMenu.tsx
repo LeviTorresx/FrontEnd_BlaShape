@@ -13,6 +13,7 @@ import {
   FaBuilding,
   FaSignOutAlt,
 } from "react-icons/fa";
+import Button from "../ui/Button";
 
 type Props = {
   selected: string;
@@ -108,8 +109,14 @@ export default function BottomMenu({ selected, onSelect }: Props) {
               <span>{item.label}</span>
             </button>
           ))}
-
-          <div className="pt-4 text-xs text-center text-gray-400 border-t">
+          <div className="flex justify-center">
+            <Button
+              label="Cerrar cesion"
+              type="button"
+              icon={<FaSignOutAlt />}
+            />
+          </div>
+          <div className="pt-4 mt-4 text-xs text-center text-gray-400 border-t">
             © 2025 Blashape
           </div>
         </div>

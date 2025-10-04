@@ -1,9 +1,12 @@
+import { ReactNode } from "react";
+
 type ButtonProps = {
   label: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   className?: string;
+  icon?: ReactNode;
 };
 
 export default function Button({
@@ -12,6 +15,7 @@ export default function Button({
   type = "button",
   disabled = false,
   className = "",
+  icon,
 }: ButtonProps) {
   return (
     <button
@@ -20,7 +24,8 @@ export default function Button({
       disabled={disabled}
       className={`
         px-6 py-3 
-        rounded-xl 
+        rounded-xl
+        gap-2 flex items-center justify-center 
         font-semibold 
         text-white 
         bg-purple-950 
@@ -32,6 +37,7 @@ export default function Button({
         ${className}
       `}
     >
+      {icon}
       {label}
     </button>
   );

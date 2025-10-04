@@ -1,5 +1,5 @@
 import Banner from "./componentes/Banner";
-import Calender from "./componentes/Reminder";
+import Reminder from "./componentes/Reminder";
 import RecentFurniture from "./componentes/RecentFurniture";
 import Statistics from "./componentes/Statistics";
 import SummaryWorkshop from "./componentes/SummaryWorkshop";
@@ -75,27 +75,22 @@ const summaryWorkshop = {
 
 export default function HomeModule() {
   return (
-    <div className="flex flex-col h-full animate-fadeIn">
+    <div className="flex flex-col h-full animate-fadeIn overflow-hidden">
       {/* Banner */}
       <Banner />
 
-      {/* Contenido principal dividido (ocupa todo el espacio vertical sobrante) */}
-      <section className="flex-1 grid md:grid-cols-3 gap-6 overflow-hidden">
-        {/* Columna izquierda (muebles recientes) */}
+      {/* Contenido principal */}
+      <section className="flex-1 grid md:grid-cols-3 gap-6 min-h-0 overflow-hidden">
         <RecentFurniture furnitureList={furnitureData} />
 
-        {/* Columna derecha */}
-        <div className="flex flex-col gap-6">
-          {/* Resumen taller */}
+        <div className="flex flex-col gap-6 min-h-0 overflow-hidden">
           <SummaryWorkshop workshop={summaryWorkshop} />
-
-          {/* Calendario */}
-          <Calender />
+          <Reminder />
         </div>
       </section>
 
       {/* Footer / estadísticas */}
-      <section className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 flex-shrink-0">
         <Statistics stats={StatisticsList} />
       </section>
     </div>

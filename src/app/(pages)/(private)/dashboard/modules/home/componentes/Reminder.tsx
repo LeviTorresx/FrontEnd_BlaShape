@@ -7,20 +7,10 @@ export default function Reminder() {
       date: "05 Oct 2025",
       time: "10:00 AM",
     },
-    {
-      title: "Revisión de materiales",
-      date: "06 Oct 2025",
-      time: "03:30 PM",
-    },
-    {
-      title: "Cita con proveedor",
-      date: "08 Oct 2025",
-      time: "09:00 AM",
-    },
   ];
 
   return (
-    <div className="w-full bg-gray-100 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-5">
+    <div className="w-full bg-gray-100 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-5 ">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
@@ -30,7 +20,7 @@ export default function Reminder() {
       </div>
 
       {/* Lista */}
-      <ul className="space-y-3">
+      <ul className="space-y-2">
         {reminders.map((reminder, index) => (
           <li
             key={index}

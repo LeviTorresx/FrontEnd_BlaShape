@@ -80,7 +80,7 @@ export default function BottomMenu({ selected, onSelect }: Props) {
               }}
               className={`flex items-center w-full gap-3 px-4 py-3 rounded-md text-left transition-colors ${
                 selected === item.key
-                  ? "bg-purple-800 text-white"
+                  ? "bg-purple-200 text-purple-950"
                   : "hover:bg-gray-800"
               }`}
             >

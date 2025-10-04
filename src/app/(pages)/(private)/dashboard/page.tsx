@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/app/components/layout/Sidebar";
 import BottomMenu from "@/app/components/layout/ButtomMenu";
 
-import HomeModule from "./modules/HomeModule";
+import HomeModule from "./modules/home/HomeModule";
 import ClientsModule from "./modules/ClientsModule";
 import ReportsModule from "./modules/ReportsModule";
 import ProfileModule from "./modules/ProfileModule";

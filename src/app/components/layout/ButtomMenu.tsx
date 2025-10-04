@@ -2,38 +2,25 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import {
-  FaHome,
-  FaUsers,
-  FaChartBar,
-  FaTools,
-  FaChevronUp,
-  FaChevronDown,
-  FaUserCircle,
-  FaBuilding,
-  FaSignOutAlt,
-} from "react-icons/fa";
 import Button from "../ui/Button";
+import { FaChevronDown, FaChevronUp, FaSignOutAlt } from "react-icons/fa";
+;
+interface menuItem {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+}
 
 type Props = {
   selected: string;
   onSelect: (key: string) => void;
+  mainMenu: menuItem[];
+  bottomMenu: menuItem[];
 };
 
-export default function BottomMenu({ selected, onSelect }: Props) {
+export default function BottomMenu({ selected, onSelect, mainMenu, bottomMenu }: Props) {
   const [open, setOpen] = useState(false);
 
-  const mainMenu = [
-    { key: "home", label: "Inicio", icon: <FaHome /> },
-    { key: "furniture", label: "Muebles", icon: <FaTools /> },
-    { key: "clients", label: "Clientes", icon: <FaUsers /> },
-    { key: "reports", label: "Reportes", icon: <FaChartBar /> },
-  ];
-
-  const bottomMenu = [
-    { key: "profile", label: "Perfil", icon: <FaUserCircle /> },
-    { key: "workshop", label: "Taller", icon: <FaBuilding /> },
-  ];
 
   return (
     <>

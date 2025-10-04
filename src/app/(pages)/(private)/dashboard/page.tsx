@@ -1,18 +1,77 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+
+import Sidebar from "@/app/components/layout/Sidebar";
+import BottomMenu from "@/app/components/layout/ButtomMenu";
+
 import HomeModule from "./modules/HomeModule";
 import ClientsModule from "./modules/ClientsModule";
 import ReportsModule from "./modules/ReportsModule";
-import Sidebar from "@/app/components/layout/Sidebar";
 import ProfileModule from "./modules/ProfileModule";
 import FurnitureModule from "./modules/FurnitureModule";
 import WorkshopModule from "./modules/WorkshopModule";
-import BottomMenu from "@/app/components/layout/ButtomMenu";
+import ShapeModule from "./modules/ShapeModule";
+import ModuleSkeleton from "@/app/components/ui/ModuleSkeleton";
 
-export default function DashboardContent() {
-  const [selected, setSelected] = useState("home");
+import { FaChartBar, FaHome, FaUserCircle, FaUsers } from "react-icons/fa";
+import { TbLayoutDashboardFilled } from "react-icons/tb";
+import { FaShop } from "react-icons/fa6";
+import { MdChair } from "react-icons/md";
+
+const mainMenu = [
+  { key: "home", label: "Inicio", icon: <FaHome size={20} /> },
+  { key: "furniture", label: "Muebles", icon: <MdChair size={20} /> },
+  { key: "clients", label: "Clientes", icon: <FaUsers size={20} /> },
+  { key: "reports", label: "Reportes", icon: <FaChartBar size={20} /> },
+  {
+    key: "shape",
+    label: "Zona de cortes",
+    icon: <TbLayoutDashboardFilled size={20} />,
+  },
+];
+
+const accountMenu = [
+  { key: "profile", label: "Perfil", icon: <FaUserCircle size={20} /> },
+  { key: "workshop", label: "Taller", icon: <FaShop size={20} /> },
+];
+
+export default function DashboardPage() {
+  const pathname = usePathname();
+  const [selected, setSelected] = useState("/");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (pathname === "/dashboard") {
+      window.history.replaceState(null, "", "/dashboard/home");
+      setSelected("home");
+    } else {
+      const lastSegment = pathname.split("/").pop();
+      setSelected(lastSegment || "home");
+    }
+  }, [pathname]);
+
+  const handleSelect = (key: string) => {
+    if (key === selected) return;
+    setLoading(true);
+    setSelected(key);
+    window.history.pushState(null, "", `/dashboard/${key}`);
+    setTimeout(() => setLoading(false), 300);
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const lastSegment = window.location.pathname.split("/").pop();
+      if (lastSegment) setSelected(lastSegment);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const renderModule = () => {
+    if (loading) return <ModuleSkeleton />;
+
     switch (selected) {
       case "home":
         return <HomeModule />;
@@ -26,25 +85,31 @@ export default function DashboardContent() {
         return <ProfileModule />;
       case "workshop":
         return <WorkshopModule />;
-      case "logout":
-        return <p className="text-gray-700">Cerrando sesión...</p>;
-
+      case "shape":
+        return <ShapeModule />;
       default:
-        return <HomeModule />;
+        return <ModuleSkeleton />;
     }
   };
 
   return (
     <div className="flex min-h-screen bg-gray-200 p-6 md:gap-4">
-      {/* 🖥 Sidebar (solo desktop) */}
-      <Sidebar selected={selected} onSelect={setSelected} />
-      {/* 📱 Contenido principal */}
-      <main className="flex-1 p-4 md:p-6 bg-white rounded-2xl">
+      <Sidebar
+        selected={selected}
+        onSelect={handleSelect}
+        mainMenu={mainMenu}
+        bottomMenu={accountMenu}
+      />
+      <main className="flex-1 p-4 md:p-6 bg-white rounded-2xl transition-all duration-300">
         {renderModule()}
       </main>
-      {/* 📱 Menú flotante (solo mobile) */}
       <div className="md:hidden">
-        <BottomMenu selected={selected} onSelect={setSelected} />
+        <BottomMenu
+          selected={selected}
+          onSelect={handleSelect}
+          mainMenu={mainMenu}
+          bottomMenu={accountMenu}
+        />
       </div>
     </div>
   );

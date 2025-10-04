@@ -1,34 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import {
-  FaHome,
-  FaTools,
-  FaUsers,
-  FaChartBar,
-  FaUserCircle,
-  FaBuilding,
-  FaSignOutAlt,
-} from "react-icons/fa";
 import Button from "../ui/Button";
+import { ReactNode } from "react";
+import { FaSignOutAlt } from "react-icons/fa";
+
+interface menuItem {
+  key: string;
+  label: string;
+  icon: ReactNode;
+}
+
 
 type Props = {
   selected: string;
   onSelect: (key: string) => void;
+  mainMenu: menuItem[];
+  bottomMenu: menuItem[];
 };
 
-export default function Sidebar({ selected, onSelect }: Props) {
-  const mainMenu = [
-    { key: "home", label: "Inicio", icon: <FaHome /> },
-    { key: "furniture", label: "Muebles", icon: <FaTools /> },
-    { key: "clients", label: "Clientes", icon: <FaUsers /> },
-    { key: "reports", label: "Reportes", icon: <FaChartBar /> },
-  ];
-
-  const bottomMenu = [
-    { key: "profile", label: "Perfil", icon: <FaUserCircle /> },
-    { key: "workshop", label: "Taller", icon: <FaBuilding /> },
-  ];
+export default function Sidebar({ selected, onSelect, mainMenu, bottomMenu }: Props) {
+  
 
   return (
     <aside className="hidden md:flex w-64 bg-white shadow-md flex-col rounded-2xl">

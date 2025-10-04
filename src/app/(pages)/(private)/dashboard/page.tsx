@@ -25,11 +25,7 @@ const mainMenu = [
   { key: "furniture", label: "Muebles", icon: <MdChair size={20} /> },
   { key: "clients", label: "Clientes", icon: <FaUsers size={20} /> },
   { key: "reports", label: "Reportes", icon: <FaChartBar size={20} /> },
-  {
-    key: "shape",
-    label: "Zona de cortes",
-    icon: <TbLayoutDashboardFilled size={20} />,
-  },
+  { key: "shape", label: "Zona de cortes", icon: <TbLayoutDashboardFilled size={20} /> },
 ];
 
 const accountMenu = [
@@ -42,24 +38,28 @@ export default function DashboardPage() {
   const [selected, setSelected] = useState("/");
   const [loading, setLoading] = useState(false);
 
+  // Redirigir automáticamente si es /dashboard
   useEffect(() => {
+    const lastSegment = pathname.split("/").pop();
+
     if (pathname === "/dashboard") {
       window.history.replaceState(null, "", "/dashboard/home");
       setSelected("home");
-    } else {
-      const lastSegment = pathname.split("/").pop();
-      setSelected(lastSegment || "home");
+    } else if (lastSegment && lastSegment !== selected) {
+      setSelected(lastSegment);
     }
   }, [pathname]);
 
+  // Cambiar de módulo sin recargar
   const handleSelect = (key: string) => {
     if (key === selected) return;
     setLoading(true);
     setSelected(key);
     window.history.pushState(null, "", `/dashboard/${key}`);
-    setTimeout(() => setLoading(false), 300);
+    setTimeout(() => setLoading(false), 400);
   };
 
+  // Manejo del botón "atrás"
   useEffect(() => {
     const handlePopState = () => {
       const lastSegment = window.location.pathname.split("/").pop();
@@ -69,40 +69,38 @@ export default function DashboardPage() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
+  //  Render dinámico con skeleton
   const renderModule = () => {
     if (loading) return <ModuleSkeleton />;
 
     switch (selected) {
-      case "home":
-        return <HomeModule />;
-      case "furniture":
-        return <FurnitureModule />;
-      case "clients":
-        return <ClientsModule />;
-      case "reports":
-        return <ReportsModule />;
-      case "profile":
-        return <ProfileModule />;
-      case "workshop":
-        return <WorkshopModule />;
-      case "shape":
-        return <ShapeModule />;
-      default:
-        return <ModuleSkeleton />;
+      case "home": return <HomeModule />;
+      case "furniture": return <FurnitureModule />;
+      case "clients": return <ClientsModule />;
+      case "reports": return <ReportsModule />;
+      case "profile": return <ProfileModule />;
+      case "workshop": return <WorkshopModule />;
+      case "shape": return <ShapeModule />;
+      default: return <ModuleSkeleton />;
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-200 p-6 md:gap-4">
+    <div className="flex min-h-screen bg-gray-200 p-4 md:p-6 gap-4">
+      {/* Sidebar (desktop) */}
       <Sidebar
         selected={selected}
         onSelect={handleSelect}
         mainMenu={mainMenu}
         bottomMenu={accountMenu}
       />
-      <main className="flex-1 p-4 md:p-6 bg-white rounded-2xl transition-all duration-300">
+
+      {/* Contenido principal */}
+      <main className="flex-1 p-4 md:p-6 bg-white rounded-2xl transition-all duration-300 ease-in-out">
         {renderModule()}
       </main>
+
+      {/* Menú inferior (mobile) */}
       <div className="md:hidden">
         <BottomMenu
           selected={selected}

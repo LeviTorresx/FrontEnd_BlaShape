@@ -13,7 +13,7 @@ type Props = {
 
 export default function SummaryWorkshop({ workshop }: Props) {
   return (
-    <div className="w-full bg-gray-200 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col justify-between">
+    <div className="w-full h-full overflow-auto bg-gray-200 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col justify-between">
       {/* Encabezado */}
       <div>
         <h2 className="text-xl font-semibold text-gray-800 text-center tracking-tight">

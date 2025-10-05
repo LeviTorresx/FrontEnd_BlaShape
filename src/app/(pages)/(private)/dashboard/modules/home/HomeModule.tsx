@@ -80,17 +80,17 @@ export default function HomeModule() {
       <Banner />
 
       {/* Contenido principal */}
-      <section className="flex-1 grid md:grid-cols-3 gap-6 min-h-0 overflow-hidden">
+      <section className="flex-1 grid md:grid-cols-3 gap-6 max-h-[80%] overflow-hidden">
         <RecentFurniture furnitureList={furnitureData} />
 
-        <div className="flex flex-col gap-6 min-h-0 overflow-hidden">
+        <div className="flex flex-col gap-6 maxh overflow-hidden">
           <SummaryWorkshop workshop={summaryWorkshop} />
           <Reminder />
         </div>
       </section>
 
       {/* Footer / estadísticas */}
-      <section className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 flex-shrink-0">
+      <section className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
         <Statistics stats={StatisticsList} />
       </section>
     </div>

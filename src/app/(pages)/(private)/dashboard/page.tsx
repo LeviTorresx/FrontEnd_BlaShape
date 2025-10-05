@@ -86,7 +86,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-200 p-4 md:p-6 gap-4">
+    <div className="flex min-h-screen bg-gray-200 p-4 md:p-2 gap-4">
       {/* Sidebar (desktop) */}
       <Sidebar
         selected={selected}
@@ -96,7 +96,7 @@ export default function DashboardPage() {
       />
 
       {/* Contenido principal */}
-      <main className="flex-1 p-4 md:p-6 bg-white rounded-2xl transition-all duration-300 ease-in-out">
+      <main className="flex-1 p-4 md:p- bg-white rounded-2xl transition-all duration-300 ease-in-out">
         {renderModule()}
       </main>
 

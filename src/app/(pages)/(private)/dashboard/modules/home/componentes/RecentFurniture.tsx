@@ -12,7 +12,7 @@ type Props = {
 
 export default function RecentFurniture({ furnitureList }: Props) {
   return (
-    <div className="md:col-span-2 flex flex-col bg-gray-100 p-5 rounded-2xl shadow-sm border border-gray-100 h-full">
+    <div className="md:col-span-2 flex flex-col bg-gray-100 p-5 rounded-2xl shadow-sm border border-gray-100 h-full overflow-auto">
       {/* Título */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-700">Muebles recientes</h3>

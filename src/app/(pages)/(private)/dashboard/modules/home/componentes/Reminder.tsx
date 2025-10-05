@@ -7,10 +7,16 @@ export default function Reminder() {
       date: "05 Oct 2025",
       time: "10:00 AM",
     },
+    {
+      title: "Entrega de muebles a cliente",
+      date: "05 Oct 2025",
+      time: "10:00 AM",
+    },
+      
   ];
 
   return (
-    <div className="w-full bg-gray-100 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-5 ">
+    <div className="w-full h-full overflow-auto bg-gray-100 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-5 ">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">

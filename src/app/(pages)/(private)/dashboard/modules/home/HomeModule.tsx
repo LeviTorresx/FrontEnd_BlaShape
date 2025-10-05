@@ -8,22 +8,22 @@ const StatisticsList = [
   {
     label: "Clientes",
     value: "24",
-    color: "from-purple-900 to-blue-900",
+    color: "from-purple-950 to-purple-600",
   },
   {
     label: "Pedidos",
     value: "12",
-    color: "from-blue-900 to-emerald-900",
+    color: "from-purple-950 to-purple-600",
   },
   {
     label: "Cortes",
     value: "5",
-    color: "from-emerald-900 to-purple-900",
+    color: "from-purple-950 to-purple-600",
   },
   {
     label: "Reportes",
     value: "8",
-    color: "from-purple-900 to-orange-800",
+    color: "from-purple-950 to-red-900",
   },
 ];
 
@@ -45,54 +45,44 @@ const furnitureData = [
     name: "Gabinete Moderno en Nogal",
     startDate: "22 Sep 2025",
     endDate: "01 Oct 2025",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    name: "Cama Doble de Madera Oscura",
-    startDate: "18 Sep 2025",
-    endDate: "26 Sep 2025",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    name: "Escritorio Industrial de Acero",
-    startDate: "10 Sep 2025",
-    endDate: "20 Sep 2025",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    name: "Estantería Modular",
-    startDate: "02 Sep 2025",
-    endDate: "12 Sep 2025",
-  },
+  }
 ];
 
 const summaryWorkshop = {
-  name: "Taller Central",
-  nit: "12312121212-3",
-  phone: "+57 300 123 4567",
-  address: "Calle 123 #45-67, Ciudad",
+  name: "Taller BlasTorres",
+  nit: "1111111111-3",
+  phone: "+57 313 799 4143",
+  address: "Carerra 19 #07-44, Caucasia-Antioquia, Colombia",
 };
 
 export default function HomeModule() {
   return (
-    <div className="flex flex-col h-full animate-fadeIn overflow-hidden">
-      {/* Banner */}
-      <Banner />
-
-      {/* Contenido principal */}
-      <section className="flex-1 grid md:grid-cols-3 gap-6 max-h-[80%] overflow-hidden">
-        <RecentFurniture furnitureList={furnitureData} />
-
-        <div className="flex flex-col gap-6 maxh overflow-hidden">
+    <div className="grid grid-cols-4 md:grid-cols-4 grid-rows-7 md:grid-rows-5 gap-2 md:gap-2 h-full">
+      <div className="col-start-1 row-start-2 col-span-4 md:col-start-1 md:row-start-1 md:col-span-1 md:row-span-2  rounded-2xl ">
+        <div className="h-full overflow-y-auto">
           <SummaryWorkshop workshop={summaryWorkshop} />
+        </div>
+      </div>
+      <div className="col-start-1 row-start-3 col-span-4 md:col-start-1 md:row-start-3 md:col-span-1 md:row-span-2  rounded-2xl ">
+        <div className="h-full overflow-y-auto">
           <Reminder />
         </div>
-      </section>
-
-      {/* Footer / estadísticas */}
-      <section className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Statistics stats={StatisticsList} />
-      </section>
+      </div>
+      <div className="col-start-1 row-start-1 col-span-4 md:col-start-2 md:row-start-1 md:col-span-3 md:row-span-1  rounded-2xl ">
+        <div className="h-full overflow-y-auto">
+          <Banner />
+        </div>
+      </div>
+      <div className="col-start-1 row-start-4 col-span-4 row-span-3 md:col-start-2 md:row-start-2 md:col-span-3 md:row-span-3  rounded-2xl">
+        <div className="h-full overflow-y-auto">
+          <RecentFurniture furnitureList={furnitureData} />
+        </div>
+      </div>
+      <div className="col-start-1 row-start-7 col-span-4 md:col-start-1 md:row-start-5 md:col-span-4 md:row-span-1rounded-2xl ">
+        <div className="h-full overflow-y-auto">
+          <Statistics stats={StatisticsList} />
+        </div>
+      </div>
     </div>
   );
 }

@@ -25,7 +25,11 @@ const mainMenu = [
   { key: "furniture", label: "Muebles", icon: <MdChair size={20} /> },
   { key: "clients", label: "Clientes", icon: <FaUsers size={20} /> },
   { key: "reports", label: "Reportes", icon: <FaChartBar size={20} /> },
-  { key: "shape", label: "Zona de cortes", icon: <TbLayoutDashboardFilled size={20} /> },
+  {
+    key: "shape",
+    label: "Zona de cortes",
+    icon: <TbLayoutDashboardFilled size={20} />,
+  },
 ];
 
 const accountMenu = [
@@ -74,19 +78,27 @@ export default function DashboardPage() {
     if (loading) return <ModuleSkeleton />;
 
     switch (selected) {
-      case "home": return <HomeModule />;
-      case "furniture": return <FurnitureModule />;
-      case "clients": return <ClientsModule />;
-      case "reports": return <ReportsModule />;
-      case "profile": return <ProfileModule />;
-      case "workshop": return <WorkshopModule />;
-      case "shape": return <ShapeModule />;
-      default: return <ModuleSkeleton />;
+      case "home":
+        return <HomeModule />;
+      case "furniture":
+        return <FurnitureModule />;
+      case "clients":
+        return <ClientsModule />;
+      case "reports":
+        return <ReportsModule />;
+      case "profile":
+        return <ProfileModule />;
+      case "workshop":
+        return <WorkshopModule />;
+      case "shape":
+        return <ShapeModule />;
+      default:
+        return <ModuleSkeleton />;
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-200 p-4 md:p-2 gap-4">
+    <div className="flex min-h-screen bg-gray-200 p-2 md:p-2 gap-4">
       {/* Sidebar (desktop) */}
       <Sidebar
         selected={selected}
@@ -96,7 +108,7 @@ export default function DashboardPage() {
       />
 
       {/* Contenido principal */}
-      <main className="flex-1 p-4 md:p- bg-white rounded-2xl transition-all duration-300 ease-in-out">
+      <main className="w-full p-2 md:p-2 bg-white rounded-2xl transition-all duration-300 ease-in-out">
         {renderModule()}
       </main>
 

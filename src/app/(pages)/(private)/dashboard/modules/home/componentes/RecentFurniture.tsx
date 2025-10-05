@@ -6,24 +6,33 @@ interface FurnitureProps {
   startDate: string;
   endDate: string;
 }
+
 type Props = {
   furnitureList: FurnitureProps[];
 };
 
 export default function RecentFurniture({ furnitureList }: Props) {
   return (
-    <div className="md:col-span-2 flex flex-col bg-gray-100 p-5 rounded-2xl shadow-sm border border-gray-100 h-full overflow-auto">
-      {/* Título */}
+    <section className="h-full w-full flex flex-col p-4 bg-purple-100 rounded-2xl shadow-md">
+      {/* Encabezado elegante */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-700">Muebles recientes</h3>
-        <button className="text-xs text-purple-600 hover:text-purple-800 transition-colors">
-          Ver todos
-        </button>
+        <h2 className="text-lg font-semibold text-purple-800">
+          Muebles recientes
+        </h2>
+        <span className="text-sm text-gray-500">
+          {furnitureList.length > 3 ? "Mostrando 3 más recientes" : ""}
+        </span>
       </div>
 
       {/* Contenedor de cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto pr-1 flex-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
-        {furnitureList.map((f, i) => (
+      <div
+        className="
+          grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
+          gap-4 h-full overflow-y-auto 
+          scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent
+        "
+      >
+        {furnitureList.slice(0, 3).map((f, i) => (
           <FurnitureCard
             key={i}
             image={f.image}
@@ -33,6 +42,6 @@ export default function RecentFurniture({ furnitureList }: Props) {
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 }

@@ -108,7 +108,7 @@ export default function DashboardPage() {
       />
 
       {/* Contenido principal */}
-      <main className="w-full p-2 md:p-2 bg-white rounded-2xl transition-all duration-300 ease-in-out">
+      <main className="w-full p-2 bg-white rounded-2xl overflow-y-auto h-[calc(100vh-1rem)]">
         {renderModule()}
       </main>
 

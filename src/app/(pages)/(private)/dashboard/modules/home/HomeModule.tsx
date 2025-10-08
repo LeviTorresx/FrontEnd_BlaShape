@@ -57,32 +57,49 @@ const summaryWorkshop = {
 
 export default function HomeModule() {
   return (
-    <div className="grid grid-cols-4 md:grid-cols-4 grid-rows-7 md:grid-rows-5 gap-2 md:gap-2 h-full">
-      <div className="col-start-1 row-start-2 col-span-4 md:col-start-1 md:row-start-1 md:col-span-1 md:row-span-2  rounded-2xl ">
-        <div className="h-full overflow-y-auto">
+    <div
+      className="
+        grid grid-cols-4 md:grid-cols-4 
+        grid-rows-[auto_auto_auto_auto_auto_auto_auto] md:grid-rows-[repeat(5,1fr)]
+        gap-2 md:gap-3 
+        h-full
+      "
+    >
+      {/* Taller */}
+      <div className="col-span-4 md:col-span-1 md:row-span-2 rounded-2xl bg-white shadow-sm">
+        <div className="h-full overflow-y-auto p-2">
           <SummaryWorkshop workshop={summaryWorkshop} />
         </div>
       </div>
-      <div className="col-start-1 row-start-3 col-span-4 md:col-start-1 md:row-start-3 md:col-span-1 md:row-span-2  rounded-2xl ">
-        <div className="h-full overflow-y-auto">
+
+      {/* Recordatorios */}
+      <div className="col-span-4 md:col-span-1 md:row-start-3 md:row-span-2 rounded-2xl bg-white shadow-sm">
+        <div className="h-full overflow-y-auto p-2">
           <Reminder />
         </div>
       </div>
-      <div className="col-start-1 row-start-1 col-span-4 md:col-start-2 md:row-start-1 md:col-span-3 md:row-span-1  rounded-2xl ">
-        <div className="h-full overflow-y-auto">
+
+      {/* Banner */}
+      <div className="col-span-4 md:col-span-3 md:row-span-1 rounded-2xl bg-white shadow-sm">
+        <div className="h-full overflow-hidden p-2">
           <Banner />
         </div>
       </div>
-      <div className="col-start-1 row-start-4 col-span-4 row-span-3 md:col-start-2 md:row-start-2 md:col-span-3 md:row-span-3  rounded-2xl">
-        <div className="h-full overflow-y-auto">
+
+      {/* Muebles recientes */}
+      <div className="col-span-4 md:col-span-3 md:row-start-2 md:row-span-3 rounded-2xl bg-white shadow-sm">
+        <div className="h-full overflow-y-auto p-2">
           <RecentFurniture furnitureList={furnitureData} />
         </div>
       </div>
-      <div className="col-start-1 row-start-7 col-span-4 md:col-start-1 md:row-start-5 md:col-span-4 md:row-span-1rounded-2xl ">
-        <div className="h-full overflow-y-auto">
+
+      {/* Estadísticas */}
+      <div className="col-span-4 md:col-span-4 md:row-start-5 rounded-2xl bg-white shadow-sm">
+        <div className="h-full overflow-y-auto p-2">
           <Statistics stats={StatisticsList} />
         </div>
       </div>
     </div>
   );
 }
+

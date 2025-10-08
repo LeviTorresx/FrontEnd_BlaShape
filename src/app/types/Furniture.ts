@@ -1,6 +1,4 @@
-export interface FurnitureDTO{
-    name: string;
-}
+import { Piece } from "./Piece";
 
 export interface Furniture {
     furnitureId: number;
@@ -13,5 +11,5 @@ export interface Furniture {
     status: string;
     carpenterId: number;
     customerId: number;
-    pieces:[number]
+    pieces:Piece[]
 }

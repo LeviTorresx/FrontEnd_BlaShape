@@ -14,5 +14,5 @@ export interface Customer {
   email: string;
   phone: string;
   role: string;
-  furnitureList: [number];
+  furnitureList: number[];
 }

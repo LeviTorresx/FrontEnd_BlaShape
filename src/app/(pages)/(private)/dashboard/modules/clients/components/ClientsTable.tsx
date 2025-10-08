@@ -1,18 +1,12 @@
 import SearchBar from "@/app/components/tables/SearchBar";
 import TableContainer from "@/app/components/tables/TableContainer";
+import { Customer } from "@/app/types/Customer";
 
-interface Client {
-  id: string;
-  name: string;
-  phone: string;
-  address: string;
-  dni: string;
-}
 
 type Props = {
   search: string;
   setSearch: (value: string) => void;
-  filtered: Client[];
+  filtered: Customer[];
 };
 
 export default function ClientsTable({ search, setSearch, filtered }: Props) {
@@ -34,7 +28,7 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
             <tr>
               <th className="p-4 text-left font-semibold">Nombre</th>
               <th className="p-4 text-left font-semibold">Teléfono</th>
-              <th className="p-4 text-left font-semibold">Dirección</th>
+              <th className="p-4 text-left font-semibold">Correo</th>
               <th className="p-4 text-left font-semibold">DNI</th>
             </tr>
           </thead>
@@ -42,12 +36,12 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
             {filtered.length > 0 ? (
               filtered.map((c) => (
                 <tr
-                  key={c.id}
+                  key={c.customerId}
                   className="hover:bg-purple-50 transition-all duration-200"
                 >
                   <td className="p-4 font-medium text-gray-800">{c.name}</td>
                   <td className="p-4">{c.phone}</td>
-                  <td className="p-4">{c.address}</td>
+                  <td className="p-4">{c.email}</td>
                   <td className="p-4">{c.dni}</td>
                 </tr>
               ))
@@ -70,7 +64,7 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
         {filtered.length > 0 ? (
           filtered.map((c) => (
             <div
-              key={c.id}
+              key={c.customerId}
               className="
                 p-4 bg-gradient-to-br from-purple-50 to-purple-100 
                 border border-purple-200 rounded-2xl shadow-sm 
@@ -92,8 +86,8 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
                   {c.phone}
                 </p>
                 <p>
-                  <span className="font-medium text-gray-600">Dirección:</span>{" "}
-                  {c.address}
+                  <span className="font-medium text-gray-600">Correo:</span>{" "}
+                  {c.email}
                 </p>
               </div>
             </div>

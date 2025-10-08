@@ -18,7 +18,7 @@ type Props = {
 export default function ClientsTable({ search, setSearch, filtered }: Props) {
   return (
     <TableContainer title="Clientes registrados">
-      {/* 🔍 Barra de búsqueda */}
+      {/*Barra de búsqueda */}
       <div className="mb-5 flex justify-end">
         <SearchBar
           value={search}
@@ -27,7 +27,7 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
         />
       </div>
 
-      {/* 🖥️ Vista de escritorio */}
+      {/* Vista de escritorio */}
       <div className="hidden md:block overflow-y-auto rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
         <table className="min-w-full text-sm text-gray-700 rounded-2xl overflow-hidden">
           <thead className="bg-gradient-to-r from-purple-200 via-purple-100 to-purple-200 text-gray-800">
@@ -65,7 +65,7 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
         </table>
       </div>
 
-      {/* 📱 Vista móvil (Cards) */}
+      {/* Vista móvil (Cards) */}
       <div className="block md:hidden space-y-3">
         {filtered.length > 0 ? (
           filtered.map((c) => (

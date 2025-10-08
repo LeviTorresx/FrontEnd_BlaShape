@@ -7,7 +7,7 @@ import Sidebar from "@/app/components/layout/Sidebar";
 import BottomMenu from "@/app/components/layout/ButtomMenu";
 
 import HomeModule from "./modules/home/HomeModule";
-import ClientsModule from "./modules/ClientsModule";
+import ClientsModule from "./modules/clients/ClientsModule";
 import ReportsModule from "./modules/ReportsModule";
 import ProfileModule from "./modules/ProfileModule";
 import FurnitureModule from "./modules/FurnitureModule";

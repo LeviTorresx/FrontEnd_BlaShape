@@ -4,10 +4,10 @@ export interface Furniture {
     furnitureId: number;
     name: string;
     documentUrl?: string;
-    imageUrl?: string;
+    imageInitUrl: string;
     imageEnd?: string;
-    creationDate: Date;
-    endDate?: Date;
+    creationDate: string;
+    endDate: string;
     status: string;
     carpenterId: number;
     customerId: number;

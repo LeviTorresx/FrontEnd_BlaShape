@@ -3,6 +3,9 @@ import Reminder from "./componentes/Reminder";
 import RecentFurniture from "./componentes/RecentFurniture";
 import Statistics from "./componentes/Statistics";
 import SummaryWorkshop from "./componentes/SummaryWorkshop";
+import { useGetWorkshopQuery } from "@/app/services/mockWorkshopApi";
+import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
+import { useGetAlertsQuery } from "@/app/services/mockAlertsApi";
 
 const StatisticsList = [
   {
@@ -27,35 +30,14 @@ const StatisticsList = [
   },
 ];
 
-const furnitureData = [
-  {
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    name: "Silla Escandinava de Roble",
-    startDate: "01 Oct 2025",
-    endDate: "05 Oct 2025",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    name: "Mesa de Comedor Minimalista",
-    startDate: "28 Sep 2025",
-    endDate: "03 Oct 2025",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    name: "Gabinete Moderno en Nogal",
-    startDate: "22 Sep 2025",
-    endDate: "01 Oct 2025",
-  }
-];
-
-const summaryWorkshop = {
-  name: "Taller BlasTorres",
-  nit: "1111111111-3",
-  phone: "+57 313 799 4143",
-  address: "Carerra 19 #07-44, Caucasia-Antioquia, Colombia",
-};
-
 export default function HomeModule() {
+  const { data: workshop, isLoading } = useGetWorkshopQuery();
+  const { data: furnitureList = [] } = useGetFurnitureQuery();
+  const {data: reminders = []} = useGetAlertsQuery();
+
+  if (isLoading) return <p>Cargando información del taller...</p>;
+  if (!workshop) return <p>No se encontró información del taller.</p>;
+
   return (
     <div
       className="
@@ -68,14 +50,14 @@ export default function HomeModule() {
       {/* Taller */}
       <div className="col-span-4 md:col-span-1 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <SummaryWorkshop workshop={summaryWorkshop} />
+          <SummaryWorkshop workshop={workshop} />
         </div>
       </div>
 
       {/* Recordatorios */}
       <div className="col-span-4 md:col-span-1 md:row-start-3 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <Reminder />
+          <Reminder reminders={reminders} />
         </div>
       </div>
 
@@ -89,7 +71,7 @@ export default function HomeModule() {
       {/* Muebles recientes */}
       <div className="col-span-4 md:col-span-3 md:row-start-2 md:row-span-3 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <RecentFurniture furnitureList={furnitureData} />
+          <RecentFurniture furnitureList={furnitureList} />
         </div>
       </div>
 
@@ -102,4 +84,3 @@ export default function HomeModule() {
     </div>
   );
 }
-

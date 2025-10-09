@@ -1,15 +1,14 @@
-import { FaPhoneAlt, FaMapMarkerAlt, FaBuilding, FaTools } from "react-icons/fa";
+import { Workshop } from "@/app/types/Workshop";
+import {
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+  FaBuilding,
+  FaTools,
+} from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 
-interface WorkshopProps {
-  name: string;
-  nit: string;
-  phone: string;
-  address: string;
-}
-
 type Props = {
-  workshop: WorkshopProps;
+  workshop: Workshop;
 };
 
 export default function SummaryWorkshop({ workshop }: Props) {
@@ -25,7 +24,7 @@ export default function SummaryWorkshop({ workshop }: Props) {
     >
       {/* Encabezado */}
       <div className="flex flex-col items-center text-center">
-        <div className="bg-purple-200 p-3 rounded-full shadow-inner mb-3">
+        <div className="bg-purple-200 p-3 rounded-full shadow-inner mb-1">
           <FaTools className="text-purple-700 text-3xl" />
         </div>
 
@@ -37,7 +36,7 @@ export default function SummaryWorkshop({ workshop }: Props) {
       </div>
 
       {/* Información del taller */}
-      <div className="mt-6 space-y-4 text-gray-700 text-sm md:text-base">
+      <div className="mt-6 space-y-2 text-gray-700 text-sm md:text-base">
         <div className="flex items-center gap-3 justify-center">
           <FaBuilding className="text-purple-600 text-lg" />
           <span className="font-medium">NIT: {workshop.nit}</span>
@@ -57,7 +56,7 @@ export default function SummaryWorkshop({ workshop }: Props) {
       </div>
 
       {/* Footer */}
-      <div className="mt-8 flex items-center justify-center gap-2 text-center">
+      <div className="mt-4 flex items-center justify-center gap-2 text-center">
         <MdVerified className="text-green-500 text-xl" />
         <span className="text-xs text-gray-500 italic">
           Taller verificado en la plataforma

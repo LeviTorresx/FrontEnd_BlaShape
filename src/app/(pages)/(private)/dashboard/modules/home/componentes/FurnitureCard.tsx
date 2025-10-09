@@ -1,4 +1,6 @@
+import { formatDate } from "@/app/utils/formatDate";
 import Image from "next/image";
+import { FaCalendarAlt, FaCalendarCheck } from "react-icons/fa";
 
 export default function FurnitureCard({
   image,
@@ -41,10 +43,15 @@ export default function FurnitureCard({
         <div className="mt-3 sm:mt-2 h-1 w-full bg-gradient-to-r from-purple-900 to-purple-400 rounded-full group-hover:from-purple-400 group-hover:to-purple-900 transition-colors duration-300" />
 
         {/* Fechas */}
-        <div className="flex justify-between items-center mt-3 text-sm text-gray-500">
-          <span>{startDate}</span>
-          <span className="h-1 w-1 bg-gray-400 rounded-full mx-2" />
-          <span>{endDate}</span>
+        <div className="mt-4 text-sm text-gray-600 space-y-1 flex gap-x-2 justify-between">
+          <div className="flex items-center gap-2">
+            <FaCalendarAlt className="w-4 h-4 text-purple-700" />
+            <span>{formatDate(startDate)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FaCalendarCheck className="w-4 h-4 text-purple-500" />
+            <span>{formatDate(endDate)}</span>
+          </div>
         </div>
       </div>
     </div>

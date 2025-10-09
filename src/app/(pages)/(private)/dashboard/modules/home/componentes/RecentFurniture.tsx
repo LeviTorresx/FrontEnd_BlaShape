@@ -1,14 +1,10 @@
+import { Furniture } from "@/app/types/Furniture";
 import FurnitureCard from "./FurnitureCard";
 
-interface FurnitureProps {
-  image: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-}
+
 
 type Props = {
-  furnitureList: FurnitureProps[];
+  furnitureList: Furniture[];
 };
 
 export default function RecentFurniture({ furnitureList }: Props) {
@@ -40,9 +36,9 @@ export default function RecentFurniture({ furnitureList }: Props) {
         {items.map((f, i) => (
           <FurnitureCard
             key={i}
-            image={f.image}
+            image={f.imageInitUrl}
             name={f.name}
-            startDate={f.startDate}
+            startDate={f.creationDate}
             endDate={f.endDate}
           />
         ))}

@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Customer } from "../types/Customer";
-import { mock_CUSTOMERS } from "./mockCustomers";
+import { mock_CUSTOMERS } from "../mocks/mockCustomers";
 
 export const mockCustomersApi = createApi({
   reducerPath: "mockCustomersApi",

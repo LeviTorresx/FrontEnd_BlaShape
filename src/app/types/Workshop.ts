@@ -11,6 +11,7 @@ export interface Workshop {
   name: string;
   address: string;
   phone: string;
+  nit:string;
   email: string;
   carpenterid: number;
 }

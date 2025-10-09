@@ -3,44 +3,15 @@ import { useState } from "react";
 import FurnitureTable from "./components/FurnitureTable";
 import ButtonActions from "@/app/components/ui/ButtonActions";
 import { FaPlus } from "react-icons/fa";
-
-const furniture = [
-  {
-    id: "1",
-    name: "Silla Clásica de Madera",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    createdAt: "2024-09-12",
-    status: "Disponible",
-  },
-  {
-    id: "2",
-    name: "Mesa Vintage de Roble",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    createdAt: "2024-07-25",
-    status: "Terminado",
-  },
-  {
-    id: "3",
-    name: "Sofá Moderno Gris",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    createdAt: "2024-10-02",
-    status: "Pendiente",
-  },
-  {
-    id: "4",
-    name: "Estantería Industrial",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
-    createdAt: "2024-08-15",
-    status: "Disponible",
-  },
-];
+import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
 
 export default function FurnitureModule() {
   const [search, setSearch] = useState("");
+  const { data: furnitures = [] } = useGetFurnitureQuery();
 
-  const filtered = furniture.filter((item) =>
+  const filtered = furnitures.filter((item) =>
     Object.values(item).some((v) =>
-      v.toLowerCase().includes(search.toLowerCase())
+      String(v).toLowerCase().includes(search.toLowerCase())
     )
   );
 

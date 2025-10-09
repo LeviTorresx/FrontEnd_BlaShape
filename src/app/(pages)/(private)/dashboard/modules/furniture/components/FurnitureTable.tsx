@@ -1,14 +1,8 @@
 import SearchBar from "@/app/components/tables/SearchBar";
 import TableContainer from "@/app/components/tables/TableContainer";
+import { Furniture } from "@/app/types/Furniture";
+import { formatDate } from "@/app/utils/formatDate";
 import Image from "next/image";
-
-interface Furniture {
-  id: string;
-  name: string;
-  image: string;
-  createdAt: string;
-  status: string;
-}
 
 type Props = {
   search: string;
@@ -43,12 +37,12 @@ export default function FurnitureTable({ search, setSearch, filtered }: Props) {
             {filtered.length > 0 ? (
               filtered.map((f) => (
                 <tr
-                  key={f.id}
+                  key={f.furnitureId}
                   className="border-b border-gray-100 hover:bg-purple-50 transition-all"
                 >
                   <td className="p-3">
                     <Image
-                      src={f.image}
+                      src={f.imageInitUrl}
                       alt={f.name}
                       width={64}
                       height={64}
@@ -56,7 +50,9 @@ export default function FurnitureTable({ search, setSearch, filtered }: Props) {
                     />
                   </td>
                   <td className="p-3 font-medium text-gray-800">{f.name}</td>
-                  <td className="p-3 text-gray-600">{f.createdAt}</td>
+                  <td className="p-3 text-gray-600">
+                    {formatDate(f.creationDate)}
+                  </td>
                   <td className="p-3">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -91,7 +87,7 @@ export default function FurnitureTable({ search, setSearch, filtered }: Props) {
         {filtered.length > 0 ? (
           filtered.map((f) => (
             <div
-              key={f.id}
+              key={f.furnitureId}
               className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 
                          border border-purple-200 rounded-2xl shadow-sm 
                          hover:shadow-md transition-all duration-300"
@@ -99,17 +95,19 @@ export default function FurnitureTable({ search, setSearch, filtered }: Props) {
               {/* Imagen */}
               <div className="flex items-center gap-3 mb-3">
                 <Image
-                  src={f.image}
+                  src={f.imageInitUrl}
                   alt={f.name}
-                    width={80}
-                    height={80}
+                  width={80}
+                  height={80}
                   className="w-20 h-20 rounded-xl object-cover border border-gray-200 shadow-sm"
                 />
                 <div>
                   <p className="font-semibold text-purple-900 text-base">
                     {f.name}
                   </p>
-                  <p className="text-xs text-gray-600 mt-1">{f.createdAt}</p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {formatDate(f.creationDate)}
+                  </p>
                 </div>
               </div>
 

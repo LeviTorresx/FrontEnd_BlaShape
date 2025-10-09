@@ -1,13 +1,40 @@
+import { Alert } from "@/app/types/Alert";
+import { formatDate } from "@/app/utils/formatDate";
 import { FaBell, FaClock, FaCalendarAlt } from "react-icons/fa";
 
-export default function Reminder() {
-  const reminders = [
-    { title: "Entrega de muebles a cliente", date: "05 Oct 2025", time: "10:00 AM" },
-    { title: "Llamar al proveedor de madera", date: "06 Oct 2025", time: "2:30 PM" },
-    { title: "Revisión de diseño en taller", date: "07 Oct 2025", time: "9:00 AM" },
-    { title: "Entrega de sillas en Medellín", date: "08 Oct 2025", time: "3:00 PM" },
-    { title: "Reunión con cliente nuevo", date: "09 Oct 2025", time: "11:00 AM" },
-  ];
+interface Props {
+  reminders: Alert[];
+}
+
+export default function Reminder({ reminders }: Props) {
+  const getSeverityStyle = (severity: string) => {
+    switch (severity) {
+      case "HIGH":
+        return {
+          bg: "bg-red-50",
+          iconBg: "bg-red-100 text-red-700",
+          dot: "bg-red-500",
+        };
+      case "MEDIUM":
+        return {
+          bg: "bg-yellow-50 ",
+          iconBg: "bg-yellow-100 text-yellow-700",
+          dot: "bg-yellow-500",
+        };
+      case "LOW":
+        return {
+          bg: "bg-green-50 ",
+          iconBg: "bg-green-100 text-green-700",
+          dot: "bg-green-500",
+        };
+      default:
+        return {
+          bg: "bg-gray-50 border-gray-300",
+          iconBg: "bg-gray-100 text-gray-700",
+          dot: "bg-gray-500",
+        };
+    }
+  };
 
   return (
     <div className="w-full h-full flex flex-col bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border border-purple-200 shadow-sm overflow-hidden">
@@ -22,30 +49,45 @@ export default function Reminder() {
         </span>
       </div>
 
-      {/* Lista de recordatorios */}
+      {/* Lista */}
       <ul className="flex-1 overflow-y-auto p-3 space-y-2">
-        {reminders.map((reminder, index) => (
-          <li
-            key={index}
-            className="flex items-start gap-3 bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200 hover:shadow-md hover:border-purple-300 transition-all duration-300"
-          >
-            <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-purple-100 rounded-full">
-              <FaClock className="text-purple-800 text-sm" />
-            </div>
+        {reminders.map((reminder) => {
+          const style = getSeverityStyle(reminder.severity);
 
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-800 leading-tight">
-                {reminder.title}
-              </p>
-              <div className="flex items-center text-xs text-gray-500 gap-1 mt-1">
-                <FaCalendarAlt className="text-gray-400 text-[10px]" />
-                <span>{reminder.date}</span>
-                <span className="mx-1">•</span>
-                <span>{reminder.time}</span>
+          return (
+            <li
+              key={reminder.alertId}
+              className={`flex items-start gap-3 rounded-xl p-3 transition-all duration-300 hover:shadow-md ${style.bg}`}
+            >
+              {/* Icono */}
+              <div
+                className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${style.iconBg}`}
+              >
+                <FaClock className="text-sm" />
               </div>
-            </div>
-          </li>
-        ))}
+
+              {/* Contenido */}
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-gray-800 leading-tight">
+                    {reminder.mensaje}
+                  </p>
+                  <span
+                    className={`w-2 h-2 rounded-full ${style.dot} ml-2`}
+                    title={reminder.severity}
+                  />
+                </div>
+
+                <div className="flex items-center text-xs text-gray-500 gap-1 mt-1">
+                  <FaCalendarAlt className="text-gray-400 text-[10px]" />
+                  <span>{formatDate(reminder.date)}</span>
+                  <span className="mx-1">•</span>
+                  <span>{reminder.time}</span>
+                </div>
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

@@ -14,6 +14,7 @@ import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import AppModal from "@/app/components/ui/AppModal";
 import CustomerForm from "@/app/components/forms/CustomerForm";
+import CustomerCard from "./components/CustomerCard";
 
 export default function ClientsModule() {
   const { data: customers = [] } = useGetCustomersQuery();
@@ -22,6 +23,7 @@ export default function ClientsModule() {
   const [deleteCustomer] = useDeleteCustomerMutation();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [openView, setOpenView] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null
   );
@@ -115,7 +117,8 @@ export default function ClientsModule() {
   };
 
   const handleViewCustomer = (customer: Customer) => {
-    console.log(customer);
+    setSelectedCustomer(customer);
+    setOpenView(true);
   };
 
   return (
@@ -155,6 +158,16 @@ export default function ClientsModule() {
               }
             }}
           />
+        </AppModal>
+        <AppModal
+          open={openView}
+          onClose={() => {
+            setOpenView(false);
+            setSelectedCustomer(null);
+          }}
+          title="Detalles del cliente"
+        >
+          <CustomerCard customer={selectedCustomer!} />
         </AppModal>
       </div>
 

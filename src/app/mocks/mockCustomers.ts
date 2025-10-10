@@ -8,7 +8,7 @@ export const mock_CUSTOMERS: Customer[] = [
     dni: "12345678",
     email: "fake",
     phone: "555-1234",
-    role: "user",
+    role: "default",
     furnitureList: [1, 2],
   },
   {
@@ -18,7 +18,7 @@ export const mock_CUSTOMERS: Customer[] = [
     dni: "87654321",
     email: "fake2",
     phone: "555-5678",
-    role: "admin",
+    role: "default",
     furnitureList: [3],
   },
   {
@@ -28,7 +28,7 @@ export const mock_CUSTOMERS: Customer[] = [
     dni: "11223344",
     email: "fake3",
     phone: "555-9012",
-    role: "user",
+    role: "default",
     furnitureList: [],
   },
 ];

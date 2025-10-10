@@ -6,7 +6,6 @@ import SummaryWorkshop from "./componentes/SummaryWorkshop";
 import { useGetWorkshopQuery } from "@/app/services/mockWorkshopApi";
 import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
 import { useGetAlertsQuery } from "@/app/services/mockAlertsApi";
-import Button from "@/app/components/ui/Button";
 import AppModal from "@/app/components/ui/AppModal";
 import AlertForm from "@/app/components/forms/AlertForm";
 import { Alert } from "@/app/types/Alert";

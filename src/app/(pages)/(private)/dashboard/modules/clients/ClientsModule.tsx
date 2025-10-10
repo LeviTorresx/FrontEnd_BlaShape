@@ -10,11 +10,14 @@ import {
 import { Customer } from "@/app/types/Customer";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
+import AppModal from "@/app/components/ui/AppModal";
+import CustomerForm from "@/app/components/forms/CustomerForm";
 
 export default function ClientsModule() {
   const { data: customers = [] } = useGetCustomersQuery();
   const [createCustomer] = useAddCustomerMutation();
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
@@ -32,18 +35,7 @@ export default function ClientsModule() {
     )
   );
 
-  const handleCreateClient = async () => {
-    const newCustomer: Customer = {
-      customerId: 0,
-      name: `Cliente ${customers.length + 1}`,
-      lastName: "x",
-      phone: "555-0000",
-      email: `fake ${customers.length + 1} `,
-      dni: "ABC12345",
-      role: "default",
-      furnitureList: [],
-    };
-
+  const handleCreateClient = async (newCustomer: Customer) => {
     try {
       await createCustomer(newCustomer).unwrap();
       setSnackbar({
@@ -52,6 +44,7 @@ export default function ClientsModule() {
         message: "¡Cliente creado con exito!",
         icon: <FaRegCheckCircle fontSize="inherit" />,
       });
+      setOpen(false);
     } catch (err) {
       console.error("Error al agregar cliente:", err);
       setSnackbar({
@@ -60,6 +53,7 @@ export default function ClientsModule() {
         message: "¡Hubo un error al crear al cliente!",
         icon: <FaRegAngry fontSize="inherit" />,
       });
+      setOpen(false);
     }
   };
 
@@ -74,8 +68,22 @@ export default function ClientsModule() {
           label="Nuevo Cliente"
           icon={<FaPlus className="text-sm" />}
           type="button"
-          onClick={handleCreateClient}
+          onClick={() => {
+            setOpen(true);
+          }}
         />
+        <AppModal
+          open={open}
+          onClose={() => setOpen(false)}
+          title="Crear nuevo cliente"
+          confirmText="Guardar"
+          cancelText="Cancelar"
+        >
+          <CustomerForm
+            buttonLabel="Guardar cliente"
+            onSubmit={handleCreateClient}
+          />
+        </AppModal>
       </div>
 
       {/* Tabla */}

@@ -5,7 +5,9 @@ import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import ButtonActions from "@/app/components/ui/ButtonActions";
 import {
   useAddCustomerMutation,
+  useDeleteCustomerMutation,
   useGetCustomersQuery,
+  useUpdateCustomerMutation,
 } from "@/app/services/mockCustomersApi";
 import { Customer } from "@/app/types/Customer";
 import { MdErrorOutline } from "react-icons/md";
@@ -16,8 +18,14 @@ import CustomerForm from "@/app/components/forms/CustomerForm";
 export default function ClientsModule() {
   const { data: customers = [] } = useGetCustomersQuery();
   const [createCustomer] = useAddCustomerMutation();
+  const [updateCustomer] = useUpdateCustomerMutation();
+  const [deleteCustomer] = useDeleteCustomerMutation();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null
+  );
+  const [isEditing, setIsEditing] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
@@ -35,7 +43,7 @@ export default function ClientsModule() {
     )
   );
 
-  const handleCreateClient = async (newCustomer: Customer) => {
+  const handleCreateCustomer = async (newCustomer: Customer) => {
     try {
       await createCustomer(newCustomer).unwrap();
       setSnackbar({
@@ -44,7 +52,6 @@ export default function ClientsModule() {
         message: "¡Cliente creado con exito!",
         icon: <FaRegCheckCircle fontSize="inherit" />,
       });
-      setOpen(false);
     } catch (err) {
       console.error("Error al agregar cliente:", err);
       setSnackbar({
@@ -53,8 +60,62 @@ export default function ClientsModule() {
         message: "¡Hubo un error al crear al cliente!",
         icon: <FaRegAngry fontSize="inherit" />,
       });
+    } finally {
       setOpen(false);
     }
+  };
+
+  const handleUpdateCustomer = async (updatedCustomer: Customer) => {
+    try {
+      await updateCustomer(updatedCustomer).unwrap();
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: "Cliente actualizado correctamente",
+        icon: <FaRegCheckCircle fontSize="inherit" />,
+      });
+    } catch (err) {
+      console.error("Error al actualizar cliente:", err);
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: "Error al actualizar el cliente",
+        icon: <FaRegAngry fontSize="inherit" />,
+      });
+    } finally {
+      setOpen(false);
+      setSelectedCustomer(null);
+      setIsEditing(false);
+    }
+  };
+
+  const handleDeleteCustomer = async (customer: Customer) => {
+    try {
+      await deleteCustomer(customer.customerId).unwrap();
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: "Cliente eliminado con éxito",
+        icon: <FaRegCheckCircle fontSize="inherit" />,
+      });
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: "Error al eliminar el cliente",
+        icon: <FaRegAngry fontSize="inherit" />,
+      });
+    }
+  };
+
+  const handleEditCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setIsEditing(true);
+    setOpen(true);
+  };
+
+  const handleViewCustomer = (customer: Customer) => {
+    console.log(customer);
   };
 
   return (
@@ -74,20 +135,38 @@ export default function ClientsModule() {
         />
         <AppModal
           open={open}
-          onClose={() => setOpen(false)}
-          title="Crear nuevo cliente"
+          onClose={() => {
+            setOpen(false);
+            setSelectedCustomer(null);
+            setIsEditing(false);
+          }}
+          title={isEditing ? "Editar cliente" : "Crear nuevo cliente"}
           confirmText="Guardar"
           cancelText="Cancelar"
         >
           <CustomerForm
-            buttonLabel="Guardar cliente"
-            onSubmit={handleCreateClient}
+            data={selectedCustomer || undefined}
+            buttonLabel={isEditing ? "Actualizar cliente" : "Guardar cliente"}
+            onSubmit={(customer) => {
+              if (isEditing) {
+                handleUpdateCustomer(customer);
+              } else {
+                handleCreateCustomer(customer);
+              }
+            }}
           />
         </AppModal>
       </div>
 
       {/* Tabla */}
-      <ClientsTable filtered={filtered} search={search} setSearch={setSearch} />
+      <ClientsTable
+        filtered={filtered}
+        search={search}
+        setSearch={setSearch}
+        onEdit={handleEditCustomer}
+        onView={handleViewCustomer}
+        onDelete={handleDeleteCustomer}
+      />
       {/* Snackbar */}
       <NotificationSnackbar
         open={snackbar.open}

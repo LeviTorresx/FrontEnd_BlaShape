@@ -1,18 +1,28 @@
 import SearchBar from "@/app/components/tables/SearchBar";
 import TableContainer from "@/app/components/tables/TableContainer";
 import { Customer } from "@/app/types/Customer";
-
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
 type Props = {
   search: string;
   setSearch: (value: string) => void;
   filtered: Customer[];
+  onView?: (customer: Customer) => void;
+  onEdit?: (customer: Customer) => void;
+  onDelete?: (customer: Customer) => void;
 };
 
-export default function ClientsTable({ search, setSearch, filtered }: Props) {
+export default function ClientsTable({
+  search,
+  setSearch,
+  filtered,
+  onView,
+  onEdit,
+  onDelete,
+}: Props) {
   return (
     <TableContainer title="Clientes registrados">
-      {/*Barra de búsqueda */}
+      {/* Barra de búsqueda */}
       <div className="mb-5 flex justify-end">
         <SearchBar
           value={search}
@@ -30,6 +40,7 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
               <th className="p-4 text-left font-semibold">Teléfono</th>
               <th className="p-4 text-left font-semibold">Correo</th>
               <th className="p-4 text-left font-semibold">DNI</th>
+              <th className="p-4 text-center font-semibold">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -43,12 +54,42 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
                   <td className="p-4">{c.phone}</td>
                   <td className="p-4">{c.email}</td>
                   <td className="p-4">{c.dni}</td>
+                  <td className="p-4 text-center">
+                    <div className="flex justify-center gap-2">
+                      {/* Ver más */}
+                      <button
+                        onClick={() => onView?.(c)}
+                        className="p-2 text-purple-600 hover:bg-purple-100 rounded-full transition-all"
+                        title="Ver más"
+                      >
+                        <FaEye size={20} />
+                      </button>
+
+                      {/* Editar */}
+                      <button
+                        onClick={() => onEdit?.(c)}
+                        className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full transition-all"
+                        title="Editar"
+                      >
+                        <FaEdit size={20} />
+                      </button>
+
+                      {/* Eliminar */}
+                      <button
+                        onClick={() => onDelete?.(c)}
+                        className="p-2 text-red-600 hover:bg-red-100 rounded-full transition-all"
+                        title="Eliminar"
+                      >
+                        <FaTrash size={20} />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="text-center text-gray-500 py-6 italic"
                 >
                   No se encontraron resultados
@@ -80,7 +121,7 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
                 </span>
               </div>
 
-              <div className="space-y-1 text-sm text-gray-700">
+              <div className="space-y-1 text-sm text-gray-700 mb-3">
                 <p>
                   <span className="font-medium text-gray-600">Teléfono:</span>{" "}
                   {c.phone}
@@ -89,6 +130,31 @@ export default function ClientsTable({ search, setSearch, filtered }: Props) {
                   <span className="font-medium text-gray-600">Correo:</span>{" "}
                   {c.email}
                 </p>
+              </div>
+
+              {/* Botones en móvil */}
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => onView?.(c)}
+                  className="p-2 text-purple-600 hover:bg-purple-100 rounded-full"
+                  title="Ver más"
+                >
+                  <FaEye size={20} />
+                </button>
+                <button
+                  onClick={() => onEdit?.(c)}
+                  className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full"
+                  title="Editar"
+                >
+                  <FaEdit size={20} />
+                </button>
+                <button
+                  onClick={() => onDelete?.(c)}
+                  className="p-2 text-red-600 hover:bg-red-100 rounded-full"
+                  title="Eliminar"
+                >
+                  <FaTrash size={20} />
+                </button>
               </div>
             </div>
           ))

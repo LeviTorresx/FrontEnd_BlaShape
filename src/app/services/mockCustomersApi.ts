@@ -2,6 +2,7 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Customer } from "../types/Customer";
 import { mock_CUSTOMERS as MOCK_SOURCE } from "../mocks/mockCustomers";
 
+// ✅ Crear copia real de los objetos (evita propiedades readonly)
 let mock_CUSTOMERS: Customer[] = [...MOCK_SOURCE];
 
 const autoIds = (array: Customer[]) =>
@@ -21,14 +22,12 @@ export const mockCustomersApi = createApi({
       queryFn: async (newCustomer) => {
         try {
           const nextId = autoIds(mock_CUSTOMERS);
-
           const customer: Customer = {
             ...newCustomer,
             customerId: nextId,
           } as Customer;
 
           mock_CUSTOMERS = [...mock_CUSTOMERS, customer];
-
           return { data: customer };
         } catch (error) {
           return {
@@ -43,7 +42,74 @@ export const mockCustomersApi = createApi({
       },
       invalidatesTags: ["Customer"],
     }),
+
+    updateCustomer: builder.mutation<Customer, Customer>({
+      queryFn: async (updatedCustomer) => {
+        try {
+          const exists = mock_CUSTOMERS.some(
+            (c) => c.customerId === updatedCustomer.customerId
+          );
+
+          if (!exists) {
+            return { error: { status: 404, data: "Cliente no encontrado" } };
+          }
+
+          mock_CUSTOMERS = mock_CUSTOMERS.map((c) =>
+            c.customerId === updatedCustomer.customerId
+              ? { ...c, ...updatedCustomer }
+              : c
+          );
+
+          const updated = mock_CUSTOMERS.find(
+            (c) => c.customerId === updatedCustomer.customerId
+          )!;
+          return { data: updated };
+        } catch (error) {
+          return {
+            error: {
+              status: 500,
+              data:
+                "Error al actualizar el cliente: " + (error as Error).message,
+            },
+          };
+        }
+      },
+      invalidatesTags: ["Customer"],
+    }),
+
+    deleteCustomer: builder.mutation<{ success: boolean; id: number }, number>({
+      queryFn: async (customerId) => {
+        try {
+          const exists = mock_CUSTOMERS.some(
+            (c) => c.customerId === customerId
+          );
+
+          if (!exists) {
+            return { error: { status: 404, data: "Cliente no encontrado" } };
+          }
+
+          mock_CUSTOMERS = mock_CUSTOMERS.filter(
+            (c) => c.customerId !== customerId
+          );
+
+          return { data: { success: true, id: customerId } };
+        } catch (error) {
+          return {
+            error: {
+              status: 500,
+              data: "Error al eliminar el cliente: " + (error as Error).message,
+            },
+          };
+        }
+      },
+      invalidatesTags: ["Customer"],
+    }),
   }),
 });
 
-export const { useGetCustomersQuery, useAddCustomerMutation } = mockCustomersApi;
+export const {
+  useGetCustomersQuery,
+  useAddCustomerMutation,
+  useUpdateCustomerMutation,
+  useDeleteCustomerMutation,
+} = mockCustomersApi;

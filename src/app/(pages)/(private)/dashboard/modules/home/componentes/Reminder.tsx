@@ -1,12 +1,13 @@
 import { Alert } from "@/app/types/Alert";
 import { formatDate } from "@/app/utils/formatDate";
-import { FaBell, FaClock, FaCalendarAlt } from "react-icons/fa";
+import { FaBell, FaClock, FaCalendarAlt, FaPlus } from "react-icons/fa";
 
 interface Props {
   reminders: Alert[];
+  onAdd?: () => void; // 🔹 función para abrir el modal o formulario
 }
 
-export default function Reminder({ reminders }: Props) {
+export default function Reminder({ reminders, onAdd }: Props) {
   const getSeverityStyle = (severity: string) => {
     switch (severity) {
       case "HIGH":
@@ -37,16 +38,26 @@ export default function Reminder({ reminders }: Props) {
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border border-purple-200 shadow-sm overflow-hidden">
+    <div className="relative w-full h-full flex flex-col bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border border-purple-200 shadow-sm overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-purple-200/60 backdrop-blur-sm border-b border-purple-300 sticky top-0 z-10">
-        <h2 className="text-base font-semibold text-purple-900 flex items-center gap-2">
+        {/* Título + contador */}
+        <div className="flex items-center gap-2">
           <FaBell className="text-purple-900" />
-          Recordatorios
-        </h2>
-        <span className="text-xs font-medium text-purple-800 bg-purple-300/50 rounded-full px-2 py-0.5">
-          {reminders.length}
-        </span>
+          <h2 className="text-base font-semibold text-purple-900">Recordatorios</h2>
+          <span className="text-xs font-medium text-purple-800 bg-purple-300/50 rounded-full px-2 py-0.5">
+            {reminders.length}
+          </span>
+        </div>
+
+        {/* Botón agregar */}
+        <button
+          onClick={onAdd}
+          className="bg-purple-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-md hover:bg-purple-700 active:scale-95 transition-transform"
+          title="Agregar recordatorio"
+        >
+          <FaPlus className="text-sm" />
+        </button>
       </div>
 
       {/* Lista */}

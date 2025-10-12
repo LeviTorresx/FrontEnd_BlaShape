@@ -2,23 +2,39 @@
 import { useState } from "react";
 import FurnitureTable from "./components/FurnitureTable";
 import ButtonActions from "@/app/components/ui/ButtonActions";
-import { FaPlus } from "react-icons/fa";
-import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
+import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
+import {
+  useAddFurnitureMutation,
+  useGetFurnitureQuery,
+} from "@/app/services/mockFurnituresApi";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
 import { Furniture } from "@/app/types/Furniture";
 import { useRouter } from "next/navigation";
 import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
+import { MdErrorOutline } from "react-icons/md";
+import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 
 export default function FurnitureModule() {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "info" as "error" | "warning" | "info" | "success",
+    message: "",
+    icon: <MdErrorOutline fontSize="inherit" />,
+  });
   const [selectedFurniture, setSelectedFurniture] = useState(null);
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
   const { data: furnitures = [] } = useGetFurnitureQuery();
+  const [createFurniture] = useAddFurnitureMutation();
   const { data: customers = [] } = useGetCustomersQuery();
+
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
 
   const filtered = furnitures.filter((item) =>
     Object.values(item).some((v) =>
@@ -26,8 +42,26 @@ export default function FurnitureModule() {
     )
   );
 
-  const handleCreateFurniture = (furniture: Furniture) => {
-    alert("Acción: Crear nuevo mueble (pendiente de implementar)");
+  const handleCreateFurniture = async (newFurniture: Furniture) => {
+    try {
+      await createFurniture(newFurniture).unwrap();
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: "¡Cliente creado con exito!",
+        icon: <FaRegCheckCircle fontSize="inherit" />,
+      });
+    } catch (err) {
+      console.error("Error al agregar cliente:", err);
+      setSnackbar({
+        open: true,
+        severity: "warning",
+        message: "¡Hubo un error al crear al cliente!",
+        icon: <FaRegAngry fontSize="inherit" />,
+      });
+    } finally {
+      setOpen(false);
+    }
   };
 
   const handleUpdateFurniture = (furniture: Furniture) => {
@@ -86,6 +120,14 @@ export default function FurnitureModule() {
         search={search}
         setSearch={setSearch}
         onAddPieces={handleAddBreakdown}
+      />
+      {/* Snackbar */}
+      <NotificationSnackbar
+        open={snackbar.open}
+        onClose={handleCloseSnackbar}
+        severity={snackbar.severity}
+        icon={snackbar.icon}
+        message={snackbar.message}
       />
     </div>
   );

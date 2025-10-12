@@ -2,7 +2,7 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Customer } from "../types/Customer";
 import { mock_CUSTOMERS as MOCK_SOURCE } from "../mocks/mockCustomers";
 
-// ✅ Crear copia real de los objetos (evita propiedades readonly)
+
 let mock_CUSTOMERS: Customer[] = [...MOCK_SOURCE];
 
 const autoIds = (array: Customer[]) =>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import Sidebar from "@/app/components/layout/Sidebar";
 import BottomMenu from "@/app/components/layout/ButtomMenu";
@@ -22,7 +22,7 @@ import { MdChair } from "react-icons/md";
 
 interface SelectedModule {
   key: string;
-  id: number| string;
+  id: number | string;
 }
 
 const mainMenu = [
@@ -43,58 +43,40 @@ const accountMenu = [
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
   const pathname = usePathname();
+
   const [selected, setSelected] = useState<SelectedModule>({
-    key: "/",
+    key: "home",
     id: 0,
   });
   const [loading, setLoading] = useState(false);
 
-  // Redirigir automáticamente si es /dashboard
- useEffect(() => {
-  const segments = pathname.split("/");
-  const lastSegment = segments.pop();
-  const maybeModule = segments.pop();
+  // 🔁 Actualiza selected según la ruta actual
+  useEffect(() => {
+    if (!pathname) return;
 
-  if (pathname === "/dashboard") {
-    window.history.replaceState(null, "", "/dashboard/home");
-    setSelected(prev => ({ ...prev, key: "home" }));
-  } else if (lastSegment && isNaN(Number(lastSegment))) {
-    // Es una ruta como /dashboard/shape → lastSegment = "shape"
-    setSelected(prev => ({ ...prev, key: lastSegment, id: 0 }));
-  } else if (maybeModule) {
-    // Es una ruta con id: /dashboard/shape/1 → maybeModule = "shape"
-    setSelected(prev => ({ ...prev, key: maybeModule, id: lastSegment || 0 }));
-  }
-}, [pathname]);
+    const segments = pathname.split("/").filter(Boolean);
+    // Ejemplo: ['dashboard', 'shape', '1']
+    const key = segments[1] || "home"; // segundo segmento
+    const id = segments[2] || 0; // tercer segmento (si existe)
 
+    setSelected({ key: key, id });
+  }, [pathname]);
 
   // Cambiar de módulo sin recargar
   const handleSelect = (key: string, id?: number) => {
     setLoading(true);
-
     const newPath = id ? `/dashboard/${key}/${id}` : `/dashboard/${key}`;
-    window.history.pushState(null, "", newPath);
-
-    setSelected({ key, id: id || "0" });
-
+    router.push(newPath);
+    setSelected({ key, id: id || 0 });
     setTimeout(() => setLoading(false), 400);
   };
 
-  // Manejo del botón "atrás"
-  useEffect(() => {
-    const handlePopState = () => {
-      const lastSegment = window.location.pathname.split("/").pop();
-      if (lastSegment) setSelected({ ...selected, key: lastSegment });
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
-
-  //  Render dinámico con skeleton
+  // Render dinámico con skeleton
   const renderModule = () => {
     if (loading) return <ModuleSkeleton />;
-    console.log(selected);
+
     switch (selected.key) {
       case "home":
         return <HomeModule />;
@@ -126,7 +108,7 @@ export default function DashboardPage() {
       />
 
       {/* Contenido principal */}
-      <main className="w-full p-2 bg-white rounded-2xl overflow-y-auto h-[calc(100vh-1rem)]">
+      <main className="w-full p-2 bg-white rounded-2xl overflow-y-auto h-[calc(100vh-1rem)] scroll-smooth transition-all duration-300">
         {renderModule()}
       </main>
 

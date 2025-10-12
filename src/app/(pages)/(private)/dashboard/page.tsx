@@ -20,6 +20,11 @@ import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { FaShop } from "react-icons/fa6";
 import { MdChair } from "react-icons/md";
 
+interface SelectedModule {
+  key: string;
+  id: number| string;
+}
+
 const mainMenu = [
   { key: "home", label: "Inicio", icon: <FaHome size={20} /> },
   { key: "furniture", label: "Muebles", icon: <MdChair size={20} /> },
@@ -39,27 +44,40 @@ const accountMenu = [
 
 export default function DashboardPage() {
   const pathname = usePathname();
-  const [selected, setSelected] = useState("/");
+  const [selected, setSelected] = useState<SelectedModule>({
+    key: "/",
+    id: 0,
+  });
   const [loading, setLoading] = useState(false);
 
   // Redirigir automáticamente si es /dashboard
-  useEffect(() => {
-    const lastSegment = pathname.split("/").pop();
+ useEffect(() => {
+  const segments = pathname.split("/");
+  const lastSegment = segments.pop();
+  const maybeModule = segments.pop();
 
-    if (pathname === "/dashboard") {
-      window.history.replaceState(null, "", "/dashboard/home");
-      setSelected("home");
-    } else if (lastSegment && lastSegment !== selected) {
-      setSelected(lastSegment);
-    }
-  }, [pathname]);
+  if (pathname === "/dashboard") {
+    window.history.replaceState(null, "", "/dashboard/home");
+    setSelected(prev => ({ ...prev, key: "home" }));
+  } else if (lastSegment && isNaN(Number(lastSegment))) {
+    // Es una ruta como /dashboard/shape → lastSegment = "shape"
+    setSelected(prev => ({ ...prev, key: lastSegment, id: 0 }));
+  } else if (maybeModule) {
+    // Es una ruta con id: /dashboard/shape/1 → maybeModule = "shape"
+    setSelected(prev => ({ ...prev, key: maybeModule, id: lastSegment || 0 }));
+  }
+}, [pathname]);
+
 
   // Cambiar de módulo sin recargar
-  const handleSelect = (key: string) => {
-    if (key === selected) return;
+  const handleSelect = (key: string, id?: number) => {
     setLoading(true);
-    setSelected(key);
-    window.history.pushState(null, "", `/dashboard/${key}`);
+
+    const newPath = id ? `/dashboard/${key}/${id}` : `/dashboard/${key}`;
+    window.history.pushState(null, "", newPath);
+
+    setSelected({ key, id: id || "0" });
+
     setTimeout(() => setLoading(false), 400);
   };
 
@@ -67,7 +85,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const handlePopState = () => {
       const lastSegment = window.location.pathname.split("/").pop();
-      if (lastSegment) setSelected(lastSegment);
+      if (lastSegment) setSelected({ ...selected, key: lastSegment });
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
@@ -76,12 +94,12 @@ export default function DashboardPage() {
   //  Render dinámico con skeleton
   const renderModule = () => {
     if (loading) return <ModuleSkeleton />;
-
-    switch (selected) {
+    console.log(selected);
+    switch (selected.key) {
       case "home":
         return <HomeModule />;
       case "furniture":
-        return <FurnitureModule />;
+        return <FurnitureModule onSelect={handleSelect} />;
       case "clients":
         return <ClientsModule />;
       case "reports":
@@ -91,7 +109,7 @@ export default function DashboardPage() {
       case "workshop":
         return <WorkshopModule />;
       case "shape":
-        return <ShapeModule />;
+        return <ShapeModule shapeId={selected.id} />;
       default:
         return <ModuleSkeleton />;
     }
@@ -101,7 +119,7 @@ export default function DashboardPage() {
     <div className="flex min-h-screen bg-gray-200 p-2 md:p-2 gap-4">
       {/* Sidebar (desktop) */}
       <Sidebar
-        selected={selected}
+        selected={selected.key}
         onSelect={handleSelect}
         mainMenu={mainMenu}
         bottomMenu={accountMenu}
@@ -115,7 +133,7 @@ export default function DashboardPage() {
       {/* Menú inferior (mobile) */}
       <div className="md:hidden">
         <BottomMenu
-          selected={selected}
+          selected={selected.key}
           onSelect={handleSelect}
           mainMenu={mainMenu}
           bottomMenu={accountMenu}

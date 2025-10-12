@@ -10,12 +10,15 @@ import {
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
 import { Furniture } from "@/app/types/Furniture";
-import { useRouter } from "next/navigation";
 import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 
-export default function FurnitureModule() {
+export default function FurnitureModule({
+  onSelect,
+}: {
+  onSelect: (key: string, id?: number) => void;
+}) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -25,7 +28,6 @@ export default function FurnitureModule() {
     icon: <MdErrorOutline fontSize="inherit" />,
   });
   const [selectedFurniture, setSelectedFurniture] = useState(null);
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
   const { data: furnitures = [] } = useGetFurnitureQuery();
@@ -73,7 +75,7 @@ export default function FurnitureModule() {
       "Acción: agregar despiece al mueble (pendiente de implementar) - id:" +
         furniture.furnitureId
     );
-    router.push("/dashboard/shape");
+    onSelect("shape", furniture.furnitureId);
   };
 
   return (

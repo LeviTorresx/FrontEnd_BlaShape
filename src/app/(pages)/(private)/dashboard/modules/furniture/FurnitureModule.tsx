@@ -7,7 +7,7 @@ import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
 import { Furniture } from "@/app/types/Furniture";
-import {  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function FurnitureModule() {
   const [search, setSearch] = useState("");
@@ -32,10 +32,13 @@ export default function FurnitureModule() {
     alert("Acción: Actualizar mueble (pendiente de implementar)");
   };
 
-  const handleAddBreakdown = (furniture: Furniture) =>{
-        alert("Acción: agregar despiece al mueble (pendiente de implementar) - id:" + furniture.furnitureId);
-        router.push("/dashboard/shape")
-  }
+  const handleAddBreakdown = (furniture: Furniture) => {
+    alert(
+      "Acción: agregar despiece al mueble (pendiente de implementar) - id:" +
+        furniture.furnitureId
+    );
+    router.push("/dashboard/shape");
+  };
 
   return (
     <div className="p-4 md:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -58,7 +61,7 @@ export default function FurnitureModule() {
             setSelectedFurniture(null);
             setIsEditing(false);
           }}
-          title={isEditing ? "Editar cliente" : "Crear nuevo cliente"}
+          title={isEditing ? "Editar Mueble" : "Crear mueble nuevo"}
           confirmText="Guardar"
           cancelText="Cancelar"
         >

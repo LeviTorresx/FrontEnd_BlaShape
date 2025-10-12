@@ -12,9 +12,19 @@ export const mockFurnituresApi = createApi({
   baseQuery: fakeBaseQuery(),
   tagTypes: ["Furnitures"],
   endpoints: (builder) => ({
-
     getFurniture: builder.query<Furniture[], void>({
       queryFn: async () => ({ data: mock_FURNITURES }),
+      providesTags: ["Furnitures"],
+    }),
+
+    getFurnitureById: builder.query<Furniture | undefined, number>({
+      queryFn: async (id) => {
+        const furniture = mock_FURNITURES.find((f) => f.furnitureId === id);
+        if (furniture) return { data: furniture };
+        return {
+          error: { status: 404, data: `Mueble con id ${id} no encontrado` },
+        };
+      },
       providesTags: ["Furnitures"],
     }),
 
@@ -42,11 +52,11 @@ export const mockFurnituresApi = createApi({
       },
       invalidatesTags: ["Furnitures"],
     }),
-
-    
-
   }),
 });
 
-export const { useGetFurnitureQuery, useAddFurnitureMutation } =
-  mockFurnituresApi;
+export const {
+  useGetFurnitureQuery,
+  useAddFurnitureMutation,
+  useGetFurnitureByIdQuery,
+} = mockFurnituresApi;

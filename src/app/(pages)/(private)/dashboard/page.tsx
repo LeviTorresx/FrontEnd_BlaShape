@@ -52,7 +52,7 @@ export default function DashboardPage() {
   });
   const [loading, setLoading] = useState(false);
 
-  // 🔁 Actualiza selected según la ruta actual
+  // Actualiza selected según la ruta actual
   useEffect(() => {
     if (!pathname) return;
 

@@ -8,6 +8,7 @@ import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
 import { Furniture } from "@/app/types/Furniture";
 import { useRouter } from "next/navigation";
+import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
 
 export default function FurnitureModule() {
   const [search, setSearch] = useState("");
@@ -17,6 +18,7 @@ export default function FurnitureModule() {
   const [isEditing, setIsEditing] = useState(false);
 
   const { data: furnitures = [] } = useGetFurnitureQuery();
+  const { data: customers = [] } = useGetCustomersQuery();
 
   const filtered = furnitures.filter((item) =>
     Object.values(item).some((v) =>
@@ -67,7 +69,6 @@ export default function FurnitureModule() {
         >
           <FurnitureForm
             data={selectedFurniture || undefined}
-            buttonLabel={isEditing ? "Actualizar Mueble" : "Mueble cliente"}
             onSubmit={(furniture) => {
               if (isEditing) {
                 handleUpdateFurniture(furniture);
@@ -75,6 +76,7 @@ export default function FurnitureModule() {
                 handleCreateFurniture(furniture);
               }
             }}
+            customers={customers}
           />
         </AppModal>
       </div>

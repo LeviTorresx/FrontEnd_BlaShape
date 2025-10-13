@@ -43,13 +43,20 @@ export default function FurnitureForm({
     document: data?.documentUrl || "",
   });
 
-  /** Manejo genérico de cambios */
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  /* Manejo genérico de cambios */
+const handleChange = (
+  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
+
+  const numericFields = ["customerId", "carpenterId", "furnitureId"];
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: numericFields.includes(name) ? Number(value) : value,
+  }));
+};
+
 
   /** Carga de imágenes o documentos */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
@@ -171,7 +178,7 @@ export default function FurnitureForm({
 
       {/* Imagen final y documento (solo en modo edición) */}
       {isEditMode && (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="flex flex-col gap-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
               <FaImage className="text-purple-500" />

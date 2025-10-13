@@ -14,6 +14,7 @@ import { Furniture } from "@/app/types/Furniture";
 import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
+import FurnitureCard from "./components/FurnitureCard";
 
 export default function FurnitureModule({
   onSelect,
@@ -22,6 +23,7 @@ export default function FurnitureModule({
 }) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [openView, setOpenView] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
@@ -100,6 +102,11 @@ export default function FurnitureModule({
     setOpen(true);
   };
 
+  const handleViewFurniture = (furniture: Furniture) => {
+    setSelectedFurniture(furniture);
+    setOpenView(true);
+  };
+
   const handleAddBreakdown = (furniture: Furniture) => {
     alert(
       "Acción: agregar despiece al mueble (pendiente de implementar) - id:" +
@@ -145,6 +152,21 @@ export default function FurnitureModule({
             customers={customers}
           />
         </AppModal>
+        <AppModal
+          open={openView}
+          onClose={() => {
+            setOpenView(false);
+            setSelectedFurniture(null);
+          }}
+          title="Detalles del mueble"
+        >
+          <FurnitureCard
+            furniture={selectedFurniture!}
+            customer={customers.find(
+              (c) => c.customerId === selectedFurniture?.customerId
+            )}
+          />
+        </AppModal>
       </div>
 
       <FurnitureTable
@@ -152,6 +174,7 @@ export default function FurnitureModule({
         search={search}
         setSearch={setSearch}
         onEdit={handleEditFurniture}
+        onView={handleViewFurniture}
         onAddPieces={handleAddBreakdown}
       />
       {/* Snackbar */}

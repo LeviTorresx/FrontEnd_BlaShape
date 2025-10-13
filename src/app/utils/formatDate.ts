@@ -6,3 +6,6 @@ export const formatDate = (date: string | Date) => {
     year: "numeric",
   }).format(d);
 };
+
+export const formatDateForInput = (date?: string) =>
+  date ? new Date(date).toISOString().split("T")[0] : "";

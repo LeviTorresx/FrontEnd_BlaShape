@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { FaFilePdf, FaImage, FaUser } from "react-icons/fa";
 import Image from "next/image";
 import Input from "../ui/Input";
+import { formatDate, formatDateForInput } from "@/app/utils/formatDate";
 
 interface FurnitureFormProps {
   data?: Furniture;
@@ -22,19 +23,25 @@ export default function FurnitureForm({
   const isEditMode = Boolean(data);
 
   const [formData, setFormData] = useState<Furniture>(
-    data || {
-      furnitureId: 0,
-      carpenterId: 0,
-      customerId: 0,
-      creationDate: new Date().toISOString().split("T")[0], // formato YYYY-MM-DD
-      endDate: "",
-      imageInitUrl: "",
-      imageEndUrl: "",
-      documentUrl: "",
-      name: "",
-      pieces: [],
-      status: "INICIAL",
-    }
+    data
+      ? {
+          ...data,
+          creationDate: formatDateForInput(data.creationDate),
+          endDate: formatDateForInput(data.endDate),
+        }
+      : {
+          furnitureId: 0,
+          carpenterId: 0,
+          customerId: 0,
+          creationDate: new Date().toISOString().split("T")[0], // formato YYYY-MM-DD
+          endDate: "",
+          imageInitUrl: "",
+          imageEndUrl: "",
+          documentUrl: "",
+          name: "",
+          pieces: [],
+          status: "INICIAL",
+        }
   );
 
   const [previews, setPreviews] = useState({
@@ -44,19 +51,18 @@ export default function FurnitureForm({
   });
 
   /* Manejo genérico de cambios */
-const handleChange = (
-  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-) => {
-  const { name, value } = e.target;
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
 
-  const numericFields = ["customerId", "carpenterId", "furnitureId"];
+    const numericFields = ["customerId", "carpenterId", "furnitureId"];
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: numericFields.includes(name) ? Number(value) : value,
-  }));
-};
-
+    setFormData((prev) => ({
+      ...prev,
+      [name]: numericFields.includes(name) ? Number(value) : value,
+    }));
+  };
 
   /** Carga de imágenes o documentos */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {

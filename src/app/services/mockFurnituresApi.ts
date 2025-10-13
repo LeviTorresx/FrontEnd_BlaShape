@@ -52,11 +52,46 @@ export const mockFurnituresApi = createApi({
       },
       invalidatesTags: ["Furnitures"],
     }),
+
+    updateFurniture: builder.mutation<Furniture, Furniture>({
+      queryFn: async (updateFurniture) => {
+        try {
+          const exits = mock_FURNITURES.some(
+            (f) => f.furnitureId === updateFurniture.furnitureId
+          );
+
+          if (!exits) {
+            return { error: { status: 404, data: "Mueble no encontrado" } };
+          }
+
+          mock_FURNITURES = mock_FURNITURES.map((f) =>
+            f.furnitureId === updateFurniture.furnitureId
+              ? { ...f, ...updateFurniture }
+              : f
+          );
+
+          const updated = mock_FURNITURES.find(
+            (f) => f.furnitureId === updateFurniture.furnitureId
+          )!;
+          return { data: updated };
+        } catch (error) {
+          return {
+            error: {
+              status: 500,
+              data:
+                "Error al actualizar el cliente: " + (error as Error).message,
+            },
+          };
+        }
+      },
+      invalidatesTags: ["Furnitures"],
+    }),
   }),
 });
 
 export const {
   useGetFurnitureQuery,
   useAddFurnitureMutation,
+  useUpdateFurnitureMutation,
   useGetFurnitureByIdQuery,
 } = mockFurnituresApi;

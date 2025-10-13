@@ -6,6 +6,7 @@ import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import {
   useAddFurnitureMutation,
   useGetFurnitureQuery,
+  useUpdateFurnitureMutation,
 } from "@/app/services/mockFurnituresApi";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
@@ -27,11 +28,14 @@ export default function FurnitureModule({
     message: "",
     icon: <MdErrorOutline fontSize="inherit" />,
   });
-  const [selectedFurniture, setSelectedFurniture] = useState(null);
+  const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
+    null
+  );
   const [isEditing, setIsEditing] = useState(false);
 
   const { data: furnitures = [] } = useGetFurnitureQuery();
   const [createFurniture] = useAddFurnitureMutation();
+  const [updateFurniture] = useUpdateFurnitureMutation();
   const { data: customers = [] } = useGetCustomersQuery();
 
   const handleCloseSnackbar = () => {
@@ -66,8 +70,34 @@ export default function FurnitureModule({
     }
   };
 
-  const handleUpdateFurniture = (furniture: Furniture) => {
-    alert("Acción: Actualizar mueble (pendiente de implementar)");
+  const handleUpdateFurniture = async (updatedFurniture: Furniture) => {
+    try {
+      await updateFurniture(updatedFurniture).unwrap();
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: "Mueble actualizado correctamente",
+        icon: <FaRegCheckCircle fontSize="inherit" />,
+      });
+    } catch (err) {
+      console.error("Error al actualizar cliente:", err);
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: "Error al actualizar el mueble",
+        icon: <FaRegAngry fontSize="inherit" />,
+      });
+    } finally {
+      setOpen(false);
+      setSelectedFurniture(null);
+      setIsEditing(false);
+    }
+  };
+
+  const handleEditFurniture = (furniture: Furniture) => {
+    setSelectedFurniture(furniture);
+    setIsEditing(true);
+    setOpen(true);
   };
 
   const handleAddBreakdown = (furniture: Furniture) => {
@@ -121,6 +151,7 @@ export default function FurnitureModule({
         filtered={filtered}
         search={search}
         setSearch={setSearch}
+        onEdit={handleEditFurniture}
         onAddPieces={handleAddBreakdown}
       />
       {/* Snackbar */}

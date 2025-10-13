@@ -5,13 +5,15 @@ import { Furniture } from "@/app/types/Furniture";
 import { formatDate } from "@/app/utils/formatDate";
 import Image from "next/image";
 
-import { FaPlusCircle } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlusCircle } from "react-icons/fa";
 
 type Props = {
   search: string;
   setSearch: (value: string) => void;
   filtered: Furniture[];
-  onAddPieces?: (furniture: Furniture) => void; // 👈 callback opcional para manejar el click
+  onAddPieces?: (furniture: Furniture) => void;
+  onView?: (customer: Furniture) => void;
+  onEdit?: (customer: Furniture) => void;
 };
 
 export default function FurnitureTable({
@@ -19,6 +21,8 @@ export default function FurnitureTable({
   setSearch,
   filtered,
   onAddPieces,
+  onEdit,
+  onView,
 }: Props) {
   return (
     <TableContainer title="Muebles">
@@ -42,6 +46,7 @@ export default function FurnitureTable({
               <th className="p-3 text-left">Fecha de entrega</th>
               <th className="p-3 text-left">Estado</th>
               <th className="p-3 text-center">Piezas</th>
+              <th className="p-3 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -94,6 +99,27 @@ export default function FurnitureTable({
                       </div>
                     )}
                   </td>
+                  <td className="p-4 text-center">
+                    <div className="flex justify-center gap-2">
+                      {/* Ver más */}
+                      <button
+                        onClick={() => onView?.(f)}
+                        className="p-2 text-purple-600 hover:bg-purple-100 rounded-full transition-all"
+                        title="Ver más"
+                      >
+                        <FaEye size={20} />
+                      </button>
+
+                      {/* Editar */}
+                      <button
+                        onClick={() => onEdit?.(f)}
+                        className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full transition-all"
+                        title="Editar"
+                      >
+                        <FaEdit size={20} />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
@@ -117,9 +143,10 @@ export default function FurnitureTable({
             <div
               key={f.furnitureId}
               className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 
-                         border border-purple-200 rounded-2xl shadow-sm 
-                         hover:shadow-md transition-all duration-300"
+                   border border-purple-200 rounded-2xl shadow-sm 
+                   hover:shadow-md transition-all duration-300"
             >
+              {/* Imagen y datos principales */}
               <div className="flex items-center gap-3 mb-3">
                 <Image
                   src={f.imageInitUrl}
@@ -143,6 +170,7 @@ export default function FurnitureTable({
                 </div>
               </div>
 
+              {/* Estado */}
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-700 font-medium">
                   Estado:
@@ -160,7 +188,7 @@ export default function FurnitureTable({
                 </span>
               </div>
 
-              {/*  Piezas o botón */}
+              {/* Piezas o botón */}
               {f.pieces && f.pieces.length > 0 ? (
                 <p className="text-sm text-gray-700">
                   {f.pieces.length} pieza{f.pieces.length > 1 ? "s" : ""}
@@ -174,6 +202,24 @@ export default function FurnitureTable({
                   />
                 </div>
               )}
+
+              {/* Botones de acción */}
+              <div className="flex justify-end gap-2 mt-3">
+                <button
+                  onClick={() => onView?.(f)}
+                  className="p-2 text-purple-600 hover:bg-purple-100 rounded-full"
+                  title="Ver más"
+                >
+                  <FaEye size={20} />
+                </button>
+                <button
+                  onClick={() => onEdit?.(f)}
+                  className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full"
+                  title="Editar"
+                >
+                  <FaEdit size={20} />
+                </button>
+              </div>
             </div>
           ))
         ) : (

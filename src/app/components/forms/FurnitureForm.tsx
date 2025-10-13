@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { FaFilePdf, FaImage, FaUser } from "react-icons/fa";
 import Image from "next/image";
 import Input from "../ui/Input";
-import { formatDate, formatDateForInput } from "@/app/utils/formatDate";
+import { formatDateForInput } from "@/app/utils/formatDate";
 
 interface FurnitureFormProps {
   data?: Furniture;
@@ -207,32 +207,6 @@ export default function FurnitureForm({
                   height={64}
                   className="rounded-xl object-cover border border-gray-300 shadow-sm w-16 h-16"
                 />
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-              <FaFilePdf className="text-purple-500" />
-              Documento final
-            </label>
-            <div className="flex items-center gap-4">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => handleFileChange(e, "documentUrl")}
-                className="text-sm text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-md 
-                           file:border file:border-purple-200 file:bg-purple-50 
-                           file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
-              />
-              {previews.document && (
-                <a
-                  href={previews.document}
-                  target="_blank"
-                  className="text-purple-600 underline text-sm hover:text-purple-800 transition"
-                >
-                  Ver documento
-                </a>
               )}
             </div>
           </div>

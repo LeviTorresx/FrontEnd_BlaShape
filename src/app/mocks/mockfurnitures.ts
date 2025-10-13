@@ -22,7 +22,29 @@ export const mock_FURNITURES: Furniture[] = [
     imageInitUrl:
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
     name: "Silla moderna de roble",
-    pieces: [],
+    pieces: [
+      {
+        pieceId: 1,
+        ColorHex: "#ffffff",
+        colorName: "Blanco",
+        height: 90,
+        width: 100,
+        thickness: 3,
+        materialName: "RH",
+        quantity: 2,
+        edges: { bottom: true, left: true, right: false, top: false },
+      },{
+        pieceId: 2,
+        ColorHex: "#ffffff",
+        colorName: "Blanco",
+        height: 80,
+        width: 100,
+        thickness: 3,
+        materialName: "RH",
+        quantity: 2,
+        edges: { bottom: true, left: true, right: false, top: false },
+      },
+    ],
     status: "EN_PROCESO",
   },
   {

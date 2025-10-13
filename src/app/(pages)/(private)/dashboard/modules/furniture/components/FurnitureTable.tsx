@@ -5,7 +5,7 @@ import { Furniture } from "@/app/types/Furniture";
 import { formatDate } from "@/app/utils/formatDate";
 import Image from "next/image";
 
-import { FaEdit, FaEye, FaPlusCircle } from "react-icons/fa";
+import { FaCubes, FaEdit, FaEye, FaPlusCircle } from "react-icons/fa";
 
 type Props = {
   search: string;
@@ -86,7 +86,16 @@ export default function FurnitureTable({
 
                   <td className="p-3">
                     {f.pieces && f.pieces.length > 0 ? (
-                      <span className="text-sm text-gray-800 font-medium">
+                      <span
+                        className={`flex justify-center gap-2 px-3 py-1.5 
+                  rounded-full text-sm font-semibold shadow-sm transition-all
+                  ${
+                    f.pieces.length > 1
+                      ? "bg-purple-100 text-purple-700 border border-purple-200"
+                      : "bg-blue-100 text-blue-700 border border-blue-200"
+                  }`}
+                      >
+                        <FaCubes className="text-sm opacity-80" />
                         {f.pieces.length} pieza{f.pieces.length > 1 ? "s" : ""}
                       </span>
                     ) : (
@@ -99,6 +108,7 @@ export default function FurnitureTable({
                       </div>
                     )}
                   </td>
+
                   <td className="p-4 text-center">
                     <div className="flex justify-center gap-2">
                       {/* Ver más */}
@@ -190,11 +200,22 @@ export default function FurnitureTable({
 
               {/* Piezas o botón */}
               {f.pieces && f.pieces.length > 0 ? (
-                <p className="text-sm text-gray-700">
-                  {f.pieces.length} pieza{f.pieces.length > 1 ? "s" : ""}
-                </p>
+                <div className="flex justify-end mt-2">
+                  <span
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full 
+                  text-xs font-semibold shadow-sm transition-all duration-300
+                  ${
+                    f.pieces.length > 1
+                      ? "bg-purple-100 text-purple-700 border border-purple-200"
+                      : "bg-blue-100 text-blue-700 border border-blue-200"
+                  }`}
+                  >
+                    <FaCubes className="text-sm opacity-80" />
+                    {f.pieces.length} pieza{f.pieces.length > 1 ? "s" : ""}
+                  </span>
+                </div>
               ) : (
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-3">
                   <Button
                     label="Agregar Despiece"
                     onClick={() => onAddPieces?.(f)}

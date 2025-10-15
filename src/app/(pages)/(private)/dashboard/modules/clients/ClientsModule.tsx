@@ -121,6 +121,12 @@ export default function ClientsModule() {
     setOpenView(true);
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedCustomer(null);
+    setIsEditing(false);
+  };
+
   return (
     <div className="p-4 md:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
@@ -138,18 +144,12 @@ export default function ClientsModule() {
         />
         <AppModal
           open={open}
-          onClose={() => {
-            setOpen(false);
-            setSelectedCustomer(null);
-            setIsEditing(false);
-          }}
+          onClose={handleClose}
           title={isEditing ? "Editar cliente" : "Crear nuevo cliente"}
-          confirmText="Guardar"
-          cancelText="Cancelar"
         >
           <CustomerForm
             data={selectedCustomer || undefined}
-            buttonLabel={isEditing ? "Actualizar cliente" : "Guardar cliente"}
+            buttonLabel={isEditing ? "Actualizar" : "Guardar"}
             onSubmit={(customer) => {
               if (isEditing) {
                 handleUpdateCustomer(customer);
@@ -157,6 +157,7 @@ export default function ClientsModule() {
                 handleCreateCustomer(customer);
               }
             }}
+            onClose={handleClose}
           />
         </AppModal>
         <AppModal

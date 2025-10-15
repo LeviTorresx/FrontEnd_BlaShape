@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { FaTimes } from "react-icons/fa";
 import { ReactNode } from "react";
-import Button from "./Button";
 
 type AppModalProps = {
   open: boolean;
@@ -26,9 +25,7 @@ export default function AppModal({
   open,
   title,
   onClose,
-  onConfirm,
-  confirmText = "Confirmar",
-  cancelText = "Cancelar",
+
   children,
   maxWidth = "sm",
 }: AppModalProps) {
@@ -38,7 +35,6 @@ export default function AppModal({
       onClose={onClose}
       maxWidth={maxWidth}
       fullWidth
-      // 🟣 Nueva forma recomendada en MUI v6+
       slotProps={{
         paper: {
           sx: {
@@ -89,29 +85,6 @@ export default function AppModal({
       >
         <div className="text-gray-700">{children}</div>
       </DialogContent>
-
-      {/* Acciones */}
-      <DialogActions
-        sx={{
-          justifyContent: "flex-end",
-          px: 3,
-          pb: 2,
-          gap: 1.5,
-        }}
-      >
-        <Button
-          label={cancelText}
-          onClick={onClose}
-          className="bg-gray-100 text-gray-700 hover:bg-gray-200"
-        />
-        {onConfirm && (
-          <Button
-            label={confirmText}
-            onClick={onConfirm}
-            className="bg-purple-600 text-white hover:bg-purple-700"
-          />
-        )}
-      </DialogActions>
     </Dialog>
   );
 }

@@ -7,13 +7,15 @@ import {
   FaIdCard,
   FaPhoneAlt,
   FaEnvelope,
+  FaTrash,
 } from "react-icons/fa";
-import ButtonActions from "../ui/ButtonActions";
 import { Customer } from "@/app/types/Customer";
+import Button from "../ui/Button";
 
 interface CustomerFormProps {
   data?: Customer;
   onSubmit: (customer: Customer) => void;
+  onClose?: () => void;
   buttonLabel?: string;
 }
 
@@ -21,6 +23,7 @@ export default function CustomerForm({
   data,
   onSubmit,
   buttonLabel = "Guardar",
+  onClose,
 }: CustomerFormProps) {
   const [formData, setFormData] = useState<Customer>({
     customerId: data?.customerId || 0,
@@ -59,7 +62,7 @@ export default function CustomerForm({
       <div className="flex items-center gap-2 mb-2">
         <FaUser className="text-purple-700 text-lg" />
         <h2 className="text-lg md:text-xl font-semibold text-purple-900">
-          {data ? "Editar cliente" : "Nuevo cliente"}
+          {data ? "Cliente" : "Nuevo cliente"}
         </h2>
       </div>
 
@@ -143,13 +146,19 @@ export default function CustomerForm({
         />
       </div>
 
-      {/* Botón */}
-      <div className="pt-3 flex justify-center">
-        <ButtonActions
+      {/* Botones de acción */}
+      <div className="pt-4 flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-3">
+        <Button
+          label="Cancelar"
+          onClick={onClose}
+          
+          className="w-full sm:w-auto bg-red-500 hover:bg-red-400 text-white font-medium"
+        />
+        <Button
           label={buttonLabel}
           type="submit"
-          icon={<FaSave />}
-          className="w-full"
+          
+          className="w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-medium"
         />
       </div>
     </form>

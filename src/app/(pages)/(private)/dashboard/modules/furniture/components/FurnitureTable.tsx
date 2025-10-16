@@ -1,5 +1,6 @@
 import SearchBar from "@/app/components/tables/SearchBar";
 import TableContainer from "@/app/components/tables/TableContainer";
+import ActionButtonsGroup from "@/app/components/ui/ActionsButton";
 import Button from "@/app/components/ui/Button";
 import { Furniture } from "@/app/types/Furniture";
 import { formatDate } from "@/app/utils/formatDate";
@@ -109,31 +110,21 @@ export default function FurnitureTable({
                             {f.pieces.length > 1 ? "s" : ""}
                           </span>
                         ) : (
-                          <Button
-                            label="Agregar Despiece"
-                            onClick={() => onAddPieces?.(f)}
-                            icon={<FaPlusCircle />}
-                          />
+                          <div className="flex justify-center">
+                            <Button
+                              label="Agregar Despiece"
+                              onClick={() => onAddPieces?.(f)}
+                              icon={<FaPlusCircle />}
+                            />
+                          </div>
                         )}
                       </td>
 
-                      <td className="p-3 text-center">
-                        <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => onView?.(f)}
-                            className="p-2 text-purple-600 hover:bg-purple-100 rounded-full transition-all"
-                            title="Ver más"
-                          >
-                            <FaEye size={18} />
-                          </button>
-                          <button
-                            onClick={() => onEdit?.(f)}
-                            className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full transition-all"
-                            title="Editar"
-                          >
-                            <FaEdit size={18} />
-                          </button>
-                        </div>
+                      <td className="p-4 text-center">
+                        <ActionButtonsGroup
+                          onView={() => onView?.(f)}
+                          onEdit={() => onEdit?.(f)}
+                        />
                       </td>
                     </tr>
                   ))
@@ -227,21 +218,11 @@ export default function FurnitureTable({
                   )}
 
                   {/* Acciones */}
-                  <div className="flex justify-end gap-2 mt-3">
-                    <button
-                      onClick={() => onView?.(f)}
-                      className="p-2 text-purple-600 hover:bg-purple-100 rounded-full"
-                      title="Ver más"
-                    >
-                      <FaEye size={20} />
-                    </button>
-                    <button
-                      onClick={() => onEdit?.(f)}
-                      className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full"
-                      title="Editar"
-                    >
-                      <FaEdit size={20} />
-                    </button>
+                  <div className="flex justify-end">
+                    <ActionButtonsGroup
+                      onView={() => onView?.(f)}
+                      onEdit={() => onEdit?.(f)}
+                    />
                   </div>
                 </div>
               ))

@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import {
   FaUser,
-  FaSave,
   FaIdCard,
   FaPhoneAlt,
   FaEnvelope,
-  FaTrash,
 } from "react-icons/fa";
 import { Customer } from "@/app/types/Customer";
 import Button from "../ui/Button";

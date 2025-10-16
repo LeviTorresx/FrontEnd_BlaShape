@@ -1,7 +1,8 @@
 import SearchBar from "@/app/components/tables/SearchBar";
 import TableContainer from "@/app/components/tables/TableContainer";
+import ActionButtonsGroup from "@/app/components/ui/ActionsButton";
 import { Customer } from "@/app/types/Customer";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+
 
 type Props = {
   search: string;
@@ -24,7 +25,7 @@ export default function ClientsTable({
     <TableContainer
       title="Clientes registrados"
       data={filtered}
-      itemsPerPage={5}
+      itemsPerPage={6}
     >
       {(paginatedData) => (
         <>
@@ -63,29 +64,11 @@ export default function ClientsTable({
                       <td className="p-4">{c.email}</td>
                       <td className="p-4">{c.dni}</td>
                       <td className="p-4 text-center">
-                        <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => onView?.(c)}
-                            className="p-2 text-purple-600 hover:bg-purple-100 rounded-full transition-all"
-                            title="Ver más"
-                          >
-                            <FaEye size={18} />
-                          </button>
-                          <button
-                            onClick={() => onEdit?.(c)}
-                            className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full transition-all"
-                            title="Editar"
-                          >
-                            <FaEdit size={18} />
-                          </button>
-                          <button
-                            onClick={() => onDelete?.(c)}
-                            className="p-2 text-red-600 hover:bg-red-100 rounded-full transition-all"
-                            title="Eliminar"
-                          >
-                            <FaTrash size={18} />
-                          </button>
-                        </div>
+                        <ActionButtonsGroup
+                          onView={() => onView?.(c)}
+                          onEdit={() => onEdit?.(c)}
+                          onDelete={() => onDelete?.(c)}
+                        />
                       </td>
                     </tr>
                   ))
@@ -135,25 +118,12 @@ export default function ClientsTable({
                     </p>
                   </div>
 
-                  <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => onView?.(c)}
-                      className="p-2 text-purple-600 hover:bg-purple-100 rounded-full"
-                    >
-                      <FaEye size={18} />
-                    </button>
-                    <button
-                      onClick={() => onEdit?.(c)}
-                      className="p-2 text-yellow-600 hover:bg-yellow-100 rounded-full"
-                    >
-                      <FaEdit size={18} />
-                    </button>
-                    <button
-                      onClick={() => onDelete?.(c)}
-                      className="p-2 text-red-600 hover:bg-red-100 rounded-full"
-                    >
-                      <FaTrash size={18} />
-                    </button>
+                  <div className="flex justify-end">
+                    <ActionButtonsGroup
+                      onView={() => onView?.(c)}
+                      onEdit={() => onEdit?.(c)}
+                      onDelete={() => onDelete?.(c)}
+                    />
                   </div>
                 </div>
               ))

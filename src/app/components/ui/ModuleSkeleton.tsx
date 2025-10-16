@@ -1,47 +1,59 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaCog } from "react-icons/fa";
 
 export default function ModuleSkeleton() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
-  // Simula animación de entrada
+  // 🔹 Simula carga real
   useEffect(() => {
-    const timeout = setTimeout(() => setVisible(true), 50);
+    const timeout = setTimeout(() => setVisible(false), 1500); // simulación de carga
     return () => clearTimeout(timeout);
   }, []);
 
   return (
-    <div
-      className={`transition-all duration-500 ease-in-out transform ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
-    >
-      {/* Header */}
-      <div className="space-y-3 mb-6">
-        <div className="h-6 w-1/3 bg-gray-300 rounded-lg animate-pulse" />
-        <div className="h-4 w-1/2 bg-gray-200 rounded-lg animate-pulse" />
-      </div>
-
-      {/* Grid de tarjetas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[...Array(3)].map((_, i) => (
-          <div
-            key={i}
-            className="rounded-2xl bg-gray-100 p-4 space-y-3 shadow-sm hover:shadow-md transition-shadow"
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          key="skeleton"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="flex flex-col items-center justify-center h-[60vh] w-full"
+        >
+          {/* 🔹 Icono animado */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+            className="mb-6 text-purple-600"
           >
-            <div className="h-32 w-full bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-4 w-3/4 bg-gray-300 rounded animate-pulse" />
-            <div className="h-4 w-1/2 bg-gray-300 rounded animate-pulse" />
-          </div>
-        ))}
-      </div>
+            <FaCog size={48} />
+          </motion.div>
 
-      {/* Footer simulado */}
-      <div className="mt-8 space-y-2">
-        <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
-        <div className="h-4 w-1/3 bg-gray-300 rounded animate-pulse" />
-      </div>
-    </div>
+          {/* 🔹 Texto elegante */}
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-xl font-medium text-gray-700 tracking-tight"
+          >
+            Cargando módulo...
+          </motion.h2>
+
+          {/* 🔹 Línea de progreso animada */}
+          <div className="mt-6 w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: "100%" }}
+              transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+              className="w-1/2 h-full bg-gradient-to-r from-purple-400 to-purple-600 rounded-full"
+            />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

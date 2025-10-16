@@ -7,9 +7,9 @@ import { FaCog } from "react-icons/fa";
 export default function ModuleSkeleton() {
   const [visible, setVisible] = useState(true);
 
-  // 🔹 Simula carga real
+
   useEffect(() => {
-    const timeout = setTimeout(() => setVisible(false), 1500); // simulación de carga
+    const timeout = setTimeout(() => setVisible(false), 1500); 
     return () => clearTimeout(timeout);
   }, []);
 
@@ -24,7 +24,7 @@ export default function ModuleSkeleton() {
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className="flex flex-col items-center justify-center h-[60vh] w-full"
         >
-          {/* 🔹 Icono animado */}
+
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
@@ -33,7 +33,7 @@ export default function ModuleSkeleton() {
             <FaCog size={48} />
           </motion.div>
 
-          {/* 🔹 Texto elegante */}
+      
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -43,7 +43,7 @@ export default function ModuleSkeleton() {
             Cargando módulo...
           </motion.h2>
 
-          {/* 🔹 Línea de progreso animada */}
+      
           <div className="mt-6 w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
             <motion.div
               initial={{ x: "-100%" }}

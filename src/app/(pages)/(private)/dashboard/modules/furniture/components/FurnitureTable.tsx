@@ -5,7 +5,7 @@ import Button from "@/app/components/ui/Button";
 import { Furniture } from "@/app/types/Furniture";
 import { formatDate } from "@/app/utils/formatDate";
 import Image from "next/image";
-import { FaCubes, FaEdit, FaEye, FaPlusCircle } from "react-icons/fa";
+import { FaCubes, FaPlusCircle } from "react-icons/fa";
 
 type Props = {
   search: string;
@@ -40,27 +40,27 @@ export default function FurnitureTable({
           {/* Vista escritorio */}
           <div className="hidden md:block overflow-y-auto rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
             <table className="min-w-full text-sm text-gray-700">
-              <thead className="bg-gradient-to-r from-purple-200 via-purple-100 to-purple-200 text-gray-800">
+              <thead className="bg-purple-200 text-purple-800 border-b-1">
                 <tr>
-                  <th className="p-3 text-left font-semibold">Imagen</th>
-                  <th className="p-3 text-left font-semibold">Nombre</th>
-                  <th className="p-3 text-left font-semibold">
+                  <th className="p-4 text-left font-semibold">Imagen</th>
+                  <th className="p-4 text-left font-semibold">Nombre</th>
+                  <th className="p-4 text-left font-semibold">
                     Fecha de creación
                   </th>
-                  <th className="p-3 text-left font-semibold">
+                  <th className="p-4 text-left font-semibold">
                     Fecha de entrega
                   </th>
-                  <th className="p-3 text-left font-semibold">Estado</th>
-                  <th className="p-3 text-center font-semibold">Piezas</th>
-                  <th className="p-3 text-center font-semibold">Acciones</th>
+                  <th className="p-4 text-left font-semibold">Estado</th>
+                  <th className="p-4 text-center font-semibold">Piezas</th>
+                  <th className="p-4 text-center font-semibold">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-purple-200">
                 {paginatedData.length > 0 ? (
                   paginatedData.map((f) => (
                     <tr
                       key={f.furnitureId}
-                      className="hover:bg-purple-50 transition-all duration-200"
+                      className="bg-purple-100 hover:bg-purple-50 transition-all duration-200"
                     >
                       <td className="p-3">
                         <Image
@@ -101,8 +101,8 @@ export default function FurnitureTable({
                               rounded-full text-sm font-semibold shadow-sm transition-all
                               ${
                                 f.pieces.length > 1
-                                  ? "bg-purple-100 text-purple-700 border border-purple-200"
-                                  : "bg-blue-100 text-blue-700 border border-blue-200"
+                                  ? "bg-purple-100 text-purple-900 border border-purple-200"
+                                  : "bg-purple-100 text-purple-600 border border-purple-200"
                               }`}
                           >
                             <FaCubes className="text-sm opacity-80" />

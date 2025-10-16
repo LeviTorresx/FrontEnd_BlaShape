@@ -3,7 +3,6 @@ import React, { ReactNode, useState } from "react";
 import ClientsTable from "./components/ClientsTable";
 import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import { MdErrorOutline } from "react-icons/md";
-import ButtonActions from "@/app/components/ui/ButtonActions";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import AppModal from "@/app/components/ui/AppModal";
 import CustomerForm from "@/app/components/forms/CustomerForm";
@@ -15,6 +14,7 @@ import {
   useUpdateCustomerMutation,
 } from "@/app/services/mockCustomersApi";
 import { Customer } from "@/app/types/Customer";
+import Button from "@/app/components/ui/Button";
 
 export default function ClientsModule() {
   const { data: customers = [] } = useGetCustomersQuery();
@@ -131,11 +131,10 @@ export default function ClientsModule() {
           </p>
         </div>
 
-        <ButtonActions
+        <Button
           label="Nuevo Cliente"
           icon={<FaPlus className="text-sm" />}
-          onClick={() => setOpen(true)}
-          className="bg-purple-600 hover:bg-purple-700 text-white shadow-md"
+          onClick={() => setOpen(true)} 
         />
       </div>
 

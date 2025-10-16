@@ -1,7 +1,6 @@
 "use client";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import FurnitureTable from "./components/FurnitureTable";
-import ButtonActions from "@/app/components/ui/ButtonActions";
 import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import {
   useAddFurnitureMutation,
@@ -15,6 +14,7 @@ import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import FurnitureCard from "./components/FurnitureCard";
+import Button from "@/app/components/ui/Button";
 
 export default function FurnitureModule({
   onSelect,
@@ -24,25 +24,31 @@ export default function FurnitureModule({
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [openView, setOpenView] = useState(false);
+  const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
+    null
+  );
+  const [isEditing, setIsEditing] = useState(false);
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
     message: "",
     icon: <MdErrorOutline fontSize="inherit" />,
   });
-  const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
-    null
-  );
-  const [isEditing, setIsEditing] = useState(false);
 
   const { data: furnitures = [] } = useGetFurnitureQuery();
   const [createFurniture] = useAddFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
   const { data: customers = [] } = useGetCustomersQuery();
 
-  const handleCloseSnackbar = () => {
+  const handleCloseSnackbar = () =>
     setSnackbar((prev) => ({ ...prev, open: false }));
-  };
+
+  const showSnackbar = (
+    severity: "error" | "warning" | "info" | "success",
+    message: string,
+    icon: ReactNode
+  ) => setSnackbar({ open: true, severity, message, icon: <MdErrorOutline /> });
 
   const filtered = furnitures.filter((item) =>
     Object.values(item).some((v) =>
@@ -53,47 +59,41 @@ export default function FurnitureModule({
   const handleCreateFurniture = async (newFurniture: Furniture) => {
     try {
       await createFurniture(newFurniture).unwrap();
-      setSnackbar({
-        open: true,
-        severity: "success",
-        message: "¡Cliente creado con exito!",
-        icon: <FaRegCheckCircle fontSize="inherit" />,
-      });
-    } catch (err) {
-      console.error("Error al agregar cliente:", err);
-      setSnackbar({
-        open: true,
-        severity: "warning",
-        message: "¡Hubo un error al crear al cliente!",
-        icon: <FaRegAngry fontSize="inherit" />,
-      });
+      showSnackbar(
+        "success",
+        "¡Mueble creado con éxito!",
+        <FaRegCheckCircle />
+      );
+    } catch {
+      showSnackbar(
+        "warning",
+        "Hubo un error al crear el mueble",
+        <FaRegAngry />
+      );
     } finally {
-      setOpen(false);
+      resetFormState();
     }
   };
 
   const handleUpdateFurniture = async (updatedFurniture: Furniture) => {
     try {
       await updateFurniture(updatedFurniture).unwrap();
-      setSnackbar({
-        open: true,
-        severity: "success",
-        message: "Mueble actualizado correctamente",
-        icon: <FaRegCheckCircle fontSize="inherit" />,
-      });
-    } catch (err) {
-      console.error("Error al actualizar cliente:", err);
-      setSnackbar({
-        open: true,
-        severity: "error",
-        message: "Error al actualizar el mueble",
-        icon: <FaRegAngry fontSize="inherit" />,
-      });
+      showSnackbar(
+        "success",
+        "Mueble actualizado correctamente",
+        <FaRegCheckCircle />
+      );
+    } catch {
+      showSnackbar("error", "Error al actualizar el mueble", <FaRegAngry />);
     } finally {
-      setOpen(false);
-      setSelectedFurniture(null);
-      setIsEditing(false);
+      resetFormState();
     }
+  };
+
+  const resetFormState = () => {
+    setOpen(false);
+    setSelectedFurniture(null);
+    setIsEditing(false);
   };
 
   const handleEditFurniture = (furniture: Furniture) => {
@@ -108,75 +108,75 @@ export default function FurnitureModule({
   };
 
   const handleAddBreakdown = (furniture: Furniture) => {
-    alert(
-      "Acción: agregar despiece al mueble (pendiente de implementar) - id:" +
-        furniture.furnitureId
-    );
     onSelect("shape", furniture.furnitureId);
   };
 
   return (
-    <div className="p-4 md:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
-        <h1 className="text-2xl font-semibold text-gray-800 tracking-tight">
-          Gestión de Muebles
-        </h1>
+    <div className="p-6 md:p-8 bg-gradient-to-br from-white via-gray-50 to-purple-50 rounded-2xl shadow-sm border border-gray-200 h-full flex flex-col">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
+            Gestión de Muebles
+          </h1>
+          <p className="text-sm text-gray-500">
+            Administra, crea y visualiza los muebles registrados en el taller.
+          </p>
+        </div>
 
-        <ButtonActions
+        <Button
           label="Nuevo Mueble"
           icon={<FaPlus className="text-sm" />}
-          onClick={() => {
-            setOpen(true);
-          }}
+          onClick={() => setOpen(true)}
+         
         />
-        <AppModal
-          open={open}
-          onClose={() => {
-            setOpen(false);
-            setSelectedFurniture(null);
-            setIsEditing(false);
-          }}
-          title={isEditing ? "Editar Mueble" : "Crear mueble nuevo"}
-          confirmText="Guardar"
-          cancelText="Cancelar"
-        >
-          <FurnitureForm
-            data={selectedFurniture || undefined}
-            onSubmit={(furniture) => {
-              if (isEditing) {
-                handleUpdateFurniture(furniture);
-              } else {
-                handleCreateFurniture(furniture);
-              }
-            }}
-            customers={customers}
-          />
-        </AppModal>
-        <AppModal
-          open={openView}
-          onClose={() => {
-            setOpenView(false);
-            setSelectedFurniture(null);
-          }}
-          title="Detalles del mueble"
-        >
+      </div>
+
+      {/* Tabla */}
+      <div className="flex-1 min-h-0">
+        <FurnitureTable
+          filtered={filtered}
+          search={search}
+          setSearch={setSearch}
+          onEdit={handleEditFurniture}
+          onView={handleViewFurniture}
+          onAddPieces={handleAddBreakdown}
+        />
+      </div>
+
+      {/* Modal Crear / Editar */}
+      <AppModal
+        open={open}
+        onClose={resetFormState}
+        title={isEditing ? "Editar Mueble" : "Crear nuevo mueble"}
+        maxWidth="md"
+      >
+        <FurnitureForm
+          data={selectedFurniture || undefined}
+          onSubmit={isEditing ? handleUpdateFurniture : handleCreateFurniture}
+          customers={customers}
+        />
+      </AppModal>
+
+      {/* Modal Detalles */}
+      <AppModal
+        open={openView}
+        onClose={() => {
+          setOpenView(false);
+          setSelectedFurniture(null);
+        }}
+        title="Detalles del mueble"
+      >
+        {selectedFurniture && (
           <FurnitureCard
-            furniture={selectedFurniture!}
+            furniture={selectedFurniture}
             customer={customers.find(
               (c) => c.customerId === selectedFurniture?.customerId
             )}
           />
-        </AppModal>
-      </div>
+        )}
+      </AppModal>
 
-      <FurnitureTable
-        filtered={filtered}
-        search={search}
-        setSearch={setSearch}
-        onEdit={handleEditFurniture}
-        onView={handleViewFurniture}
-        onAddPieces={handleAddBreakdown}
-      />
       {/* Snackbar */}
       <NotificationSnackbar
         open={snackbar.open}

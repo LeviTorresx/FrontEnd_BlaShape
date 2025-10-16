@@ -41,7 +41,7 @@ export default function ClientsTable({
           {/* Vista de escritorio */}
           <div className="hidden md:block overflow-y-auto rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
             <table className="min-w-full text-sm text-gray-700 rounded-2xl overflow-hidden">
-              <thead className="bg-gradient-to-r from-purple-200 via-purple-100 to-purple-200 text-gray-800">
+              <thead className="bg-purple-200 text-purple-800 border-b-1">
                 <tr>
                   <th className="p-4 text-left font-semibold">Nombre</th>
                   <th className="p-4 text-left font-semibold">Teléfono</th>
@@ -55,7 +55,7 @@ export default function ClientsTable({
                   paginatedData.map((c) => (
                     <tr
                       key={c.customerId}
-                      className="hover:bg-purple-50 transition-all duration-200"
+                      className="bg-purple-100 hover:bg-purple-50 transition-all duration-200"
                     >
                       <td className="p-4 font-medium text-gray-800">
                         {c.name}

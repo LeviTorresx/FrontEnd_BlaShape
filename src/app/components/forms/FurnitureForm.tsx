@@ -3,10 +3,11 @@ import { useState, ChangeEvent } from "react";
 import { Furniture } from "@/app/types/Furniture";
 import { Customer } from "@/app/types/Customer";
 import { useRouter } from "next/navigation";
-import { FaFilePdf, FaImage, FaUser } from "react-icons/fa";
+import { FaImage, FaUser } from "react-icons/fa";
 import Image from "next/image";
 import Input from "../ui/Input";
 import { formatDateForInput } from "@/app/utils/formatDate";
+import Button from "../ui/Button";
 
 interface FurnitureFormProps {
   data?: Furniture;
@@ -234,22 +235,11 @@ export default function FurnitureForm({
       {/* Botones */}
       <div className="flex justify-center gap-3 pt-5 border-t border-gray-100">
         {isEditMode ? (
-          <button
-            onClick={handleSave}
-            className="bg-purple-600 text-white px-5 py-2.5 rounded-xl hover:bg-purple-700 
-                       font-medium shadow-sm transition-all"
-          >
-            Guardar cambios
-          </button>
+          <Button onClick={handleSave} label="Guardar cambios" />
         ) : (
           <>
-            <button
-              onClick={handleSave}
-              className="bg-purple-600 text-white px-5 py-2.5 rounded-xl hover:bg-purple-700 
-                         font-medium shadow-sm transition-all"
-            >
-              Guardar
-            </button>
+            <Button onClick={handleSave} label="Guardar" />
+
             <button
               onClick={handleSaveAndAddPieces}
               className="bg-purple-50 text-purple-700 border border-purple-200 

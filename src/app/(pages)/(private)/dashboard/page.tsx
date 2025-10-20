@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import Sidebar from "@/app/components/layout/Sidebar";
 import BottomMenu from "@/app/components/layout/ButtomMenu";
-
+import { motion, AnimatePresence } from "framer-motion";
 import HomeModule from "./modules/home/HomeModule";
 import ClientsModule from "./modules/clients/ClientsModule";
 import ReportsModule from "./modules/ReportsModule";
@@ -108,8 +108,22 @@ export default function DashboardPage() {
       />
 
       {/* Contenido principal */}
-      <main className="w-full p-2 bg-white rounded-2xl overflow-y-auto h-[calc(100vh-1rem)] scroll-smooth transition-all duration-300">
-        {renderModule()}
+      <main className="w-full p-2 bg-white rounded-2xl overflow-y-auto h-[calc(100vh-1rem)] scroll-smooth relative">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selected.key}
+            initial={{ opacity: 2, y: 4 }}
+            animate={{ opacity: 2, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{
+              duration: 0.25,
+              ease: [0.4, 0, 0.2, 1], // curva suave tipo Material Design
+            }}
+            className="h-full"
+          >
+            {renderModule()}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Menú inferior (mobile) */}

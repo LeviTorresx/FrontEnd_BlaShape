@@ -1,11 +1,9 @@
-"use client";
-import { store } from "@/app/store/store";
+'use client';
 import "../../globals.css";
 import EmotionRegistry from "@/app/components/EmotionRegistry";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
-import { Provider } from "react-redux";
-
+import Providers from "../Providers";
 export default function RootLayout({
   children,
 }: {
@@ -17,7 +15,7 @@ export default function RootLayout({
         <EmotionRegistry>
           <ThemeProvider theme={{}}>
             <CssBaseline />
-            <Provider store={store}>{children}</Provider>
+            <Providers>{children}</Providers>
           </ThemeProvider>
         </EmotionRegistry>
       </body>

@@ -11,17 +11,21 @@ interface menuItem {
   icon: ReactNode;
 }
 
-
 type Props = {
   selected: string;
   onSelect: (key: string) => void;
   mainMenu: menuItem[];
   bottomMenu: menuItem[];
+  onLogout: () => void;
 };
 
-export default function Sidebar({ selected, onSelect, mainMenu, bottomMenu }: Props) {
-  
-
+export default function Sidebar({
+  selected,
+  onSelect,
+  mainMenu,
+  bottomMenu,
+  onLogout,
+}: Props) {
   return (
     <aside className="hidden md:flex w-64 bg-white shadow-md flex-col rounded-2xl">
       {/* Header */}
@@ -79,7 +83,12 @@ export default function Sidebar({ selected, onSelect, mainMenu, bottomMenu }: Pr
           </button>
         ))}
         <div className="flex justify-center">
-          <Button label="Cerrar cesion" type="button" icon={<FaSignOutAlt />} />
+          <Button
+            label="Cerrar cesion"
+            type="button"
+            icon={<FaSignOutAlt />}
+            onClick={onLogout}
+          />
         </div>
 
         <div className="pt-4 text-xs text-center text-gray-400 border-t">

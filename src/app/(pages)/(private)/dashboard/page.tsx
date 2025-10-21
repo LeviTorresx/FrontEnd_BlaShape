@@ -14,11 +14,13 @@ import FurnitureModule from "./modules/furniture/FurnitureModule";
 import WorkshopModule from "./modules/WorkshopModule";
 import ShapeModule from "./modules/ShapeModule";
 import ModuleSkeleton from "@/app/components/ui/ModuleSkeleton";
-
 import { FaChartBar, FaHome, FaUserCircle, FaUsers } from "react-icons/fa";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { FaShop } from "react-icons/fa6";
 import { MdChair } from "react-icons/md";
+import { useAppDispatch } from "@/app/hooks/useRedux";
+import { useLogoutMutation } from "@/app/services/authApi";
+import { clearAuthState } from "@/app/store/slices/authSlice";
 
 interface SelectedModule {
   key: string;
@@ -45,6 +47,8 @@ const accountMenu = [
 export default function DashboardPage() {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const [logout] = useLogoutMutation();
 
   const [selected, setSelected] = useState<SelectedModule>({
     key: "home",
@@ -97,6 +101,16 @@ export default function DashboardPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      dispatch(clearAuthState());
+      router.push("/login");
+    } catch (err) {
+      console.error("Error al cerrar sesión: ", err);
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-200 p-2 md:p-2 gap-4">
       {/* Sidebar (desktop) */}
@@ -105,6 +119,7 @@ export default function DashboardPage() {
         onSelect={handleSelect}
         mainMenu={mainMenu}
         bottomMenu={accountMenu}
+        onLogout={handleLogout}
       />
 
       {/* Contenido principal */}
@@ -133,6 +148,7 @@ export default function DashboardPage() {
           onSelect={handleSelect}
           mainMenu={mainMenu}
           bottomMenu={accountMenu}
+          onLogout={handleLogout}
         />
       </div>
     </div>

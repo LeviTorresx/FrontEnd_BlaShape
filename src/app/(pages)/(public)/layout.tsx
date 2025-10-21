@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
+'use client';
+
 import "../../globals.css";
-
-export const metadata: Metadata = {
-  title: "Maderas Blashape",
-  description:
-    "Optimiza tus cortes, reduce desperdicios y aumenta tus ganancias",
-};
-
+import { Provider } from "react-redux";
+import { store } from "@/app/store/store";
 export default function RootLayout({
   children,
 }: {
@@ -15,7 +11,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="bg-white text-gray-900 font-sans">
-        <main>{children}</main>
+        <Provider store={store}>
+          <main>{children}</main>
+        </Provider>
       </body>
     </html>
   );

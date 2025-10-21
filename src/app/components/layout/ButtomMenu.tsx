@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState } from "react";
 import Button from "../ui/Button";
 import { FaChevronDown, FaChevronUp, FaSignOutAlt } from "react-icons/fa";
-;
 interface menuItem {
   key: string;
   label: string;
@@ -16,11 +15,17 @@ type Props = {
   onSelect: (key: string) => void;
   mainMenu: menuItem[];
   bottomMenu: menuItem[];
+  onLogout: () => void;
 };
 
-export default function BottomMenu({ selected, onSelect, mainMenu, bottomMenu }: Props) {
+export default function BottomMenu({
+  selected,
+  onSelect,
+  mainMenu,
+  bottomMenu,
+  onLogout,
+}: Props) {
   const [open, setOpen] = useState(false);
-
 
   return (
     <>
@@ -101,6 +106,7 @@ export default function BottomMenu({ selected, onSelect, mainMenu, bottomMenu }:
               label="Cerrar cesion"
               type="button"
               icon={<FaSignOutAlt />}
+              onClick={onLogout}
             />
           </div>
           <div className="pt-4 mt-4 text-xs text-center text-gray-400 border-t">

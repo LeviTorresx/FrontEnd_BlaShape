@@ -1,3 +1,5 @@
+import { Workshop } from "./Workshop";
+
 export interface CarpenterDTO {
   name: string;
   lastName: string;
@@ -17,6 +19,6 @@ export interface Carpenter {
   email: string;
   password: string;
   phone: string;
-  workshopId: number;
+  workshop: Workshop;
   furnitureListIds: [number];
 }

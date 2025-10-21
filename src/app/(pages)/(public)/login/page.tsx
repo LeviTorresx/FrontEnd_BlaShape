@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Button from "@/app/components/ui/Button";
 import Input from "@/app/components/ui/Input";
@@ -8,11 +8,19 @@ import PasswordInput from "@/app/components/ui/PasswordInput";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import { MdErrorOutline } from "react-icons/md";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { useLoginMutation, useGetProfileQuery } from "@/app/services/authApi";
+import { useAppDispatch } from "@/app/hooks/useRedux";
+import { setAuthState } from "@/app/store/slices/authSlice";
+import { getErrorMessage } from "@/app/services/getErrorMessages";
 
 export default function LoginPage() {
-  const [loginRequest, setLoginRequest] = useState({ email: "", password: "" });
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  // estado para notificaciones
+  const [loginRequest, setLoginRequest] = useState({ email: "", password: "" });
+  const [fetchProfile, setFetchProfile] = useState(false);
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
@@ -20,33 +28,54 @@ export default function LoginPage() {
     icon: <MdErrorOutline fontSize="inherit" />,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [login, { isLoading, isSuccess, error }] = useLoginMutation();
+  const {
+    data: profileData,
+    isSuccess: profileSuccess,
+    error: profileError,
+  } = useGetProfileQuery(undefined, { skip: !fetchProfile });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!loginRequest.email || !loginRequest.password) {
       setSnackbar({
         open: true,
-        severity: "success",
+        severity: "warning",
         message: "Debes ingresar correo y contraseña",
         icon: <MdErrorOutline fontSize="inherit" />,
       });
       return;
     }
 
-    // Simulación de login exitoso
-    console.log(
-      "Correo:",
-      loginRequest.email,
-      "Contraseña:",
-      loginRequest.password
-    );
-    setSnackbar({
-      open: true,
-      severity: "success",
-      message: "¡Inicio de sesión exitoso!",
-      icon: <FaRegCheckCircle fontSize="inherit" />,
-    });
+    try {
+      const response = await login(loginRequest).unwrap();
+      setTimeout(() => setFetchProfile(true), 300);
+
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: `¡${response.message}!` || "Inicio de sesión exitoso!",
+        icon: <FaRegCheckCircle fontSize="inherit" />,
+      });
+    } catch (err) {
+      const backendMessage = getErrorMessage(err);
+
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: backendMessage,
+        icon: <MdErrorOutline fontSize="inherit" />,
+      });
+    }
   };
+
+  useEffect(() => {
+    if (profileSuccess && profileData) {
+      dispatch(setAuthState({ user: profileData, isAuthenticated: true }));
+      router.push("/dashboard");
+    }
+  }, [profileSuccess, profileData, dispatch, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginRequest({ ...loginRequest, [e.target.name]: e.target.value });
@@ -92,9 +121,10 @@ export default function LoginPage() {
           />
 
           <Button
-            label="Entrar"
+            label={isLoading ? "Entrando..." : "Entrar"}
             type="submit"
             className="w-full py-2 rounded-md bg-purple-900 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
+            disabled={isLoading}
           />
         </form>
 

@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { BaseQueryFn } from "@reduxjs/toolkit/query";
+import { BaseQueryFn } from "@reduxjs/toolkit/query/react";
 
 interface AxiosBaseQueryArgs {
   url: string;
@@ -14,20 +14,34 @@ interface AxiosBaseQueryError {
 }
 
 export const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = { baseUrl: "" }
-  ): BaseQueryFn<AxiosBaseQueryArgs, unknown, AxiosBaseQueryError> =>
+  ({ baseUrl }: { baseUrl: string } = { baseUrl: "" }): BaseQueryFn<
+    AxiosBaseQueryArgs,
+    unknown,
+    AxiosBaseQueryError
+  > =>
   async ({ url, method, data, params }) => {
     try {
-      const result = await axios({ url: baseUrl + url, method, data, params });
+      const result = await axios({
+        url: baseUrl + url,
+        method,
+        data,
+        params,
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
       return { data: result.data };
     } catch (error) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as AxiosError<{ message?: string }>;
 
       return {
         error: {
           status: axiosError.response?.status,
-          data: axiosError.response?.data ?? axiosError.message,
+          data: axiosError.response?.data || {
+            message: axiosError.message,
+          },
         },
       };
     }

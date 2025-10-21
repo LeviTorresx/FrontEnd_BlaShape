@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -13,6 +13,7 @@ import { useLoginMutation, useGetProfileQuery } from "@/app/services/authApi";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { setAuthState } from "@/app/store/slices/authSlice";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
+import { SnackbarState } from "@/app/types/SnackBarState";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,9 +22,9 @@ export default function LoginPage() {
   const [loginRequest, setLoginRequest] = useState({ email: "", password: "" });
   const [fetchProfile, setFetchProfile] = useState(false);
 
-  const [snackbar, setSnackbar] = useState({
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
-    severity: "info" as "error" | "warning" | "info" | "success",
+    severity: "info",
     message: "",
     icon: <MdErrorOutline fontSize="inherit" />,
   });

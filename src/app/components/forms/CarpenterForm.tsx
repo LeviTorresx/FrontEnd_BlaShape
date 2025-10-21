@@ -7,16 +7,8 @@ import Input from "../ui/Input";
 import PasswordInput from "../ui/PasswordInput";
 
 type UserFormProps = {
-  initialData?: {
-    name?: string;
-    lastName?: string;
-    idNumber?: string;
-    rut?: string;
-    email?: string;
-    password?: string;
-    phone?: string;
-  };
-  onSubmit: (data: CarpenterDTO) => void;
+  initialData?: Partial<CarpenterDTO>;
+  onSubmit: (data: CarpenterDTO & { confirmPassword?: string }) => void;
   submitLabel?: string;
 };
 
@@ -25,21 +17,23 @@ export default function UserForm({
   onSubmit,
   submitLabel = "Guardar",
 }: UserFormProps) {
+  // 🔹 Estado inicial con todos los campos necesarios
   const [formData, setFormData] = useState({
     name: initialData.name || "",
     lastName: initialData.lastName || "",
-    idNumber: initialData.idNumber || "",
+    dni: initialData.dni || "",
     rut: initialData.rut || "",
     email: initialData.email || "",
-    password: initialData.password || "",
-    confirmPassword: "",
     phone: initialData.phone || "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError("");
   };
 
@@ -49,7 +43,9 @@ export default function UserForm({
       setError("Las contraseñas no coinciden");
       return;
     }
-    onSubmit(formData);
+
+    const { confirmPassword, ...dataToSend } = formData;
+    onSubmit(dataToSend as CarpenterDTO);
   };
 
   return (
@@ -78,8 +74,8 @@ export default function UserForm({
       <div className="grid grid-cols-2 gap-4">
         <Input
           label="Cédula"
-          name="idNumber"
-          value={formData.idNumber}
+          name="dni"
+          value={formData.dni}
           onChange={handleChange}
           placeholder="Ej: 1234567890"
           required
@@ -92,8 +88,9 @@ export default function UserForm({
           placeholder="Ej: 12345678-9"
         />
       </div>
+
+      {/* Correo y teléfono */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Correo */}
         <Input
           label="Correo Electrónico"
           name="email"
@@ -103,8 +100,6 @@ export default function UserForm({
           placeholder="ejemplo@correo.com"
           required
         />
-
-        {/* Teléfono */}
         <Input
           label="Teléfono"
           name="phone"
@@ -115,7 +110,7 @@ export default function UserForm({
         />
       </div>
 
-      {/* Contraseña */}
+      {/* Contraseña y confirmación */}
       <PasswordInput
         label="Contraseña"
         name="password"
@@ -124,8 +119,6 @@ export default function UserForm({
         placeholder="********"
         required
       />
-
-      {/* Confirmar contraseña */}
       <PasswordInput
         label="Confirmar Contraseña"
         name="confirmPassword"
@@ -136,7 +129,7 @@ export default function UserForm({
       />
 
       {/* Error */}
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {error && <p className="text-red-600 text-sm text-center">{error}</p>}
 
       {/* Botón */}
       <Button

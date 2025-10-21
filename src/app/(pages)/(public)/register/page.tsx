@@ -1,13 +1,52 @@
-"use client";
+'use client';
 
 import CarpenterForm from "@/app/components/forms/CarpenterForm";
+import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
+import { useRegisterMutation } from "@/app/services/authApi";
+import { getErrorMessage } from "@/app/services/getErrorMessages";
 import { CarpenterDTO } from "@/app/types/Carpenter";
+import { SnackbarState } from "@/app/types/SnackBarState";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { MdErrorOutline } from "react-icons/md";
 
 export default function RegisterPage() {
-  const handleRegister = (data: CarpenterDTO) => {
-    console.log("Registro:", data);
-    // Aquí haces el POST a tu backend
+  const router = useRouter();
+  const [register, { isLoading }] = useRegisterMutation();
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    severity: "info",
+    message: "",
+    icon: <MdErrorOutline fontSize="inherit" />,
+  });
+
+  const handleRegister = async (data: CarpenterDTO) => {
+    try {
+      const response = await register(data).unwrap();
+
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: `¡${response.message}!` || "Registro exitoso!",
+        icon: <FaRegCheckCircle fontSize="inherit" />,
+      });
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500);
+    } catch (error) {
+      const errorBack = getErrorMessage(error);
+
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: errorBack || "Error en el registro. Intenta nuevamente.",
+        icon: <MdErrorOutline fontSize="inherit" />,
+      });
+
+      console.error("Error en el registro:", errorBack);
+    }
   };
 
   return (
@@ -47,6 +86,13 @@ export default function RegisterPage() {
           className="mx-auto"
         />
       </div>
+      <NotificationSnackbar
+        open={snackbar.open}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        severity={snackbar.severity}
+        icon={snackbar.icon}
+        message={snackbar.message}
+      />
     </div>
   );
 }

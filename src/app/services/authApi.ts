@@ -1,14 +1,14 @@
 // src/app/services/authApi.ts
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./axiosBaseQuery";
-import { Carpenter } from "../types/Carpenter";
+import { Carpenter, CarpenterDTO } from "../types/Carpenter";
 
 interface LoginRequest {
   email: string;
   password: string;
 }
 
-interface LoginResponse {
+interface AuthResponse {
   isAuthenticated: boolean;
   message: string;
 }
@@ -17,9 +17,17 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: axiosBaseQuery({ baseUrl: "http://localhost:8080/api_BS" }),
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginRequest>({
+    login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
         url: "/auth/login",
+        method: "POST",
+        data: body,
+      }),
+    }),
+
+    register: builder.mutation<AuthResponse, CarpenterDTO>({
+      query: (body) => ({
+        url: "/auth/register",
         method: "POST",
         data: body,
       }),
@@ -41,4 +49,9 @@ export const authApi = createApi({
   }),
 });
 
-export const { useLoginMutation, useGetProfileQuery, useLogoutMutation } = authApi;
+export const {
+  useLoginMutation,
+  useGetProfileQuery,
+  useLogoutMutation,
+  useRegisterMutation,
+} = authApi;

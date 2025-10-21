@@ -3,7 +3,7 @@ import { Workshop } from "./Workshop";
 export interface CarpenterDTO {
   name: string;
   lastName: string;
-  idNumber: string;
+  dni: string;
   rut: string;
   email: string;
   password: string;
@@ -14,7 +14,7 @@ export interface Carpenter {
   carpenterId: number;
   name: string;
   lastName: string;
-  idNumber: string;
+  dni: string;
   rut: string;
   email: string;
   password: string;

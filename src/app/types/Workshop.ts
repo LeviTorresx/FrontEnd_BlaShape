@@ -2,8 +2,9 @@ export interface workshopDTO {
   name: string;
   address: string;
   phone: string;
+  nit:string;
   email: string;
-  carpenterid: number;
+  carpenterId: number;
 }
 
 export interface Workshop {
@@ -13,5 +14,5 @@ export interface Workshop {
   phone: string;
   nit:string;
   email: string;
-  carpenterid: number;
+  carpenterId: number;
 }

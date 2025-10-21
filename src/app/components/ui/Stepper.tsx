@@ -13,6 +13,7 @@ type Props = {
   handleNext: () => void;
   handleBack: () => void;
   handleEnd: () => void;
+  disableNext?: boolean;
 };
 
 function CustomStepIcon(props: StepIconProps) {
@@ -37,6 +38,7 @@ export default function PurpleStepper({
   handleNext,
   handleBack,
   handleEnd,
+  disableNext = false,
 }: Props) {
   return (
     <div className="p-6 max-w-lg mx-auto bg-gray-200 rounded-xl shadow-md">
@@ -70,7 +72,8 @@ export default function PurpleStepper({
         ) : (
           <Button
             onClick={handleNext}
-            className="bg-purple-950 text-white hover:bg-purple-700"
+            disabled={disableNext}
+            className="border border-gray-300 text-gray-700"
             label={steps.length - 1 === activeStep ? "Finalizar" : "Siguiente"}
           />
         )}

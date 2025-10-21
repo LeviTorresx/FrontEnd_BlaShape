@@ -3,33 +3,28 @@
 import { useState } from "react";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
+import { workshopDTO } from "@/app/types/Workshop";
 
 type WorkshopFormProps = {
-  initialData?: {
-    name?: string;
-    address?: string;
-    nit?: string;
-    phone?: string;
-  };
-  onSubmit: (data: {
-    name: string;
-    address: string;
-    nit: string;
-    phone: string;
-  }) => void;
+  initialData?: Partial<workshopDTO>;
+  carpenterId?: number;
+  onSubmit: (data: workshopDTO) => void;
   submitLabel?: string;
 };
 
 export default function WorkshopForm({
   initialData = {},
   onSubmit,
+  carpenterId,
   submitLabel = "Guardar",
 }: WorkshopFormProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<workshopDTO>({
     name: initialData.name || "",
     address: initialData.address || "",
+    email: initialData.email || "",
     nit: initialData.nit || "",
     phone: initialData.phone || "",
+    carpenterId: initialData.carpenterId || carpenterId || 0,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

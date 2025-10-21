@@ -7,5 +7,5 @@ export const mock_WORKSHOP: Workshop = {
   name: "Taller BlasTorres",
   phone: "+57 313 799 4143",
   nit: "1111111111-3",
-  carpenterid: 1,
+  carpenterId: 1,
 };

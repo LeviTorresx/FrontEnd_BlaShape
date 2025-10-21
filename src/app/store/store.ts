@@ -9,6 +9,7 @@ import { mockAlertsApi } from "../services/mockAlertsApi";
 import { mockWorkshopApi } from "../services/mockWorkshopApi";
 import { authApi } from "../services/authApi";
 import { authReducer } from "./slices/authSlice";
+import { workshopApi } from "../services/workshopApi";
 
 
 const persistConfig = {
@@ -23,10 +24,12 @@ const rootReducer = combineReducers({
 
  
   [authApi.reducerPath]: authApi.reducer,
+  [workshopApi.reducerPath]: workshopApi.reducer,
   [mockCustomersApi.reducerPath]: mockCustomersApi.reducer,
   [mockFurnituresApi.reducerPath]: mockFurnituresApi.reducer,
   [mockAlertsApi.reducerPath]: mockAlertsApi.reducer,
   [mockWorkshopApi.reducerPath]: mockWorkshopApi.reducer,
+  
 });
 
 
@@ -39,6 +42,7 @@ export const store = configureStore({
       },
     }).concat(
       authApi.middleware,
+      workshopApi.middleware,
       mockCustomersApi.middleware,
       mockFurnituresApi.middleware,
       mockAlertsApi.middleware,

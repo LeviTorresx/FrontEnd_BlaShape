@@ -74,7 +74,11 @@ export default function LoginPage() {
   useEffect(() => {
     if (profileSuccess && profileData) {
       dispatch(setAuthState({ user: profileData, isAuthenticated: true }));
-      router.push("/dashboard");
+      if (profileData?.workshop != null) {
+        router.push("/dashboard");
+      } else {
+        router.push("/workshop-register");
+      }
     }
   }, [profileSuccess, profileData, dispatch, router]);
 

@@ -10,6 +10,8 @@ import AppModal from "@/app/components/ui/AppModal";
 import AlertForm from "@/app/components/forms/AlertForm";
 import { Alert } from "@/app/types/Alert";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 const StatisticsList = [
   {
@@ -38,6 +40,7 @@ export default function HomeModule() {
   const { data: workshop, isLoading } = useGetWorkshopQuery();
   const { data: furnitureList = [] } = useGetFurnitureQuery();
   const { data: reminders = [] } = useGetAlertsQuery();
+  const workshopInfo = useSelector((state: RootState)=> state.auth.user?.workshop);
   const [open, setOpen] = useState(false);
 
   if (isLoading) return <p>Cargando información del taller...</p>;
@@ -64,7 +67,7 @@ export default function HomeModule() {
       {/* Taller */}
       <div className="col-span-4 md:col-span-1 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <SummaryWorkshop workshop={workshop} />
+          <SummaryWorkshop workshop={ workshopInfo || workshop} />
         </div>
       </div>
 

@@ -11,7 +11,7 @@ import ClientsModule from "./modules/clients/ClientsModule";
 import ReportsModule from "./modules/ReportsModule";
 import ProfileModule from "./modules/ProfileModule";
 import FurnitureModule from "./modules/furniture/FurnitureModule";
-import WorkshopModule from "./modules/WorkshopModule";
+import WorkshopModule from "./modules/workshop/WorkshopModule";
 import ShapeModule from "./modules/ShapeModule";
 import ModuleSkeleton from "@/app/components/ui/ModuleSkeleton";
 import { FaChartBar, FaHome, FaUserCircle, FaUsers } from "react-icons/fa";

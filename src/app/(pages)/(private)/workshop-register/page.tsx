@@ -5,7 +5,7 @@ import PurpleStepper from "../../../components/ui/Stepper";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCreateWorkshopMutation } from "@/app/services/workshopApi";
-import { workshopDTO } from "@/app/types/Workshop";
+import { Workshop} from "@/app/types/Workshop";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { useAppDispatch } from "@/app/hooks/useRedux";
@@ -31,7 +31,7 @@ export default function WorkshopRegister() {
     icon: <MdErrorOutline fontSize="inherit" />,
   });
 
-  const handleWorkshopSubmit = async (data: workshopDTO) => {
+  const handleWorkshopSubmit = async (data: Workshop) => {
     try {
       const response = await createWorkshop(data).unwrap();
 

@@ -1,4 +1,5 @@
 import { Carpenter } from "@/app/types/Carpenter";
+import { Workshop } from "@/app/types/Workshop";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
@@ -23,8 +24,14 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
     },
+    setUserWorkshop: (state, action: PayloadAction<Workshop>) => {
+      if (state.user) {
+        state.user.workshop = action.payload;
+      }
+    },
   },
 });
 
-export const { setAuthState, clearAuthState } = authSlice.actions;
+export const { setAuthState, clearAuthState, setUserWorkshop } =
+  authSlice.actions;
 export const authReducer = authSlice.reducer;

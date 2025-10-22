@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
-import { workshopDTO } from "@/app/types/Workshop";
+import { Workshop } from "@/app/types/Workshop";
 
 type WorkshopFormProps = {
-  initialData?: Partial<workshopDTO>;
+  initialData?: Partial<Workshop>;
   carpenterId?: number;
-  onSubmit: (data: workshopDTO) => void;
+  onSubmit: (data: Workshop) => void;
   submitLabel?: string;
 };
 
@@ -18,7 +18,8 @@ export default function WorkshopForm({
   carpenterId,
   submitLabel = "Guardar",
 }: WorkshopFormProps) {
-  const [formData, setFormData] = useState<workshopDTO>({
+  const [formData, setFormData] = useState<Workshop>({
+    workshopId : initialData.workshopId || 0,
     name: initialData.name || "",
     address: initialData.address || "",
     email: initialData.email || "",

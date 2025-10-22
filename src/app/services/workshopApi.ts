@@ -1,9 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./axiosBaseQuery";
-import { Workshop, workshopDTO } from "../types/Workshop";
+import { Workshop} from "../types/Workshop";
 
 interface WorkshopResponse {
   message: string;
+  workshop: Workshop;
 }
 
 export const workshopApi = createApi({
@@ -12,7 +13,7 @@ export const workshopApi = createApi({
     baseUrl: "http://localhost:8080/api_BS/workshop",
   }),
   endpoints: (builder) => ({
-    createWorkshop: builder.mutation<WorkshopResponse, workshopDTO>({
+    createWorkshop: builder.mutation<WorkshopResponse, Workshop>({
       query: (body) => ({
         url: "/create",
         method: "POST",

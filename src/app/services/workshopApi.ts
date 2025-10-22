@@ -2,7 +2,6 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./axiosBaseQuery";
 import { Workshop, workshopDTO } from "../types/Workshop";
 
-
 interface WorkshopResponse {
   message: string;
 }
@@ -20,7 +19,26 @@ export const workshopApi = createApi({
         data: body,
       }),
     }),
+
+    editWorkshop: builder.mutation<WorkshopResponse, Workshop>({
+      query: (body) => ({
+        url: `/edit/${body.workshopId}`,
+        method: "PUT",
+        data: body,
+      }),
+    }),
+
+    getWorkshopById: builder.query<Workshop, number>({
+      query: (id) => ({
+        url: `get/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateWorkshopMutation } = workshopApi
+export const {
+  useCreateWorkshopMutation,
+  useEditWorkshopMutation,
+  useGetWorkshopByIdQuery,
+} = workshopApi;

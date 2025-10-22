@@ -15,9 +15,14 @@ import {
 } from "@/app/services/mockCustomersApi";
 import { Customer } from "@/app/types/Customer";
 import Button from "@/app/components/ui/Button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 export default function ClientsModule() {
   const { data: customers = [] } = useGetCustomersQuery();
+  const userAuthID = useSelector(
+    (state: RootState) => state.auth.user?.carpenterId
+  );
   const [createCustomer] = useAddCustomerMutation();
   const [updateCustomer] = useUpdateCustomerMutation();
   const [deleteCustomer] = useDeleteCustomerMutation();
@@ -81,6 +86,11 @@ export default function ClientsModule() {
   };
 
   const handleDeleteCustomer = async (customer: Customer) => {
+    if (!customer.customerId) {
+      showSnackbar("error", "ID de cliente inválido", <FaRegAngry />);
+      return;
+    }
+
     try {
       await deleteCustomer(customer.customerId).unwrap();
       showSnackbar(
@@ -134,7 +144,7 @@ export default function ClientsModule() {
         <Button
           label="Nuevo Cliente"
           icon={<FaPlus className="text-sm" />}
-          onClick={() => setOpen(true)} 
+          onClick={() => setOpen(true)}
         />
       </div>
 
@@ -158,6 +168,7 @@ export default function ClientsModule() {
       >
         <CustomerForm
           data={selectedCustomer || undefined}
+          carpenterId={userAuthID}
           buttonLabel={isEditing ? "Actualizar" : "Guardar"}
           onSubmit={isEditing ? handleUpdateCustomer : handleCreateCustomer}
           onClose={resetFormState}

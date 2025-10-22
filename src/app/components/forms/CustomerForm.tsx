@@ -12,6 +12,7 @@ import Button from "../ui/Button";
 
 interface CustomerFormProps {
   data?: Customer;
+  carpenterId?: number;
   onSubmit: (customer: Customer) => void;
   onClose?: () => void;
   buttonLabel?: string;
@@ -19,18 +20,20 @@ interface CustomerFormProps {
 
 export default function CustomerForm({
   data,
+  carpenterId,
   onSubmit,
   buttonLabel = "Guardar",
   onClose,
 }: CustomerFormProps) {
   const [formData, setFormData] = useState<Customer>({
-    customerId: data?.customerId || 0,
+    customerId: data?.customerId,
     name: data?.name || "",
     lastName: data?.lastName || "",
     phone: data?.phone || "",
     email: data?.email || "",
     dni: data?.dni || "",
     role: data?.role || "default",
+    carpenterId: carpenterId,
     furnitureList: data?.furnitureList || [],
   });
 

@@ -1,24 +1,37 @@
 "use client";
 
-import { CarpenterDTO } from "@/app/types/Carpenter";
-import { useState } from "react";
+import { Carpenter, CarpenterDTO } from "@/app/types/Carpenter";
+import { use, useState } from "react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import PasswordInput from "../ui/PasswordInput";
+import { Workshop } from "@/app/types/Workshop";
 
 type UserFormProps = {
-  initialData?: Partial<CarpenterDTO>;
-  onSubmit: (data: CarpenterDTO & { confirmPassword?: string }) => void;
+  initialData?: Partial<Carpenter>;
+  onSubmit: (data: Carpenter) => void;
   submitLabel?: string;
+  mode?: "create" | "edit";
+};
+
+const defaultWorkshop: Workshop = {
+  workshopId: 0,
+  name: "",
+  address: "",
+  phone: "",
+  carpenterId: 0,
+  email: "",
+  nit: "",
 };
 
 export default function UserForm({
   initialData = {},
   onSubmit,
   submitLabel = "Guardar",
+  mode = "create",
 }: UserFormProps) {
-  // 🔹 Estado inicial con todos los campos necesarios
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Carpenter>({
+    carpenterId: initialData.carpenterId,
     name: initialData.name || "",
     lastName: initialData.lastName || "",
     dni: initialData.dni || "",
@@ -26,26 +39,40 @@ export default function UserForm({
     email: initialData.email || "",
     phone: initialData.phone || "",
     password: "",
-    confirmPassword: "",
+    furnitureListIds: initialData.furnitureListIds || [],
+    workshop: initialData.workshop || defaultWorkshop,
   });
+
+  const [confirmPassword, setConfirmPasswoerd] = useState("");
 
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "confirmPassword") {
+      setConfirmPasswoerd(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
     setError("");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
+
+    // Validación de contraseñas solo en modo "create"
+    if (mode === "create" && formData.password !== confirmPassword) {
       setError("Las contraseñas no coinciden");
       return;
     }
 
-    const { confirmPassword, ...dataToSend } = formData;
-    onSubmit(dataToSend as CarpenterDTO);
+    // Se llama la función del padre con los datos
+    const dataToSend: CarpenterDTO = {
+      ...formData,
+      password: formData.password || initialData.password || "",
+    };
+    onSubmit(dataToSend as Carpenter);
   };
 
   return (
@@ -79,6 +106,7 @@ export default function UserForm({
           onChange={handleChange}
           placeholder="Ej: 1234567890"
           required
+          disabled={mode === "edit"}
         />
         <Input
           label="RUT"
@@ -99,6 +127,7 @@ export default function UserForm({
           onChange={handleChange}
           placeholder="ejemplo@correo.com"
           required
+          disabled={mode === "edit"}
         />
         <Input
           label="Teléfono"
@@ -110,23 +139,27 @@ export default function UserForm({
         />
       </div>
 
-      {/* Contraseña y confirmación */}
-      <PasswordInput
-        label="Contraseña"
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-        placeholder="********"
-        required
-      />
-      <PasswordInput
-        label="Confirmar Contraseña"
-        name="confirmPassword"
-        value={formData.confirmPassword}
-        onChange={handleChange}
-        placeholder="********"
-        required
-      />
+      {/* Contraseñas solo en modo creación */}
+      {mode === "create" && (
+        <>
+          <PasswordInput
+            label="Contraseña"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="********"
+            required
+          />
+          <PasswordInput
+            label="Confirmar Contraseña"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={handleChange}
+            placeholder="********"
+            required
+          />
+        </>
+      )}
 
       {/* Error */}
       {error && <p className="text-red-600 text-sm text-center">{error}</p>}

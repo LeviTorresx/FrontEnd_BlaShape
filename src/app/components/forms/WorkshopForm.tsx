@@ -19,7 +19,7 @@ export default function WorkshopForm({
   submitLabel = "Guardar",
 }: WorkshopFormProps) {
   const [formData, setFormData] = useState<Workshop>({
-    workshopId : initialData.workshopId || 0,
+    workshopId : initialData.workshopId,
     name: initialData.name || "",
     address: initialData.address || "",
     email: initialData.email || "",

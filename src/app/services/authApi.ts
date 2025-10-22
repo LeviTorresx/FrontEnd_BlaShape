@@ -13,21 +13,34 @@ interface AuthResponse {
   message: string;
 }
 
+interface ProfileResponse {
+  carpenter: Carpenter;
+  message: string;
+}
+
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: axiosBaseQuery({ baseUrl: "http://localhost:8080/api_BS" }),
+  baseQuery: axiosBaseQuery({ baseUrl: "http://localhost:8080/api_BS/auth" }),
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
-        url: "/auth/login",
+        url: "/login",
         method: "POST",
+        data: body,
+      }),
+    }),
+
+    editProfile: builder.mutation<ProfileResponse, Carpenter>({
+      query: (body) => ({
+        url: `/update-profile/${body.carpenterId}`,
+        method: "PUT",
         data: body,
       }),
     }),
 
     register: builder.mutation<AuthResponse, CarpenterDTO>({
       query: (body) => ({
-        url: "/auth/register",
+        url: "/register",
         method: "POST",
         data: body,
       }),
@@ -35,14 +48,14 @@ export const authApi = createApi({
 
     getProfile: builder.query<Carpenter, void>({
       query: () => ({
-        url: "/auth/me",
+        url: "/me",
         method: "GET",
       }),
     }),
 
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: "/auth/logout",
+        url: "/logout",
         method: "POST",
       }),
     }),
@@ -55,4 +68,5 @@ export const {
   useLazyGetProfileQuery,
   useLogoutMutation,
   useRegisterMutation,
+  useEditProfileMutation,
 } = authApi;

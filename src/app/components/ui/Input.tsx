@@ -11,6 +11,7 @@ type InputProps = {
   placeholder?: string;
   required?: boolean;
   className?: string;
+  disabled?: boolean;
 };
 
 export default function Input({
@@ -22,6 +23,8 @@ export default function Input({
   placeholder,
   required = false,
   className = "",
+  disabled = false,
+
 }: InputProps) {
   return (
     <div>
@@ -36,6 +39,7 @@ export default function Input({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
+        disabled={disabled}
         className={`w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-900 ${className}`}
       />
     </div>

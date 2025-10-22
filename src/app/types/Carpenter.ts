@@ -11,7 +11,7 @@ export interface CarpenterDTO {
 }
 
 export interface Carpenter {
-  carpenterId: number;
+  carpenterId?: number;
   name: string;
   lastName: string;
   dni: string;
@@ -20,5 +20,5 @@ export interface Carpenter {
   password: string;
   phone: string;
   workshop: Workshop;
-  furnitureListIds: [number];
+  furnitureListIds: number[];
 }

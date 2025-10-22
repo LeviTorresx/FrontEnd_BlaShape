@@ -5,7 +5,7 @@ export interface Customer {
   dni: string;
   email: string;
   phone: string;
-  role: string;
+  role?: string;
   carpenterId?: number;
   furnitureList: number[];
 }

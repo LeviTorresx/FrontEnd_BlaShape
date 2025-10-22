@@ -21,6 +21,7 @@ import { MdChair } from "react-icons/md";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { useLogoutMutation } from "@/app/services/authApi";
 import { clearAuthState } from "@/app/store/slices/authSlice";
+import { useGetCustomersQuery } from "@/app/services/customersApi";
 
 interface SelectedModule {
   key: string;
@@ -49,6 +50,8 @@ export default function DashboardPage() {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
+
+  const {data: customers} = useGetCustomersQuery();
 
   const [selected, setSelected] = useState<SelectedModule>({
     key: "home",

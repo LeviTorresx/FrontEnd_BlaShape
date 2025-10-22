@@ -32,7 +32,7 @@ export default function CustomerForm({
     phone: data?.phone || "",
     email: data?.email || "",
     dni: data?.dni || "",
-    role: data?.role || "default",
+    role: data?.role ,
     carpenterId: carpenterId,
     furnitureList: data?.furnitureList || [],
   });

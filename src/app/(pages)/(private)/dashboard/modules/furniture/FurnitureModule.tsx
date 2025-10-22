@@ -10,11 +10,12 @@ import {
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
 import { Furniture } from "@/app/types/Furniture";
-import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import FurnitureCard from "./components/FurnitureCard";
 import Button from "@/app/components/ui/Button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 export default function FurnitureModule({
   onSelect,
@@ -39,7 +40,7 @@ export default function FurnitureModule({
   const { data: furnitures = [] } = useGetFurnitureQuery();
   const [createFurniture] = useAddFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
-  const { data: customers = [] } = useGetCustomersQuery();
+  const  customers  = useSelector((state: RootState) => state.customers.list);
 
   const handleCloseSnackbar = () =>
     setSnackbar((prev) => ({ ...prev, open: false }));

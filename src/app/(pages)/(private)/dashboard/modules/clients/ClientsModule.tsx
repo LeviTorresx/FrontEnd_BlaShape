@@ -17,15 +17,27 @@ import { Customer } from "@/app/types/Customer";
 import Button from "@/app/components/ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
+import {
+  useCreateCustomerMutation,
+  useEditCustomerMutation,
+} from "@/app/services/customersApi";
+import { getErrorMessage } from "@/app/services/getErrorMessages";
 
 export default function ClientsModule() {
-  const { data: customers = [] } = useGetCustomersQuery();
+  const { data: customersMocks = [] } = useGetCustomersQuery();
+  const globalCustomers = useSelector(
+    (state: RootState) => state.customers.list
+  );
+  const customers = globalCustomers ? globalCustomers : customersMocks;
   const userAuthID = useSelector(
     (state: RootState) => state.auth.user?.carpenterId
   );
-  const [createCustomer] = useAddCustomerMutation();
-  const [updateCustomer] = useUpdateCustomerMutation();
-  const [deleteCustomer] = useDeleteCustomerMutation();
+  const [createMockCustomer] = useAddCustomerMutation();
+  const [updateMockCustomer] = useUpdateCustomerMutation();
+  const [deleteMockCustomer] = useDeleteCustomerMutation();
+
+  const [createCustomer] = useCreateCustomerMutation();
+  const [updateCustomer] = useEditCustomerMutation();
 
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
@@ -53,16 +65,17 @@ export default function ClientsModule() {
 
   const handleCreateCustomer = async (newCustomer: Customer) => {
     try {
-      await createCustomer(newCustomer).unwrap();
+      const response = await createCustomer(newCustomer).unwrap();
       showSnackbar(
         "success",
-        "¡Cliente creado con éxito!",
+        response.message || "¡Cliente creado con éxito!",
         <FaRegCheckCircle />
       );
-    } catch {
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
       showSnackbar(
         "warning",
-        "Hubo un error al crear el cliente",
+        errorMessage || "Hubo un error al crear el cliente",
         <FaRegAngry />
       );
     } finally {
@@ -72,14 +85,21 @@ export default function ClientsModule() {
 
   const handleUpdateCustomer = async (updatedCustomer: Customer) => {
     try {
-      await updateCustomer(updatedCustomer).unwrap();
+      const response = await updateCustomer(updatedCustomer).unwrap();
+
       showSnackbar(
         "success",
-        "Cliente actualizado correctamente",
+        response.message || "Cliente actualizado correctamente",
         <FaRegCheckCircle />
       );
-    } catch {
-      showSnackbar("error", "Error al actualizar el cliente", <FaRegAngry />);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+
+      showSnackbar(
+        "error",
+        errorMessage || "Error al actualizar el cliente",
+        <FaRegAngry />
+      );
     } finally {
       resetFormState();
     }
@@ -92,7 +112,7 @@ export default function ClientsModule() {
     }
 
     try {
-      await deleteCustomer(customer.customerId).unwrap();
+      await deleteMockCustomer(customer.customerId).unwrap();
       showSnackbar(
         "success",
         "Cliente eliminado con éxito",

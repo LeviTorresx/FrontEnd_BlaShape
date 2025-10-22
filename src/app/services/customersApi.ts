@@ -11,6 +11,7 @@ export const customerApi = createApi({
   baseQuery: axiosBaseQuery({
     baseUrl: "http://localhost:8080/api_BS/customer",
   }),
+  tagTypes: ["Customer"],
   endpoints: (builder) => ({
     createCustomer: builder.mutation<CustomerResponse, Customer>({
       query: (body) => ({
@@ -18,6 +19,7 @@ export const customerApi = createApi({
         method: "POST",
         data: body,
       }),
+      invalidatesTags: ["Customer"],
     }),
 
     editCustomer: builder.mutation<CustomerResponse, Customer>({
@@ -26,6 +28,7 @@ export const customerApi = createApi({
         method: "PUT",
         data: body,
       }),
+      invalidatesTags: ["Customer"],
     }),
 
     getCustomers: builder.query<Customer[], void>({
@@ -33,6 +36,7 @@ export const customerApi = createApi({
         url: "/all",
         method: "GET",
       }),
+      providesTags: ["Customer"],
     }),
 
     getCustomerById: builder.query<Customer, number>({
@@ -40,6 +44,7 @@ export const customerApi = createApi({
         url: `get/${id}`,
         method: "GET",
       }),
+      providesTags: ["Customer"],
     }),
   }),
 });

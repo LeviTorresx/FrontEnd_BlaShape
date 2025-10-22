@@ -1,7 +1,14 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
-import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 
 import { mockCustomersApi } from "../services/mockCustomersApi";
 import { mockFurnituresApi } from "../services/mockFurnituresApi";
@@ -10,7 +17,8 @@ import { mockWorkshopApi } from "../services/mockWorkshopApi";
 import { authApi } from "../services/authApi";
 import { authReducer } from "./slices/authSlice";
 import { workshopApi } from "../services/workshopApi";
-
+import { customerApi } from "../services/customersApi";
+import customerReducer from "./slices/customerSlice";
 
 const persistConfig = {
   key: "auth",
@@ -18,20 +26,19 @@ const persistConfig = {
   whitelist: ["user", "isAuthenticated"],
 };
 
-
 const rootReducer = combineReducers({
   auth: persistReducer(persistConfig, authReducer),
 
- 
   [authApi.reducerPath]: authApi.reducer,
   [workshopApi.reducerPath]: workshopApi.reducer,
+  [customerApi.reducerPath]: customerApi.reducer,
   [mockCustomersApi.reducerPath]: mockCustomersApi.reducer,
   [mockFurnituresApi.reducerPath]: mockFurnituresApi.reducer,
   [mockAlertsApi.reducerPath]: mockAlertsApi.reducer,
   [mockWorkshopApi.reducerPath]: mockWorkshopApi.reducer,
-  
-});
 
+  customers: customerReducer,
+});
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -43,13 +50,13 @@ export const store = configureStore({
     }).concat(
       authApi.middleware,
       workshopApi.middleware,
+      customerApi.middleware,
       mockCustomersApi.middleware,
       mockFurnituresApi.middleware,
       mockAlertsApi.middleware,
       mockWorkshopApi.middleware
     ),
 });
-
 
 export const persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;

@@ -116,13 +116,20 @@ export default function ClientsModule() {
       const response = await deleteCustomer(
         customerToDelete.customerId
       ).unwrap();
+
       showSnackbar(
         "success",
-        "Cliente eliminado con éxito",
+        response.message || "Cliente eliminado con éxito",
         <FaRegCheckCircle />
       );
-    } catch {
-      showSnackbar("error", "Error al eliminar el cliente", <FaRegAngry />);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+
+      showSnackbar(
+        "error",
+        errorMessage || "Error al eliminar el cliente",
+        <FaRegAngry />
+      );
     } finally {
       setOpenConfirmDelete(false);
       setCustomerToDelete(null);

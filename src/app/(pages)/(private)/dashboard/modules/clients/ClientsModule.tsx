@@ -7,18 +7,14 @@ import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import AppModal from "@/app/components/ui/AppModal";
 import CustomerForm from "@/app/components/forms/CustomerForm";
 import CustomerCard from "./components/CustomerCard";
-import {
-  useAddCustomerMutation,
-  useDeleteCustomerMutation,
-  useGetCustomersQuery,
-  useUpdateCustomerMutation,
-} from "@/app/services/mockCustomersApi";
+import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
 import { Customer } from "@/app/types/Customer";
 import Button from "@/app/components/ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import {
   useCreateCustomerMutation,
+  useDeleteCustomerMutation,
   useEditCustomerMutation,
 } from "@/app/services/customersApi";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
@@ -32,12 +28,10 @@ export default function ClientsModule() {
   const userAuthID = useSelector(
     (state: RootState) => state.auth.user?.carpenterId
   );
-  const [createMockCustomer] = useAddCustomerMutation();
-  const [updateMockCustomer] = useUpdateCustomerMutation();
-  const [deleteMockCustomer] = useDeleteCustomerMutation();
 
   const [createCustomer] = useCreateCustomerMutation();
   const [updateCustomer] = useEditCustomerMutation();
+  const [deleteCustomer] = useDeleteCustomerMutation();
 
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
@@ -45,6 +39,11 @@ export default function ClientsModule() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null
   );
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
+    null
+  );
+
   const [isEditing, setIsEditing] = useState(false);
 
   const [snackbar, setSnackbar] = useState({
@@ -105,14 +104,18 @@ export default function ClientsModule() {
     }
   };
 
-  const handleDeleteCustomer = async (customer: Customer) => {
-    if (!customer.customerId) {
+  const handleDeleteCustomer = async () => {
+    if (!customerToDelete) return;
+
+    if (!customerToDelete.customerId) {
       showSnackbar("error", "ID de cliente inválido", <FaRegAngry />);
       return;
     }
 
     try {
-      await deleteMockCustomer(customer.customerId).unwrap();
+      const response = await deleteCustomer(
+        customerToDelete.customerId
+      ).unwrap();
       showSnackbar(
         "success",
         "Cliente eliminado con éxito",
@@ -120,6 +123,9 @@ export default function ClientsModule() {
       );
     } catch {
       showSnackbar("error", "Error al eliminar el cliente", <FaRegAngry />);
+    } finally {
+      setOpenConfirmDelete(false);
+      setCustomerToDelete(null);
     }
   };
 
@@ -146,6 +152,11 @@ export default function ClientsModule() {
   const handleViewCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
     setOpenView(true);
+  };
+
+  const confirmDeleteCustomer = (customer: Customer) => {
+    setCustomerToDelete(customer);
+    setOpenConfirmDelete(true);
   };
 
   return (
@@ -176,7 +187,7 @@ export default function ClientsModule() {
           setSearch={setSearch}
           onEdit={handleEditCustomer}
           onView={handleViewCustomer}
-          onDelete={handleDeleteCustomer}
+          onDelete={confirmDeleteCustomer}
         />
       </div>
 
@@ -205,6 +216,34 @@ export default function ClientsModule() {
         title="Detalles del cliente"
       >
         <CustomerCard customer={selectedCustomer!} />
+      </AppModal>
+      {/* Modal de confirmación de eliminación */}
+      <AppModal
+        open={openConfirmDelete}
+        onClose={() => setOpenConfirmDelete(false)}
+        title="Eliminar cliente"
+      >
+        <div className="text-center space-y-4">
+          <p className="text-gray-700">
+            ¿Estás seguro de que deseas eliminar al cliente{" "}
+            <span className="font-semibold text-gray-900">
+              {customerToDelete?.name} {customerToDelete?.lastName}
+            </span>
+            ?
+          </p>
+
+          <div className="flex justify-center gap-4 mt-6">
+            <Button
+              label="Eliminar"
+              onClick={handleDeleteCustomer}
+              className=" bg-red-500 hover:bg-red-400 "
+            />{" "}
+            <Button
+              label="Cancelar"
+              onClick={() => setOpenConfirmDelete(false)}
+            />
+          </div>
+        </div>
       </AppModal>
 
       {/* Snackbar */}

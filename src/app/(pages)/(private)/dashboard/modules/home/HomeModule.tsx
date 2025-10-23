@@ -12,27 +12,28 @@ import { Alert } from "@/app/types/Alert";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
+import { FaChartLine, FaCouch, FaCut, FaUsers } from "react-icons/fa";
 
 const StatisticsList = [
   {
     label: "Clientes",
     value: "24",
-    color: "from-purple-950 to-purple-600",
+    color: "from-purple-50 to-purple-400",
   },
   {
-    label: "Pedidos",
+    label: "Muebles",
     value: "12",
-    color: "from-purple-950 to-purple-600",
+    color: "from-purple-50 to-purple-400",
   },
   {
     label: "Cortes",
     value: "5",
-    color: "from-purple-950 to-purple-600",
+    color: "from-purple-50 to-purple-400",
   },
   {
     label: "Reportes",
     value: "8",
-    color: "from-purple-950 to-red-900",
+    color: "from-purple-50 to-red-200",
   },
 ];
 
@@ -40,7 +41,12 @@ export default function HomeModule() {
   const { data: workshop, isLoading } = useGetWorkshopQuery();
   const { data: furnitureList = [] } = useGetFurnitureQuery();
   const { data: reminders = [] } = useGetAlertsQuery();
-  const workshopInfo = useSelector((state: RootState)=> state.auth.user?.workshop);
+  const workshopInfo = useSelector(
+    (state: RootState) => state.auth.user?.workshop
+  );
+  const customersCount = useSelector(
+    (state: RootState) => state.customers.list.length
+  );
   const [open, setOpen] = useState(false);
 
   if (isLoading) return <p>Cargando información del taller...</p>;
@@ -55,6 +61,33 @@ export default function HomeModule() {
     setOpen(false);
   };
 
+  const StatisticsList = [
+    {
+      label: "Clientes",
+      value: customersCount.toString(),
+      color: "from-purple-50 to-purple-300",
+      icon: <FaUsers />,
+    },
+    {
+      label: "Muebles",
+      value: furnitureList.length.toString(),
+      color: "from-purple-50 to-purple-300",
+      icon: <FaCouch />,
+    },
+    {
+      label: "Cortes",
+      value: "0",
+      color: "from-purple-50 to-purple-300",
+      icon: <FaCut />,
+    },
+    {
+      label: "Reportes",
+      value: reminders.length.toString(),
+      color: "from-purple-50 to-purple-300",
+      icon: <FaChartLine />,
+    },
+  ];
+
   return (
     <div
       className="
@@ -67,7 +100,7 @@ export default function HomeModule() {
       {/* Taller */}
       <div className="col-span-4 md:col-span-1 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <SummaryWorkshop workshop={ workshopInfo || workshop} />
+          <SummaryWorkshop workshop={workshopInfo || workshop} />
         </div>
       </div>
 

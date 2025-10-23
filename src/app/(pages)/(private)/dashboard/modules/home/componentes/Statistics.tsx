@@ -1,7 +1,10 @@
+import { ReactNode } from "react";
+
 interface Stats {
   label: string;
   value: string;
   color: string;
+  icon?: ReactNode;
 }
 
 type StatisticsProps = {
@@ -24,13 +27,21 @@ export default function Statistics({ stats }: StatisticsProps) {
             className={`
               flex flex-col justify-center items-center
               bg-gradient-to-br ${item.color}
-              text-white rounded-xl p-3 sm:p-4
+              text-purple-950 rounded-xl p-3 sm:p-4
               shadow-sm hover:shadow-md
               transition-all duration-300 hover:-translate-y-1
               h-full
             `}
           >
-            <p className="text-xs sm:text-sm font-medium opacity-90 tracking-wide text-center">
+            {item.icon && (
+              <div className="flex items-center justify-center rounded-full bg-white/70 p-2 shadow-inner">
+                <span className="text-purple-800 text-2xl sm:text-3xl">
+                  {item.icon}
+                </span>
+              </div>
+            )}
+
+            <p className="text-xs sm:text-sm font-medium  tracking-wide text-center">
               {item.label}
             </p>
             <p className="text-xl sm:text-2xl font-semibold mt-1">

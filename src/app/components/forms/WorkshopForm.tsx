@@ -19,7 +19,7 @@ export default function WorkshopForm({
   submitLabel = "Guardar",
 }: WorkshopFormProps) {
   const [formData, setFormData] = useState<Workshop>({
-    workshopId : initialData.workshopId,
+    workshopId: initialData.workshopId,
     name: initialData.name || "",
     address: initialData.address || "",
     email: initialData.email || "",
@@ -34,7 +34,13 @@ export default function WorkshopForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    const updatedFormData = {
+      ...formData,
+      nit: formData.nit.trim() === "" ? "No aplica" : formData.nit,
+    };
+
+    onSubmit(updatedFormData);
   };
 
   return (
@@ -61,7 +67,7 @@ export default function WorkshopForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* NIT */}
         <Input
-          label="NIT"
+          label="NIT (opcional si es trabajador independiente)"
           name="nit"
           value={formData.nit}
           onChange={handleChange}

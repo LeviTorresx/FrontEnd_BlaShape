@@ -1,7 +1,6 @@
 import { Furniture } from "@/app/types/Furniture";
 import FurnitureCard from "./FurnitureCard";
-
-
+import Image from "next/image";
 
 type Props = {
   furnitureList: Furniture[];
@@ -46,7 +45,16 @@ export default function RecentFurniture({ furnitureList }: Props) {
         {/* Placeholder cuando no hay muebles */}
         {items.length === 0 && (
           <div className="col-span-full flex flex-col items-center justify-center text-gray-500 py-10">
-            <p className="text-sm font-medium">No hay muebles recientes</p>
+            <Image
+              src="/images/logo1CB.webp"
+              alt="Sin muebles"
+              className=" opacity-40 mb-4 select-none pointer-events-none"
+              width={128}
+              height={128}
+            />
+            <p className="text-sm font-medium text-gray-500">
+              No hay muebles recientes
+            </p>
           </div>
         )}
       </div>

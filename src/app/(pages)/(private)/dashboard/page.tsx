@@ -12,7 +12,7 @@ import ReportsModule from "./modules/ReportsModule";
 import ProfileModule from "./modules/profile/ProfileModule";
 import FurnitureModule from "./modules/furniture/FurnitureModule";
 import WorkshopModule from "./modules/workshop/WorkshopModule";
-import ShapeModule from "./modules/ShapeModule";
+import ShapeModule from "./modules/shape/ShapeModule";
 import ModuleSkeleton from "@/app/components/ui/ModuleSkeleton";
 import { FaChartBar, FaHome, FaUserCircle, FaUsers } from "react-icons/fa";
 import { TbLayoutDashboardFilled } from "react-icons/tb";

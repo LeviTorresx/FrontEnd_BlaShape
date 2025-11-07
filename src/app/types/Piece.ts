@@ -1,5 +1,5 @@
 export interface Piece {
-  pieceId: number;
+  pieceId?: number;
   quantity: number;
   height: number;
   width: number;
@@ -14,3 +14,13 @@ export interface Piece {
     right: boolean;
   };
 }
+
+export type gruopedPieces = {
+  key: string;
+  materialname: string;
+  colorName: string;
+  ColorHex: string;
+  thickness: number;
+  pieces: Piece[];
+};
+

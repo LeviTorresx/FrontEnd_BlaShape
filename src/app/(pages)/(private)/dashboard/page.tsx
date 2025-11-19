@@ -7,7 +7,7 @@ import Sidebar from "@/app/components/layout/Sidebar";
 import BottomMenu from "@/app/components/layout/ButtomMenu";
 import { motion, AnimatePresence } from "framer-motion";
 import HomeModule from "./modules/home/HomeModule";
-import ClientsModule from "./modules/clients/ClientsModule";
+import ClientsModule from "./modules/customers/ClientsModule";
 import ReportsModule from "./modules/ReportsModule";
 import ProfileModule from "./modules/profile/ProfileModule";
 import FurnitureModule from "./modules/furniture/FurnitureModule";
@@ -30,14 +30,14 @@ interface SelectedModule {
 
 const mainMenu = [
   { key: "home", label: "Inicio", icon: <FaHome size={20} /> },
-  { key: "furniture", label: "Muebles", icon: <MdChair size={20} /> },
   { key: "clients", label: "Clientes", icon: <FaUsers size={20} /> },
-  { key: "reports", label: "Reportes", icon: <FaChartBar size={20} /> },
+  { key: "furniture", label: "Muebles", icon: <MdChair size={20} /> },
   {
     key: "shape",
     label: "Zona de cortes",
     icon: <TbLayoutDashboardFilled size={20} />,
   },
+  { key: "reports", label: "Reportes", icon: <FaChartBar size={20} /> },
 ];
 
 const accountMenu = [
@@ -51,7 +51,7 @@ export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
 
-  const {data: customers} = useGetCustomersQuery();
+  const { data: customers } = useGetCustomersQuery();
 
   const [selected, setSelected] = useState<SelectedModule>({
     key: "home",

@@ -1,14 +1,14 @@
 "use client";
 
-import PiecesForm from "@/app/components/forms/PiecesForm";
-import { useAppDispatch } from "@/app/hooks/useRedux";
-import { useGetFurnitureByIdQuery } from "@/app/services/mockFurnituresApi";
-import { addPiece } from "@/app/store/slices/piecesSlice";
-import { RootState } from "@/app/store/store";
-import { Piece } from "@/app/types/Piece";
-import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
+import Pieces from "./sections/Pieces";
+import Guillotine from "./sections/Guillotine"; // tu componente de guillotina
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import GroupedPiecesTables from "./components/GroupedPiecesTables";
+import { RootState } from "@/app/store/store";
+import { useGetFurnitureByIdQuery } from "@/app/services/mockFurnituresApi";
+import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
+import { convertGroupedPiecesToItems } from "@/app/utils/PiecesToItems";
+import LayoutViewer from "./components/LayoutViewer";
 
 export default function ShapeModule({
   shapeId,
@@ -22,97 +22,74 @@ export default function ShapeModule({
   const materials = useSelector((state: RootState) => state.materials.list);
   const pieces = useSelector((state: RootState) => state.pieces.list);
   const grouped = gruopPiecesByAttributes(pieces);
+  const items = useMemo(() => convertGroupedPiecesToItems(grouped), [pieces])
 
-  const dispatch = useAppDispatch();
 
-  const handleOnsubmit = (piece: Piece) => {
-    dispatch(addPiece(piece));
-  };
+  console.log("Items para guillotina:", items);
+
+  const [section, setSection] = useState<"pieces" | "guillotine">("pieces");
 
   return (
     <div className="p-6 flex flex-col gap-6 h-full rounded-2xl">
       {/* Header principal */}
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-3">
-        <h2 className="text-2xl font-bold text-gray-800">Zona de Cortes</h2>
-        {shapeId ? (
-          <p className="text-sm text-gray-600">
-            Mueble asociado:{" "}
-            <span className="font-semibold text-purple-600">{shapeId}</span>
-          </p>
-        ) : (
-          <p className="text-sm text-gray-500 italic">
-            No está asociado a ningún mueble actualmente
-          </p>
-        )}
-      </header>
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-3 mb-4 gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          {/* Título */}
+          <h2 className="text-2xl font-bold text-gray-800">Zona de Cortes</h2>
 
-      {/* Panel principal dividido */}
-      <div className="flex flex-col md:flex-row gap-4  h-full">
-        {/*Columna izquierda — Formulario */}
-        <section className=" flex  bg-white rounded-xl shadow-md  p-5 ">
           {/* Información del mueble */}
-          {furniture && (
-            <div className="mb-5">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-3">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {furniture.name}
-                </h3>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    furniture.status === "En progreso"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : furniture.status === "Completado"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {furniture.status}
-                </span>
-              </div>
-
-              <p className="text-sm text-gray-600 mb-2">
-                ID del mueble: <strong>{furniture.furnitureId}</strong>
-              </p>
-
-              {furniture.pieces && furniture.pieces.length > 0 ? (
-                <div className="mt-3">
-                  <p className="text-sm text-gray-700 font-medium mb-1">
-                    Piezas existentes:
-                  </p>
-                  <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                    {furniture.pieces.map((piece) => (
-                      <li key={piece.pieceId}>
-                        Pieza # {piece.pieceId} — {piece.materialName}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500 italic">
-                  No hay piezas registradas aún.
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Formulario */}
-          {materials.length > 0 ? (
-            <div className="h-full">
-              <PiecesForm materials={materials} onSubmit={handleOnsubmit} />
-            </div>
+          {shapeId ? (
+            <p className="text-sm text-gray-600">
+              Mueble asociado:{" "}
+              <span className="font-semibold text-purple-600">{shapeId}</span>
+            </p>
           ) : (
-            <p className="text-sm text-gray-500 text-center italic">
-              No hay materiales disponibles.
+            <p className="text-sm text-gray-500 italic">
+              No está asociado a ningún mueble actualmente
             </p>
           )}
-        </section>
+        </div>
 
-        <section className="flex-1 bg-white rounded-xl shadow-md border border-gray-200 p-5  max-h-[85vh]">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Tabla de Piezas
-          </h3>
-          <GroupedPiecesTables groupedData={grouped} />
-        </section>
+        {/* Switch de módulos tipo píldora */}
+        <div className="relative inline-flex bg-gray-200 rounded-full p-1 w-max shadow-inner">
+          {/* Fondo deslizante */}
+          <div
+            className={`absolute top-0 left-0 h-full w-1/2 bg-purple-800 rounded-full shadow-md transform transition-transform duration-300 ${
+              section === "guillotine" ? "translate-x-full" : "translate-x-0"
+            }`}
+          />
+
+          {/* Botones */}
+          <button
+            onClick={() => setSection("pieces")}
+            className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
+              section === "pieces"
+                ? "text-white"
+                : "text-gray-700 hover:text-gray-900"
+            }`}
+          >
+            Piezas
+          </button>
+          <button
+            onClick={() => setSection("guillotine")}
+            className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
+              section === "guillotine"
+                ? "text-white"
+                : "text-gray-700 hover:text-gray-900"
+            }`}
+          >
+            Guillotina
+          </button>
+        </div>
+      </header>
+
+      {/* Renderizado condicional de módulos */}
+      <div className="h-full">
+        {section === "pieces" ? (
+          <Pieces materials={materials} pieces={grouped} />
+        ) : (
+          <LayoutViewer/>
+        )}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { Item } from "@/app/types/Item";
 import React, { useEffect, useMemo, useState } from "react";
 
 /**
@@ -11,24 +12,6 @@ import React, { useEffect, useMemo, useState } from "react";
  */
 
 /* ---------- Types ---------- */
-type Color = { hex: string };
-
-export type Item = {
-  width: number;
-  height: number;
-  rotated?: boolean; // input suggestion; packing decidirá posición/rotación
-  x?: number;
-  y?: number;
-  color: Color;
-  id?: string | number;
-  // opcional: si quieres dibujar bordes según los edges originales
-  edges?: {
-    top?: boolean;
-    bottom?: boolean;
-    left?: boolean;
-    right?: boolean;
-  };
-};
 
 type Method = "guillotine" | "shelf";
 
@@ -40,7 +23,6 @@ interface GuillotinePackingProps {
   relaxation?: number;
   kerf?: number; // espacio a restar entre piezas por ancho de corte (en las mismas unidades que width/height)
 }
-
 /* ---------- Componente ---------- */
 const Guillotine: React.FC<GuillotinePackingProps> = ({
   width,
@@ -183,7 +165,7 @@ const Guillotine: React.FC<GuillotinePackingProps> = ({
           height * scale
         )}`}
         style={{
-          border: "2px solid #444",
+          border: "1px solid #444",
           borderRadius: 8,
           background: "#d9d9d9",
         }}

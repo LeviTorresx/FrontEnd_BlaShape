@@ -7,8 +7,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { useGetFurnitureByIdQuery } from "@/app/services/mockFurnituresApi";
 import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
-import { convertGroupedPiecesToItems } from "@/app/utils/PiecesToItems";
 import LayoutViewer from "./components/LayoutViewer";
+import { expandPiecesByQuantity } from "@/app/utils/ExpandPieces";
+import { piecesToItems } from "@/app/utils/PieceToItem";
 
 export default function ShapeModule({
   shapeId,
@@ -22,10 +23,10 @@ export default function ShapeModule({
   const materials = useSelector((state: RootState) => state.materials.list);
   const pieces = useSelector((state: RootState) => state.pieces.list);
   const grouped = gruopPiecesByAttributes(pieces);
-  const items = useMemo(() => convertGroupedPiecesToItems(grouped), [pieces])
+  const expandedPieces = expandPiecesByQuantity(pieces);
+  const items = piecesToItems(expandedPieces);
 
-
-  console.log("Items para guillotina:", items);
+  console.log(items);
 
   const [section, setSection] = useState<"pieces" | "guillotine">("pieces");
 
@@ -88,7 +89,7 @@ export default function ShapeModule({
         {section === "pieces" ? (
           <Pieces materials={materials} pieces={grouped} />
         ) : (
-          <LayoutViewer/>
+          <LayoutViewer itemsProps={items} />
         )}
       </div>
     </div>

@@ -8,7 +8,6 @@
 
 import { Item } from "@/app/types/Item";
 
-
 type Space = {
   x: number;
   y: number;
@@ -28,9 +27,7 @@ export function GuillotineAlgorithm(
   const sheets: Item[][] = [];
   const wastes: string[] = [];
 
-  let remaining = itemsIn
-    .map((i) => ({ ...i }))
-    .sort((a, b) => b.height - a.height);
+  let remaining = sortMixed([...itemsIn]);
 
   while (remaining.length) {
     let spaces: Space[] = [
@@ -258,3 +255,19 @@ function scoreFit(itemW: number, itemH: number, sp: Space) {
 
   return areaLeft + shapePenalty;
 }
+
+const sortMixed = (items: Item[]) => {
+  return items.sort((a, b) => {
+    const areaA = a.width * a.height;
+    const areaB = b.width * b.height;
+
+    if (areaA !== areaB) return areaB - areaA;
+
+
+    const longA = Math.max(a.width, a.height);
+    const longB = Math.max(b.width, b.height);
+    if (longA !== longB) return longB - longA;
+
+    return b.height - a.height;
+  });
+};

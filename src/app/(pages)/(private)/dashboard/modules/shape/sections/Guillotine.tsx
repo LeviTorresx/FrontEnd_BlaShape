@@ -1,5 +1,7 @@
 import { Item } from "@/app/types/Item";
 import React, { useEffect, useMemo, useState } from "react";
+import { GuillotineAlgorithm } from "./GuillotineAlgorithm";
+import { GuillotineAlgorithmSheft } from "./GuillotineAlgorithmSheft";
 
 /**
  * Mejoras incluidas:
@@ -23,6 +25,14 @@ interface GuillotinePackingProps {
   relaxation?: number;
   kerf?: number; // espacio a restar entre piezas por ancho de corte (en las mismas unidades que width/height)
 }
+
+type Space = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 /* ---------- Componente ---------- */
 const Guillotine: React.FC<GuillotinePackingProps> = ({
   width,
@@ -60,7 +70,7 @@ const Guillotine: React.FC<GuillotinePackingProps> = ({
   useEffect(() => {
     // Packing dispatcher
     if (method === "shelf") {
-      const { sheets: s, wastes: w } = packWithShelves(
+      const { sheets: s, wastes: w } = GuillotineAlgorithmSheft(
         width,
         height,
         normalizedInput,
@@ -70,13 +80,11 @@ const Guillotine: React.FC<GuillotinePackingProps> = ({
       setWastes(w);
       setPage(0);
     } else {
-      const { sheets: s, wastes: w } = packWithGuillotineBest
-      (
+      const { sheets: s, wastes: w } = GuillotineAlgorithm(
         width,
         height,
         normalizedInput,
-        kerf,
-        relaxation
+        kerf
       );
       setSheets(s);
       setWastes(w);
@@ -365,397 +373,3 @@ const Guillotine: React.FC<GuillotinePackingProps> = ({
 };
 
 export default Guillotine;
-
-/* ============================
-   PACKING HELPERS (internal)
-   ============================ */
-
-/**
- * Guillotine packing (simplified & corrected).
- * - kerf: restado entre piezas (aplicado al medir ancho/alto efectivo)
- */
-function packWithGuillotine(
-  containerWidth: number,
-  containerHeight: number,
-  itemsIn: Item[],
-  kerf = 0,
-  relaxation = 5
-) {
-  type Space = { x: number; y: number; width: number; height: number };
-
-  const sheets: Item[][] = [];
-  const wastes: string[] = [];
-
-  let remaining = itemsIn
-    .map((i) => ({ ...i })) // clone
-    .sort((a, b) => b.height - a.height); // initial sort
-
-  while (remaining.length) {
-    const spaces: Space[] = [
-      { x: 0, y: 0, width: containerWidth, height: containerHeight },
-    ];
-    const placed: Item[] = [];
-    let usedArea = 0;
-    const notFit: Item[] = [];
-
-    // Try to place every item
-    for (const item of remaining) {
-      const iw = Math.max(0.0001, item.width + kerf); // effective dims
-      const ih = Math.max(0.0001, item.height + kerf);
-
-      let placedThis = false;
-
-      // sort spaces for deterministic placement
-      spaces.sort((a, b) => a.y - b.y || a.x - b.x);
-
-      for (let si = 0; si < spaces.length; si++) {
-        const space = spaces[si];
-        const fitsNormal = iw <= space.width && ih <= space.height;
-        const fitsRot = ih <= space.width && iw <= space.height;
-
-        if (!fitsNormal && !fitsRot) continue;
-
-        const rotated = fitsRot && !fitsNormal;
-        const itemW = rotated ? item.height : item.width;
-        const itemH = rotated ? item.width : item.height;
-
-        // place item
-        const placedItem: Item = {
-          ...item,
-          rotated,
-          x: space.x,
-          y: space.y,
-        };
-
-        placed.push(placedItem);
-        placedThis = true;
-        usedArea += (itemW + kerf) * (itemH + kerf);
-
-        // create right and bottom spaces (CORRECTED)
-        const right: Space = {
-          x: space.x + (itemW + kerf),
-          y: space.y,
-          width: space.width - (itemW + kerf),
-          height: space.height,
-        };
-
-        const bottom: Space = {
-          x: space.x,
-          y: space.y + (itemH + kerf),
-          width: itemW + kerf,
-          height: space.height - (itemH + kerf),
-        };
-
-        // replace current space by new spaces (filter zero or negative)
-        spaces.splice(si, 1);
-        if (right.width > 0 && right.height > 0) spaces.push(right);
-        if (bottom.width > 0 && bottom.height > 0) spaces.push(bottom);
-
-        break;
-      }
-
-      if (!placedThis) {
-        notFit.push(item);
-      }
-    }
-
-    const totalArea = containerWidth * containerHeight;
-    const wastePerc = (((totalArea - usedArea) / totalArea) * 100).toFixed(2);
-    sheets.push(placed);
-    wastes.push(wastePerc);
-    remaining = notFit;
-  }
-
-  return { sheets, wastes };
-}
-
-/**
- * Shelf packing (First-Fit Decreasing Height variant)
- * Simpler and often gives decent results for many real sets.
- * kerf applied between items horizontally and vertically.
- */
-function packWithShelves(
-  containerWidth: number,
-  containerHeight: number,
-  itemsIn: Item[],
-  kerf = 0
-) {
-  const sheets: Item[][] = [];
-  const wastes: string[] = [];
-
-  let remaining = itemsIn
-    .map((i) => ({ ...i }))
-    .sort((a, b) => b.height - a.height);
-
-  while (remaining.length) {
-    const placed: Item[] = [];
-    let usedArea = 0;
-    let notFit: Item[] = [];
-
-    let yCursor = 0;
-
-    while (remaining.length) {
-      // create a new shelf starting at yCursor
-      let shelfHeight = 0;
-      let xCursor = 0;
-      const shelfItems: Item[] = [];
-
-      // iterate copy of remaining to try place on this shelf
-      for (let i = 0; i < remaining.length; ) {
-        const item = remaining[i];
-        const iw = item.width + kerf;
-        const ih = item.height + kerf;
-        if (iw <= containerWidth - xCursor && yCursor + ih <= containerHeight) {
-          // place
-          const placedItem: Item = {
-            ...item,
-            rotated: false,
-            x: xCursor,
-            y: yCursor,
-          };
-          shelfItems.push(placedItem);
-          placed.push(placedItem);
-          usedArea += iw * ih;
-          xCursor += iw;
-          shelfHeight = Math.max(shelfHeight, ih);
-          // remove from remaining
-          remaining.splice(i, 1);
-        } else {
-          i++;
-        }
-      }
-
-      if (shelfItems.length === 0) {
-        // nothing fits in this shelf -> break to avoid infinite loop
-        break;
-      }
-
-      yCursor += shelfHeight;
-      if (yCursor >= containerHeight) break;
-    }
-
-    // anything left that didn't fit in this sheet, mark as notFit
-    notFit = remaining;
-    const totalArea = containerWidth * containerHeight;
-    const wastePerc = (((totalArea - usedArea) / totalArea) * 100).toFixed(2);
-    sheets.push(placed);
-    wastes.push(wastePerc);
-
-    remaining = notFit;
-  }
-
-  return { sheets, wastes };
-}
-
-/**
- * Guillotine Packing avanzado:
- * - bestAreaFit para escoger el mejor espacio
- * - prune + merge de espacios
- * - rotación permitida
- * - kerf aplicado correctamente
- */
-function packWithGuillotineBest(
-  containerWidth: number,
-  containerHeight: number,
-  itemsIn: Item[],
-  kerf = 0,
-  relaxation = 5
-) {
-  type Space = { x: number; y: number; width: number; height: number };
-
-  const sheets: Item[][] = [];
-  const wastes: string[] = [];
-
-  let remaining = itemsIn
-    .map((i) => ({ ...i }))
-    .sort((a, b) => b.height - a.height);
-
-  while (remaining.length) {
-    let spaces: Space[] = [
-      { x: 0, y: 0, width: containerWidth, height: containerHeight },
-    ];
-    const placed: Item[] = [];
-    let usedArea = 0;
-
-    const notFit: Item[] = [];
-
-    for (const item of remaining) {
-      const iw = item.width + kerf;
-      const ih = item.height + kerf;
-
-      // ======= BEST FIT: escoger el mejor espacio por área mínima sobrante =======
-      let bestIndex = -1;
-      let bestRot = false;
-      let bestScore = Infinity;
-
-      for (let i = 0; i < spaces.length; i++) {
-        const sp = spaces[i];
-
-        const fitsNormal = iw <= sp.width && ih <= sp.height;
-        const fitsRot = ih <= sp.width && iw <= sp.height;
-
-        if (fitsNormal) {
-          const leftover = sp.width * sp.height - iw * ih;
-          if (leftover < bestScore) {
-            bestScore = leftover;
-            bestIndex = i;
-            bestRot = false;
-          }
-        }
-        if (fitsRot) {
-          const leftover = sp.width * sp.height - ih * iw;
-          if (leftover < bestScore) {
-            bestScore = leftover;
-            bestIndex = i;
-            bestRot = true;
-          }
-        }
-      }
-
-      if (bestIndex === -1) {
-        notFit.push(item);
-        continue;
-      }
-
-      const chosen = spaces[bestIndex];
-      const itemW = bestRot ? item.height : item.width;
-      const itemH = bestRot ? item.width : item.height;
-
-      const placedItem: Item = {
-        ...item,
-        rotated: bestRot,
-        x: chosen.x,
-        y: chosen.y,
-      };
-
-      placed.push(placedItem);
-      usedArea += (itemW + kerf) * (itemH + kerf);
-
-      // ====== División guillotine con prioridad horizontal ======
-      const bottom: Space = {
-        x: chosen.x,
-        y: chosen.y + itemH + kerf,
-        width: chosen.width,
-        height: chosen.height - (itemH + kerf),
-      };
-
-      const right: Space = {
-        x: chosen.x + itemW + kerf,
-        y: chosen.y,
-        width: chosen.width - (itemW + kerf),
-        height: itemH + kerf,
-      };
-
-      spaces.splice(bestIndex, 1);
-
-      // PRIMERO agregamos el corte horizontal
-      if (bottom.width > 0 && bottom.height > 0) spaces.push(bottom);
-
-      // Luego el vertical (opcional)
-      if (right.width > 0 && right.height > 0) spaces.push(right);
-
-      // Limpieza completa de espacios
-      spaces = pruneSpaces(spaces);
-      spaces = mergeSpaces(spaces);
-    }
-
-    const totalArea = containerWidth * containerHeight;
-    const wastePerc = (((totalArea - usedArea) / totalArea) * 100).toFixed(2);
-
-    sheets.push(placed);
-    wastes.push(wastePerc);
-    remaining = notFit;
-  }
-
-  return { sheets, wastes };
-}
-
-/* ------------------------------------
-   Elimina espacios redundantes:
-   Si un espacio está completamente dentro otro, se borra.
------------------------------------- */
-function pruneSpaces(spaces: any[]) {
-  return spaces.filter((s, i) => {
-    return !spaces.some(
-      (o, j) =>
-        i !== j &&
-        s.x >= o.x &&
-        s.y >= o.y &&
-        s.x + s.width <= o.x + o.width &&
-        s.y + s.height <= o.y + o.height
-    );
-  });
-}
-
-/* ------------------------------------
-   Fusiona espacios que se pueden unificar
-   (misma X y ancho adyacente o misma Y y alto adyacente)
------------------------------------- */
-function mergeSpaces(spaces: any[]) {
-  let merged = true;
-  while (merged) {
-    merged = false;
-
-    for (let i = 0; i < spaces.length; i++) {
-      for (let j = i + 1; j < spaces.length; j++) {
-        const a = spaces[i];
-        const b = spaces[j];
-
-        // Fusion vertical (uno arriba del otro)
-        if (a.x === b.x && a.width === b.width) {
-          if (a.y + a.height === b.y) {
-            spaces[i] = {
-              x: a.x,
-              y: a.y,
-              width: a.width,
-              height: a.height + b.height,
-            };
-            spaces.splice(j, 1);
-            merged = true;
-            break;
-          }
-          if (b.y + b.height === a.y) {
-            spaces[i] = {
-              x: b.x,
-              y: b.y,
-              width: b.width,
-              height: a.height + b.height,
-            };
-            spaces.splice(j, 1);
-            merged = true;
-            break;
-          }
-        }
-
-        // Fusion horizontal (uno al lado del otro)
-        if (a.y === b.y && a.height === b.height) {
-          if (a.x + a.width === b.x) {
-            spaces[i] = {
-              x: a.x,
-              y: a.y,
-              width: a.width + b.width,
-              height: a.height,
-            };
-            spaces.splice(j, 1);
-            merged = true;
-            break;
-          }
-          if (b.x + b.width === a.x) {
-            spaces[i] = {
-              x: b.x,
-              y: b.y,
-              width: a.width + b.width,
-              height: a.height,
-            };
-            spaces.splice(j, 1);
-            merged = true;
-            break;
-          }
-        }
-      }
-      if (merged) break;
-    }
-  }
-
-  return spaces;
-}

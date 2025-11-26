@@ -11,7 +11,6 @@ export default function LayoutViewer({ itemsProps }: Props) {
     ? itemsProps
     : []; // fallback seguro
 
-
   return (
     <Guillotine
       width={2430}

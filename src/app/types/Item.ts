@@ -4,7 +4,7 @@ export type Item = {
   rotated?: boolean;
   x?: number;
   y?: number;
-  color: { hex: string };
+  color: { hex: string, name?: string };
   id?: string | number;
   edges?: {
     top?: boolean;
@@ -14,3 +14,9 @@ export type Item = {
   };
 };
 
+export type GroupedItems = {
+  key: string;
+  colorHex: string;
+  colorName: string;
+  items: Item[];
+};

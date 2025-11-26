@@ -79,6 +79,16 @@ export function GuillotineAlgorithm(
         continue;
       }
 
+      if (bestIndex === 0 && spaces.length === 1) {
+        // Verificar si cabe sin rotar (como medida de seguridad)
+        const fitsNormal =
+          item.width + kerf <= spaces[0].width &&
+          item.height + kerf <= spaces[0].height;
+        if (fitsNormal) {
+          bestRot = false; // Forzar no rotación
+        }
+      }
+
       const chosen = spaces[bestIndex];
       const itemW = bestRot ? item.height : item.width;
       const itemH = bestRot ? item.width : item.height;
@@ -262,7 +272,6 @@ const sortMixed = (items: Item[]) => {
     const areaB = b.width * b.height;
 
     if (areaA !== areaB) return areaB - areaA;
-
 
     const longA = Math.max(a.width, a.height);
     const longB = Math.max(b.width, b.height);

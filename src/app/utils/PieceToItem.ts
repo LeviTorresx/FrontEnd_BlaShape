@@ -6,7 +6,7 @@ export function piecesToItems(pieces: Piece[]): Item[] {
     id: p.pieceId ?? index,
     width: Number(p.width) || 0,
     height: Number(p.height) || 0,
-    color: { hex: p.ColorHex ?? "#cccccc" }, // <-- seguro
+    color: { hex: p.ColorHex ?? "#cccccc", name: p.colorName ?? "n/a" }, // <-- seguro
     edges: {
       top: !!p.edges?.top,
       bottom: !!p.edges?.bottom,

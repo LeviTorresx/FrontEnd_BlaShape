@@ -1,8 +1,7 @@
 "use client";
 
 import Pieces from "./sections/Pieces";
-import Guillotine from "./sections/Guillotine"; // tu componente de guillotina
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { useGetFurnitureByIdQuery } from "@/app/services/mockFurnituresApi";
@@ -10,6 +9,7 @@ import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
 import LayoutViewer from "./components/LayoutViewer";
 import { expandPiecesByQuantity } from "@/app/utils/ExpandPieces";
 import { piecesToItems } from "@/app/utils/PieceToItem";
+import { groupItemsByColor } from "@/app/utils/GroupItemsByColor";
 
 export default function ShapeModule({
   shapeId,
@@ -21,12 +21,13 @@ export default function ShapeModule({
   });
 
   const materials = useSelector((state: RootState) => state.materials.list);
+
   const pieces = useSelector((state: RootState) => state.pieces.list);
   const grouped = gruopPiecesByAttributes(pieces);
   const expandedPieces = expandPiecesByQuantity(pieces);
-  const items = piecesToItems(expandedPieces);
 
-  console.log(items);
+  const items = piecesToItems(expandedPieces);
+  const groupedItems = groupItemsByColor(items);
 
   const [section, setSection] = useState<"pieces" | "guillotine">("pieces");
 
@@ -89,7 +90,7 @@ export default function ShapeModule({
         {section === "pieces" ? (
           <Pieces materials={materials} pieces={grouped} />
         ) : (
-          <LayoutViewer itemsProps={items} />
+          <LayoutViewer groupedItems={groupedItems} />
         )}
       </div>
     </div>

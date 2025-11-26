@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { FaChartLine, FaCouch, FaCut, FaUsers } from "react-icons/fa";
+import SummaryCarpenter from "./componentes/SummaryCarpenter";
 
 const StatisticsList = [
   {
@@ -47,6 +48,7 @@ export default function HomeModule() {
   const customersCount = useSelector(
     (state: RootState) => state.customers.list.length
   );
+  const user = useSelector((state: RootState) => state.auth.user);
   const [open, setOpen] = useState(false);
 
   if (isLoading) return <p>Cargando información del taller...</p>;
@@ -97,28 +99,17 @@ export default function HomeModule() {
         h-full
       "
     >
-      {/* Taller */}
+      {/* Carpintero */}
       <div className="col-span-4 md:col-span-1 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <SummaryWorkshop workshop={workshopInfo || workshop} />
+          {user && <SummaryCarpenter carpenter={user} />}
         </div>
       </div>
 
-      {/* Recordatorios */}
+      {/* Taller */}
       <div className="col-span-4 md:col-span-1 md:row-start-3 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <Reminder reminders={reminders} onAdd={handleAddAlert} />
-          <div>
-            <AppModal
-              open={open}
-              onClose={() => setOpen(false)}
-              title="Crear nuevo recordatorio"
-              confirmText="Guardar"
-              cancelText="Cancelar"
-            >
-              <AlertForm onSubmit={handleSubmitAlert} />
-            </AppModal>
-          </div>
+          <SummaryWorkshop workshop={workshopInfo || workshop} />
         </div>
       </div>
 

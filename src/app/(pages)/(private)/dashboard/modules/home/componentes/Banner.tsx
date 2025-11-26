@@ -12,7 +12,7 @@ export default function Banner() {
           className=" shadow-sm"
         />
         <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">
-          Bienvenido al Panel de Control
+          Bienvenido a tu espacio de trabajo
         </h2>
       </div>
 

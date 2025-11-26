@@ -7,7 +7,6 @@ type Props = {
 };
 
 export default function LayoutViewer({ groupedItems }: Props) {
-
   const [selectedGroup, setSelectedGroup] = useState<GroupedItems | null>(null);
 
   // Items que se enviarán a Guillotine
@@ -15,7 +14,6 @@ export default function LayoutViewer({ groupedItems }: Props) {
 
   return (
     <div className="flex gap-6">
-
       {/* LISTADO DE GRUPOS */}
       <div className="w-80 border p-4 rounded">
         <h2 className="font-bold mb-3">Grupos por color</h2>
@@ -35,7 +33,11 @@ export default function LayoutViewer({ groupedItems }: Props) {
             key={group.key}
             onClick={() => setSelectedGroup(group)}
             className={`w-full text-left mb-2 p-2 rounded border flex items-center gap-2 
-              ${selectedGroup?.key === group.key ? "bg-blue-500 text-white" : "bg-white"}`}
+              ${
+                selectedGroup?.key === group.key
+                  ? "bg-blue-500 text-white"
+                  : "bg-white"
+              }`}
           >
             <div
               style={{
@@ -46,7 +48,9 @@ export default function LayoutViewer({ groupedItems }: Props) {
                 border: "1px solid #0002",
               }}
             />
-            <span>{group.colorName} ({group.colorHex})</span>
+            <span>
+              {group.colorName} ({group.colorHex})
+            </span>
           </button>
         ))}
       </div>

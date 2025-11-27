@@ -113,7 +113,10 @@ export default function FurnitureCard({
             <strong>ID del mueble:</strong> {furniture.furnitureId}
           </p>
           <p>
-            <strong>Piezas:</strong> {furniture.pieces?.length || 0}
+            <strong>Piezas:</strong>{" "}
+            {furniture.pieces
+              .map((p) => Number(p.quantity))
+              .reduce((a, b) => a + b, 0 || 0)}
           </p>
           {furniture.documentUrl && (
             <a

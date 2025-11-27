@@ -123,16 +123,23 @@ export default function FurnitureTable({
                         {f.pieces && f.pieces.length > 0 ? (
                           <span
                             className={`inline-flex items-center justify-center gap-2 px-3 py-1.5 
-                              rounded-full text-sm font-semibold shadow-sm transition-all
-                              ${
-                                f.pieces.length > 1
-                                  ? "bg-purple-100 text-purple-900 border border-purple-200"
-                                  : "bg-purple-100 text-purple-600 border border-purple-200"
-                              }`}
+        rounded-full text-sm font-semibold shadow-sm transition-all
+        ${
+          f.pieces.length > 1
+            ? "bg-purple-100 text-purple-900 border border-purple-200"
+            : "bg-purple-100 text-purple-600 border border-purple-200"
+        }`}
                           >
                             <FaCubes className="text-sm opacity-80" />
-                            {f.pieces.length} pieza
-                            {f.pieces.length > 1 ? "s" : ""}
+                            {f.pieces
+                              .map((p) => Number(p.quantity))
+                              .reduce((a, b) => a + b, 0)}{" "}
+                            pieza
+                            {f.pieces
+                              .map((p) => Number(p.quantity))
+                              .reduce((a, b) => a + b, 0) > 1
+                              ? "s"
+                              : ""}
                           </span>
                         ) : (
                           <div className="flex justify-center">

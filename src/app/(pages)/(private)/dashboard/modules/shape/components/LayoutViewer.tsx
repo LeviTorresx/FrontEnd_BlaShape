@@ -15,57 +15,66 @@ export default function LayoutViewer({ groupedItems }: Props) {
   return (
     <div className="flex gap-6">
       {/* LISTADO DE GRUPOS */}
-      <div className="w-80 border p-4 rounded">
-        <h2 className="font-bold mb-3">Grupos por color</h2>
+      <div className="w-80 bg-purple-100 rounded-2xl shadow-sm border border-gray-200 p-5 h-full">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Filtrar por color
+        </h2>
 
-        {/* Botón para mostrar TODOS (vaciar selección) */}
+        {/* Botón para mostrar TODOS */}
         <button
           onClick={() => setSelectedGroup(null)}
-          className={`w-full mb-3 p-2 rounded border ${
-            !selectedGroup ? "bg-blue-500 text-white" : "bg-white"
-          }`}
+          className={`w-full mb-4 py-2.5 rounded-xl transition-all duration-200 font-medium
+      ${
+        !selectedGroup
+          ? "bg-purple-600 text-white shadow-md"
+          : "bg-purple-200 text-gray-700 hover:bg-purple-300"
+      }
+    `}
         >
-          Mostrar todos (vacío)
+          Blashape
         </button>
 
-        {groupedItems.map((group) => (
-          <button
-            key={group.key}
-            onClick={() => setSelectedGroup(group)}
-            className={`w-full text-left mb-2 p-2 rounded border flex items-center gap-2 
-              ${
-                selectedGroup?.key === group.key
-                  ? "bg-blue-500 text-white"
-                  : "bg-white"
-              }`}
-          >
-            <div
-              style={{
-                width: 16,
-                height: 16,
-                background: group.colorHex,
-                borderRadius: 4,
-                border: "1px solid #0002",
-              }}
-            />
-            <span>
-              {group.colorName} ({group.colorHex})
-            </span>
-          </button>
-        ))}
+        <div className="flex flex-col gap-2">
+          {groupedItems.map((group) => {
+            const active = selectedGroup?.key === group.key;
+
+            return (
+              <button
+                key={group.key}
+                onClick={() => setSelectedGroup(group)}
+                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200
+            ${
+              active
+                ? "text-white bg-purple-700 shadow-md"
+                : "bg-purple-200 text-gray-800 hover:bg-purple-300"
+            }
+          `}
+              >
+                <span className="font-bold">{group.colorName}</span>
+
+                <span
+                  className="w-5 h-5 rounded-full border border-gray-400 shadow-sm"
+                  style={{
+                    backgroundColor: group.colorHex,
+                    transform: active ? "scale(1.1)" : "scale(1)",
+                  }}
+                ></span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* VISOR DEL PACKING */}
       <div className="flex justify-center w-full h-full">
         <Guillotine
-        width={2430}
-        height={2130}
-        items={itemsToRender}
-        method="guillotine"
-        kerf={0.5}
-      />
+          width={2430}
+          height={2130}
+          items={itemsToRender}
+          method="guillotine"
+          kerf={0.5}
+        />
       </div>
-      
     </div>
   );
 }

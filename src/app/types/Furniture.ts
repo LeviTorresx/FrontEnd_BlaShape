@@ -1,8 +1,19 @@
 import { Piece } from "./Piece";
 
+export enum FurnitureType {
+  COCINA = "cocina",
+  SALA = "mueble de sala",
+  NOCHERO = "nochero",
+  GABETER0 = "gabetero",
+  CLOSET = "closet",
+  OTRO = "otro",
+}
+
+
 export interface Furniture {
   furnitureId: number;
   name: string;
+  type: FurnitureType;
   documentUrl?: string;
   imageInitUrl: string;
   imageEndUrl?: string;

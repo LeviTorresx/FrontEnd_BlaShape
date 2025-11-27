@@ -167,6 +167,7 @@ export default function FurnitureModule({
           setSelectedFurniture(null);
         }}
         title="Detalles del mueble"
+        maxWidth="md"
       >
         {selectedFurniture && (
           <FurnitureCard

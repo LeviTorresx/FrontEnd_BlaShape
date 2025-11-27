@@ -6,6 +6,12 @@ import { Furniture } from "@/app/types/Furniture";
 import { formatDate } from "@/app/utils/formatDate";
 import Image from "next/image";
 import { FaCubes, FaPlusCircle } from "react-icons/fa";
+import {
+  FaExclamationTriangle,
+  FaClock,
+  FaCheckCircle,
+  FaRegCircle,
+} from "react-icons/fa";
 
 type Props = {
   search: string;
@@ -43,6 +49,7 @@ export default function FurnitureTable({
               <thead className="bg-purple-200 text-purple-800 border-b-1">
                 <tr>
                   <th className="p-4 text-left font-semibold">Imagen</th>
+                  <th className="p-4 text-left font-semibold">Tipo</th>
                   <th className="p-4 text-left font-semibold">Nombre</th>
                   <th className="p-4 text-left font-semibold">
                     Fecha de creación
@@ -72,6 +79,9 @@ export default function FurnitureTable({
                         />
                       </td>
                       <td className="p-3 font-medium text-gray-800">
+                        {f.type}
+                      </td>
+                      <td className="p-3 font-medium text-gray-800">
                         {f.name}
                       </td>
                       <td className="p-3 text-gray-600">
@@ -82,14 +92,29 @@ export default function FurnitureTable({
                       </td>
                       <td className="p-3">
                         <span
-                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            f.status === "FINALIZADO"
-                              ? "bg-gray-200 text-gray-700"
-                              : f.status === "EN_PROCESO"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-green-100 text-green-700"
-                          }`}
+                          className={`
+      inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold
+      ${
+        f.status === "TERMINADO"
+          ? "bg-green-100 text-green-700"
+          : f.status === "EN_PROGRESO"
+          ? "bg-yellow-100 text-yellow-700"
+          : f.status === "COTIZACION"
+          ? "bg-red-100 text-red-700"
+          : "bg-gray-200 text-gray-700"
+      }
+    `}
                         >
+                          {/* ÍCONOS POR ESTADO */}
+                          {f.status === "TERMINADO" && (
+                            <FaCheckCircle size={12} />
+                          )}
+                          {f.status === "EN_PROGRESO" && <FaClock size={12} />}
+                          {f.status === "COTIZACION" && (
+                            <FaExclamationTriangle size={12} />
+                          )}
+                          {f.status === "INICIAL" && <FaRegCircle size={12} />}
+
                           {f.status}
                         </span>
                       </td>

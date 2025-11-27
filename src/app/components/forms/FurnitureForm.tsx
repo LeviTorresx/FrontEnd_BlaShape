@@ -1,6 +1,6 @@
 "use client";
 import { useState, ChangeEvent } from "react";
-import { Furniture } from "@/app/types/Furniture";
+import { Furniture, FurnitureType } from "@/app/types/Furniture";
 import { Customer } from "@/app/types/Customer";
 import { useRouter } from "next/navigation";
 import { FaImage, FaUser } from "react-icons/fa";
@@ -23,6 +23,7 @@ export default function FurnitureForm({
   const router = useRouter();
   const isEditMode = Boolean(data);
 
+  const [searchCustomer, setSearchCustomer] = useState("");
   const [formData, setFormData] = useState<Furniture>(
     data
       ? {
@@ -30,19 +31,26 @@ export default function FurnitureForm({
           creationDate: formatDateForInput(data.creationDate),
           endDate: formatDateForInput(data.endDate),
         }
-      : {
-          furnitureId: 0,
-          carpenterId: 0,
-          customerId: 0,
-          creationDate: new Date().toISOString().split("T")[0], // formato YYYY-MM-DD
-          endDate: "",
-          imageInitUrl: "",
-          imageEndUrl: "",
-          documentUrl: "",
-          name: "",
-          pieces: [],
-          status: "INICIAL",
-        }
+      : (() => {
+          const today = new Date();
+          const nextMonth = new Date(today);
+          nextMonth.setMonth(today.getMonth() + 1);
+
+          return {
+            furnitureId: 0,
+            carpenterId: 0,
+            customerId: 0,
+            creationDate: today.toISOString().split("T")[0],
+            endDate: nextMonth.toISOString().split("T")[0],
+            imageInitUrl: "",
+            imageEndUrl: "",
+            documentUrl: "",
+            name: "",
+            pieces: [],
+            status: "COTIZACION",
+            type: FurnitureType.OTRO,
+          };
+        })()
   );
 
   const [previews, setPreviews] = useState({
@@ -53,17 +61,32 @@ export default function FurnitureForm({
 
   /* Manejo genérico de cambios */
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
+  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
+
+  setFormData((prev) => {
+    // Si cambia creationDate → recalcular endDate
+    if (name === "creationDate") {
+      const newCreation = new Date(value);
+      const newEnd = new Date(newCreation);
+      newEnd.setMonth(newCreation.getMonth() + 1);
+
+      return {
+        ...prev,
+        creationDate: value,
+        endDate: newEnd.toISOString().split("T")[0],
+      };
+    }
 
     const numericFields = ["customerId", "carpenterId", "furnitureId"];
-
-    setFormData((prev) => ({
+    return {
       ...prev,
       [name]: numericFields.includes(name) ? Number(value) : value,
-    }));
-  };
+    };
+  });
+};
+
 
   /** Carga de imágenes o documentos */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
@@ -89,6 +112,15 @@ export default function FurnitureForm({
     router.push("/dashboard/shape");
   };
 
+  const filteredCustomers = customers.filter((c) => {
+    const text = searchCustomer.toLowerCase();
+    return (
+      c.name.toLowerCase().includes(text) ||
+      c.lastName.toLowerCase().includes(text) ||
+      c.dni.includes(text)
+    );
+  });
+
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6 space-y-8">
       {/* Header */}
@@ -99,6 +131,26 @@ export default function FurnitureForm({
         <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
           {isEditMode ? "Modo edición" : "Modo creación"}
         </span>
+      </div>
+      {/* Tipo de mueble */}
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1">
+          Tipo de mueble
+        </label>
+
+        <select
+          name="type"
+          value={formData.type}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white 
+               focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
+        >
+          {Object.values(FurnitureType).map((t) => (
+            <option key={t} value={t}>
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Nombre del mueble */}
@@ -112,29 +164,43 @@ export default function FurnitureForm({
       />
 
       {/* Cliente asociado */}
-      <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
           <FaUser className="text-purple-500" />
           Cliente asociado
         </label>
-        <select
-          name="customerId"
-          value={formData.customerId}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white 
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
-        >
-          <option value={0}>Seleccionar cliente...</option>
-          {customers.length > 0 ? (
-            customers.map((c) => (
-              <option key={c.customerId} value={c.customerId}>
-                {c.name} {c.lastName} — CC: {c.dni}
-              </option>
-            ))
-          ) : (
-            <option disabled>No hay clientes disponibles</option>
-          )}
-        </select>
+        <div className="flex gap-3">
+          {/* Input para buscar */}
+          <input
+            type="text"
+            placeholder="Buscar por nombre o cédula…"
+            value={searchCustomer}
+            onChange={(e) => setSearchCustomer(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white 
+               focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+          />
+
+          {/* Select filtrado */}
+          <select
+            name="customerId"
+            value={formData.customerId}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white 
+               focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
+          >
+            <option value={0}>Seleccionar cliente…</option>
+
+            {filteredCustomers.length > 0 ? (
+              filteredCustomers.map((c) => (
+                <option key={c.customerId} value={c.customerId}>
+                  {c.name} {c.lastName} — CC: {c.dni}
+                </option>
+              ))
+            ) : (
+              <option disabled>No coincide ningún cliente</option>
+            )}
+          </select>
+        </div>
       </div>
 
       {/* Fechas */}
@@ -229,6 +295,7 @@ export default function FurnitureForm({
           <option value="INICIAL">INICIAL</option>
           <option value="EN_PROGRESO">EN PROGRESO</option>
           <option value="TERMINADO">TERMINADO</option>
+          <option value="COTIZACION">COTIZACION</option>
         </select>
       </div>
 

@@ -114,7 +114,7 @@ export default function FurnitureCard({
           </p>
           <p>
             <strong>Piezas:</strong>{" "}
-            {furniture.pieces
+            {furniture.cutting.pieces
               .map((p) => Number(p.quantity))
               .reduce((a, b) => a + b, 0 || 0)}
           </p>

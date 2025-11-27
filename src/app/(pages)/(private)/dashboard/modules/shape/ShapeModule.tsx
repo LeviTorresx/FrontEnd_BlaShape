@@ -67,8 +67,8 @@ export default function ShapeModule({
 
   // Inyectar piezas del mueble al estado global si existen
   useEffect(() => {
-    if (furniture?.pieces?.length) {
-      dispatch(setPieces(furniture.pieces));
+    if (furniture?.cutting.pieces?.length) {
+      dispatch(setPieces(furniture.cutting.pieces));
     } else {
       dispatch(clearPieces());
     }
@@ -77,9 +77,12 @@ export default function ShapeModule({
   const handleButtonClick = async (furniture: Furniture | null) => {
     if (furniture) {
       try {
-        const updatedFurniture = {
+        const updatedFurniture: Furniture = {
           ...furniture,
-          pieces,
+          cutting: {
+            ...(furniture.cutting ?? {}),
+            pieces: pieces,
+          },
         };
 
         await updateFurniture(updatedFurniture).unwrap();
@@ -89,6 +92,8 @@ export default function ShapeModule({
           "Mueble actualizado correctamente",
           <FaRegCheckCircle />
         );
+
+        // limpiar el estado global de piezas
         dispatch(clearPieces());
       } catch {
         showSnackbar("error", "Error al actualizar el mueble", <FaRegAngry />);
@@ -97,6 +102,8 @@ export default function ShapeModule({
       }
       return;
     }
+
+    // si furniture es null (modo crear)
     setIsEditing(false);
     setSelectedFurniture(null);
     setOpen(true);
@@ -113,18 +120,25 @@ export default function ShapeModule({
 
   const handleCreateFurniture = async (newFurniture: Furniture) => {
     try {
-      const furnitureWithPieces = {
+      const furnitureWithPieces: Furniture = {
         ...newFurniture,
-        pieces,
+        cutting: {
+          ...(newFurniture.cutting ?? {}),
+          pieces: pieces,
+        },
       };
+
       await createFurniture(furnitureWithPieces).unwrap();
+
+      // limpiar el estado global
       dispatch(clearPieces());
+
       showSnackbar(
         "success",
         "¡Mueble creado con éxito!",
         <FaRegCheckCircle />
       );
-    } catch {
+    } catch (error) {
       showSnackbar(
         "warning",
         "Hubo un error al crear el mueble",

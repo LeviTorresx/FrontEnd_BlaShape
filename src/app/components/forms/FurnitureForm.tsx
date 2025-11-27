@@ -46,7 +46,12 @@ export default function FurnitureForm({
             imageEndUrl: "",
             documentUrl: "",
             name: "",
-            pieces: [],
+            cutting: {
+              cuttingId: 0,
+              sheetQuantity: 0,
+              pieces: [],
+              materialName: "",
+            },
             status: "COTIZACION",
             type: FurnitureType.OTRO,
           };
@@ -61,32 +66,31 @@ export default function FurnitureForm({
 
   /* Manejo genérico de cambios */
   const handleChange = (
-  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-) => {
-  const { name, value } = e.target;
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
 
-  setFormData((prev) => {
-    // Si cambia creationDate → recalcular endDate
-    if (name === "creationDate") {
-      const newCreation = new Date(value);
-      const newEnd = new Date(newCreation);
-      newEnd.setMonth(newCreation.getMonth() + 1);
+    setFormData((prev) => {
+      // Si cambia creationDate → recalcular endDate
+      if (name === "creationDate") {
+        const newCreation = new Date(value);
+        const newEnd = new Date(newCreation);
+        newEnd.setMonth(newCreation.getMonth() + 1);
 
+        return {
+          ...prev,
+          creationDate: value,
+          endDate: newEnd.toISOString().split("T")[0],
+        };
+      }
+
+      const numericFields = ["customerId", "carpenterId", "furnitureId"];
       return {
         ...prev,
-        creationDate: value,
-        endDate: newEnd.toISOString().split("T")[0],
+        [name]: numericFields.includes(name) ? Number(value) : value,
       };
-    }
-
-    const numericFields = ["customerId", "carpenterId", "furnitureId"];
-    return {
-      ...prev,
-      [name]: numericFields.includes(name) ? Number(value) : value,
-    };
-  });
-};
-
+    });
+  };
 
   /** Carga de imágenes o documentos */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {

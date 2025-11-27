@@ -120,22 +120,22 @@ export default function FurnitureTable({
                       </td>
 
                       <td className="p-3 text-center">
-                        {f.pieces && f.pieces.length > 0 ? (
+                        {f.cutting.pieces && f.cutting.pieces.length > 0 ? (
                           <span
                             className={`inline-flex items-center justify-center gap-2 px-3 py-1.5 
         rounded-full text-sm font-semibold shadow-sm transition-all
         ${
-          f.pieces.length > 1
+          f.cutting.pieces.length > 1
             ? "bg-purple-100 text-purple-900 border border-purple-200"
             : "bg-purple-100 text-purple-600 border border-purple-200"
         }`}
                           >
                             <FaCubes className="text-sm opacity-80" />
-                            {f.pieces
+                            {f.cutting.pieces
                               .map((p) => Number(p.quantity))
                               .reduce((a, b) => a + b, 0)}{" "}
                             pieza
-                            {f.pieces
+                            {f.cutting.pieces
                               .map((p) => Number(p.quantity))
                               .reduce((a, b) => a + b, 0) > 1
                               ? "s"
@@ -223,20 +223,20 @@ export default function FurnitureTable({
                   </div>
 
                   {/* Piezas o botón */}
-                  {f.pieces && f.pieces.length > 0 ? (
+                  {f.cutting.pieces && f.cutting.pieces.length > 0 ? (
                     <div className="flex justify-end mt-2">
                       <span
                         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full 
                           text-xs font-semibold shadow-sm transition-all duration-300
                           ${
-                            f.pieces.length > 1
+                            f.cutting.pieces.length > 1
                               ? "bg-purple-100 text-purple-700 border border-purple-200"
                               : "bg-blue-100 text-blue-700 border border-blue-200"
                           }`}
                       >
                         <FaCubes className="text-sm opacity-80" />
-                        {f.pieces.length} pieza
-                        {f.pieces.length > 1 ? "s" : ""}
+                        {f.cutting.pieces.length} pieza
+                        {f.cutting.pieces.length > 1 ? "s" : ""}
                       </span>
                     </div>
                   ) : (

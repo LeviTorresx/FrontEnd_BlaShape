@@ -64,11 +64,20 @@ export const mockFurnituresApi = createApi({
             return { error: { status: 404, data: "Mueble no encontrado" } };
           }
 
-          mock_FURNITURES = mock_FURNITURES.map((f) =>
-            f.furnitureId === updateFurniture.furnitureId
-              ? { ...f, ...updateFurniture }
-              : f
-          );
+          mock_FURNITURES = mock_FURNITURES.map((f) => {
+            if (f.furnitureId !== updateFurniture.furnitureId) return f;
+
+            return {
+              ...f,
+              ...updateFurniture,
+              cutting: {
+                ...f.cutting,
+                ...updateFurniture.cutting,
+                pieces:
+                  updateFurniture.cutting?.pieces ?? f.cutting?.pieces ?? [],
+              },
+            };
+          });
 
           const updated = mock_FURNITURES.find(
             (f) => f.furnitureId === updateFurniture.furnitureId

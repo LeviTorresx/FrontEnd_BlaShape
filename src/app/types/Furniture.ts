@@ -1,3 +1,4 @@
+import { Cutting } from "./Cutting";
 import { Piece } from "./Piece";
 
 export enum FurnitureType {
@@ -22,7 +23,7 @@ export interface Furniture {
   status: string;
   carpenterId: number;
   customerId: number;
-  pieces: Piece[];
+  cutting: Cutting;
 }
 
 export interface FurnitureDTO {

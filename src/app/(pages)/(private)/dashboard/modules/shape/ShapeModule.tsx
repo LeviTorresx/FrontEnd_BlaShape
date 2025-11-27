@@ -1,31 +1,43 @@
 "use client";
 
 import Pieces from "./sections/piece/Pieces";
-import { useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
-import { useGetFurnitureByIdQuery } from "@/app/services/mockFurnituresApi";
+import {
+  useAddFurnitureMutation,
+  useGetFurnitureByIdQuery,
+  useUpdateFurnitureMutation,
+} from "@/app/services/mockFurnituresApi";
 import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
 import LayoutViewer from "./components/LayoutViewer";
 import { expandPiecesByQuantity } from "@/app/utils/ExpandPieces";
 import { piecesToItems } from "@/app/utils/PieceToItem";
 import { groupItemsByColor } from "@/app/utils/GroupItemsByColor";
 import Button from "@/app/components/ui/Button";
-import { FaCube } from "react-icons/fa";
+import { FaCube, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
+import AppModal from "@/app/components/ui/AppModal";
+import FurnitureForm from "@/app/components/forms/FurnitureForm";
+import { Furniture } from "@/app/types/Furniture";
+import { MdErrorOutline } from "react-icons/md";
+import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
+import { useAppDispatch } from "@/app/hooks/useRedux";
+import { clearPieces, setPieces } from "@/app/store/slices/piecesSlice";
 
 export default function ShapeModule({
   shapeId,
 }: {
   shapeId?: number | string;
 }) {
+  const [createFurniture] = useAddFurnitureMutation();
+  const [updateFurniture] = useUpdateFurnitureMutation();
+  const dispatch = useAppDispatch();
+
   const { data: furniture } = useGetFurnitureByIdQuery(Number(shapeId), {
     skip: !shapeId,
   });
-
   const materials = useSelector((state: RootState) => state.materials.list);
-
   const pieces = useSelector((state: RootState) => state.pieces.list);
-
   const grouped = useMemo(() => {
     return gruopPiecesByAttributes(pieces);
   }, [pieces]);
@@ -33,20 +45,98 @@ export default function ShapeModule({
   const expandedPieces = expandPiecesByQuantity(pieces);
   const items = piecesToItems(expandedPieces);
   const groupedItems = groupItemsByColor(items);
-
   const [section, setSection] = useState<"pieces" | "cut">("pieces");
+  const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
+    null
+  );
+  const [open, setOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    severity: "info" as "error" | "warning" | "info" | "success",
+    message: "",
+    icon: <MdErrorOutline fontSize="inherit" />,
+  });
+  const customers = useSelector((state: RootState) => state.customers.list);
 
-  const handleButtonClick = (shapeId: number | string) => {
-    if (shapeId) {
-      console.log("Agregar piezas al mueble existente", shapeId, pieces);
+  const showSnackbar = (
+    severity: "error" | "warning" | "info" | "success",
+    message: string,
+    icon: ReactNode
+  ) => setSnackbar({ open: true, severity, message, icon: <MdErrorOutline /> });
+
+  // Inyectar piezas del mueble al estado global si existen
+  useEffect(() => {
+    if (furniture?.pieces?.length) {
+      dispatch(setPieces(furniture.pieces));
     } else {
-      console.log("Crear un nuevo mueble y agregar piezas", pieces);
+      dispatch(clearPieces());
+    }
+  }, [furniture, dispatch]);
+
+  const handleButtonClick = async (furniture: Furniture | null) => {
+    if (furniture) {
+      try {
+        const updatedFurniture = {
+          ...furniture,
+          pieces,
+        };
+
+        await updateFurniture(updatedFurniture).unwrap();
+
+        showSnackbar(
+          "success",
+          "Mueble actualizado correctamente",
+          <FaRegCheckCircle />
+        );
+        dispatch(clearPieces());
+      } catch {
+        showSnackbar("error", "Error al actualizar el mueble", <FaRegAngry />);
+      } finally {
+        resetFormState();
+      }
+      return;
+    }
+    setIsEditing(false);
+    setSelectedFurniture(null);
+    setOpen(true);
+  };
+
+  const resetFormState = () => {
+    setOpen(false);
+    setSelectedFurniture(null);
+    setIsEditing(false);
+  };
+
+  const handleCloseSnackbar = () =>
+    setSnackbar((prev) => ({ ...prev, open: false }));
+
+  const handleCreateFurniture = async (newFurniture: Furniture) => {
+    try {
+      const furnitureWithPieces = {
+        ...newFurniture,
+        pieces,
+      };
+      await createFurniture(furnitureWithPieces).unwrap();
+      dispatch(clearPieces());
+      showSnackbar(
+        "success",
+        "¡Mueble creado con éxito!",
+        <FaRegCheckCircle />
+      );
+    } catch {
+      showSnackbar(
+        "warning",
+        "Hubo un error al crear el mueble",
+        <FaRegAngry />
+      );
+    } finally {
+      resetFormState();
     }
   };
 
   return (
     <div className="p-6 flex flex-col gap-6 h-full rounded-2xl">
-      {/* Header principal */}
       {/* Header principal */}
       <header
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between 
@@ -130,7 +220,7 @@ export default function ShapeModule({
 
           {/* Botón de acción */}
           <Button
-            onClick={() => handleButtonClick(shapeId ?? "")}
+            onClick={() => handleButtonClick(furniture ?? null)}
             disabled={pieces.length === 0}
             label={shapeId ? "Agregarlas al mueble" : "Agregar a un mueble"}
           />
@@ -146,6 +236,29 @@ export default function ShapeModule({
           <LayoutViewer groupedItems={groupedItems} />
         )}
       </div>
+
+      {/* Modal Crear / Editar */}
+      <AppModal
+        open={open}
+        onClose={resetFormState}
+        title={isEditing ? "Editar Mueble" : "Crear nuevo mueble"}
+        maxWidth="md"
+      >
+        <FurnitureForm
+          data={selectedFurniture || undefined}
+          onSubmit={handleCreateFurniture}
+          customers={customers}
+        />
+      </AppModal>
+
+      {/* Snackbar */}
+      <NotificationSnackbar
+        open={snackbar.open}
+        onClose={handleCloseSnackbar}
+        severity={snackbar.severity}
+        icon={snackbar.icon}
+        message={snackbar.message}
+      />
     </div>
   );
 }

@@ -21,6 +21,10 @@ const piecesSlice = createSlice({
       state.list.push(newPiece);
     },
 
+    setPieces(state, action: PayloadAction<Piece[]>) {
+      state.list = action.payload;
+    },
+
     removePiece: (state, action: PayloadAction<number>) => {
       state.list = state.list.filter((p) => p.pieceId !== action.payload);
     },
@@ -29,7 +33,6 @@ const piecesSlice = createSlice({
       state.list = state.list.map((p) =>
         p.pieceId === action.payload.pieceId ? action.payload : p
       );
-      
     },
     rotatePiece: (state, action: PayloadAction<number>) => {
       state.list = state.list.map((p) => {
@@ -43,8 +46,12 @@ const piecesSlice = createSlice({
         return p;
       });
     },
+    clearPieces: (state) => {
+      state.list = [];
+    },
   },
 });
 
-export const { addPiece, removePiece, editPiece, rotatePiece } = piecesSlice.actions;
+export const { addPiece, removePiece, editPiece, rotatePiece, setPieces,clearPieces } =
+  piecesSlice.actions;
 export default piecesSlice.reducer;

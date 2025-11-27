@@ -1,7 +1,7 @@
 "use client";
 
 import Pieces from "./sections/piece/Pieces";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { useGetFurnitureByIdQuery } from "@/app/services/mockFurnituresApi";
@@ -25,9 +25,12 @@ export default function ShapeModule({
   const materials = useSelector((state: RootState) => state.materials.list);
 
   const pieces = useSelector((state: RootState) => state.pieces.list);
-  const grouped = gruopPiecesByAttributes(pieces);
-  const expandedPieces = expandPiecesByQuantity(pieces);
 
+  const grouped = useMemo(() => {
+    return gruopPiecesByAttributes(pieces);
+  }, [pieces]);
+
+  const expandedPieces = expandPiecesByQuantity(pieces);
   const items = piecesToItems(expandedPieces);
   const groupedItems = groupItemsByColor(items);
 

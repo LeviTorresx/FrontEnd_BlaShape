@@ -11,6 +11,7 @@ import { expandPiecesByQuantity } from "@/app/utils/ExpandPieces";
 import { piecesToItems } from "@/app/utils/PieceToItem";
 import { groupItemsByColor } from "@/app/utils/GroupItemsByColor";
 import Button from "@/app/components/ui/Button";
+import { FaCube } from "react-icons/fa";
 
 export default function ShapeModule({
   shapeId,
@@ -110,13 +111,28 @@ export default function ShapeModule({
           </div>
         </div>
 
+        <div className="flex items-center gap-6">
+          {/* Total de piezas */}
+          <div className="flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-xl shadow-sm">
+            <FaCube className="text-lg" />
+            <p className="font-medium">
+              Total piezas:{" "}
+              <span className="font-bold">
+                {pieces
+                  .map((p) => Number(p.quantity))
+                  .reduce((a, b) => a + b, 0)}
+              </span>
+            </p>
+          </div>
+
+          {/* Botón de acción */}
+          <Button
+            onClick={() => handleButtonClick(shapeId ?? "")}
+            disabled={pieces.length === 0}
+            label={shapeId ? "Agregarlas al mueble" : "Agregar a un mueble"}
+          />
+        </div>
         {/* Botón principal a la derecha */}
-        <Button
-          onClick={() => handleButtonClick(shapeId ?? "")}
-          disabled={pieces.length === 0}
-          className="shadow-md hover:shadow-lg px-5 py-2 text-sm"
-          label={shapeId ? "Agregarlas al mueble" : "Agregar a nuevo mueble"}
-        />
       </header>
 
       {/* Renderizado condicional de módulos */}

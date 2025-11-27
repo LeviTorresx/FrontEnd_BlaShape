@@ -57,10 +57,10 @@ export default function LayoutViewer({ groupedItems }: Props) {
 
       {/* VISOR DEL PACKING */}
       <Guillotine
-        width={2430}
-        height={1060}
+        width={2130}
+        height={2430}
         items={itemsToRender}
-        method="guillotine"
+        method="guillotine-Towpass"
         kerf={0.5}
       />
     </div>

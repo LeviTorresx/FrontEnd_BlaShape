@@ -55,7 +55,7 @@ export function GuillotineAlgorithm(
 
         // ORIENTACIÓN NORMAL
         if (fitsNormal) {
-          const score = scoreFit(iw, ih, sp);
+          const score = scoreFit(iw, ih, sp, false);
           if (score < bestScore) {
             bestScore = score;
             bestIndex = i;
@@ -65,7 +65,7 @@ export function GuillotineAlgorithm(
 
         // ORIENTACIÓN ROTADA
         if (fitsRot) {
-          const score = scoreFit(ih, iw, sp);
+          const score = scoreFit(ih, iw, sp, true);
           if (score < bestScore) {
             bestScore = score;
             bestIndex = i;
@@ -79,13 +79,11 @@ export function GuillotineAlgorithm(
         continue;
       }
 
+      // EVITAR ROTACIÓN INNECESARIA EN PRIMER ESPACIO
       if (bestIndex === 0 && spaces.length === 1) {
-        // Verificar si cabe sin rotar (como medida de seguridad)
-        const fitsNormal =
-          item.width + kerf <= spaces[0].width &&
-          item.height + kerf <= spaces[0].height;
+        const fitsNormal = iw <= spaces[0].width && ih <= spaces[0].height;
         if (fitsNormal) {
-          bestRot = false; // Forzar no rotación
+          bestRot = false;
         }
       }
 
@@ -103,18 +101,17 @@ export function GuillotineAlgorithm(
       placed.push(placedItem);
       usedArea += (itemW + kerf) * (itemH + kerf);
 
-      // ====== División guillotine con prioridad horizontal ======
+      // ====== DIVISIÓN MEJORADA ======
       spaces.splice(bestIndex, 1);
 
-      // Calculamos sobras horizontales y verticales
-      const leftoverH = chosen.height - itemH; // parte inferior
-      const leftoverW = chosen.width - itemW; // parte derecha
+      const leftoverH = chosen.height - itemH;
+      const leftoverW = chosen.width - itemW;
 
       let first, second;
 
-      // Decidir si partir horizontal o vertical según qué dejo menos desperdicio
-      if (leftoverH <= leftoverW) {
-        // Cortar horizontal primero
+      // ESTRATEGIA DE DIVISIÓN MEJORADA - priorizar espacios útiles
+      if (itemW > itemH * 1.5) {
+        // Pieza muy horizontal - cortar horizontal primero para dejar espacio debajo
         first = {
           x: chosen.x,
           y: chosen.y + itemH + kerf,
@@ -127,8 +124,8 @@ export function GuillotineAlgorithm(
           width: leftoverW,
           height: itemH + kerf,
         };
-      } else {
-        // Cortar vertical primero
+      } else if (itemH > itemW * 1.5) {
+        // Pieza muy vertical - cortar vertical primero
         first = {
           x: chosen.x + itemW + kerf,
           y: chosen.y,
@@ -141,11 +138,47 @@ export function GuillotineAlgorithm(
           width: itemW + kerf,
           height: leftoverH,
         };
+      } else {
+        // Pieza cuadrada - decidir por sobrante más útil
+        if (leftoverH >= leftoverW) {
+          first = {
+            x: chosen.x,
+            y: chosen.y + itemH + kerf,
+            width: chosen.width,
+            height: leftoverH,
+          };
+          second = {
+            x: chosen.x + itemW + kerf,
+            y: chosen.y,
+            width: leftoverW,
+            height: itemH + kerf,
+          };
+        } else {
+          first = {
+            x: chosen.x + itemW + kerf,
+            y: chosen.y,
+            width: leftoverW,
+            height: chosen.height,
+          };
+          second = {
+            x: chosen.x,
+            y: chosen.y + itemH + kerf,
+            width: itemW + kerf,
+            height: leftoverH,
+          };
+        }
       }
 
-      // Insertar espacios si tienen área válida
-      if (first.width > 0 && first.height > 0) spaces.push(first);
-      if (second.width > 0 && second.height > 0) spaces.push(second);
+      // Insertar espacios si tienen área válida (mínimo 10mm para ser útil)
+      const minUsefulSize = 10;
+      if (first.width >= minUsefulSize && first.height >= minUsefulSize) spaces.push(first);
+      if (second.width >= minUsefulSize && second.height >= minUsefulSize) spaces.push(second);
+
+      // ORDENAR ESPACIOS por posición (Y primero, luego X)
+      spaces.sort((a, b) => {
+        if (a.y !== b.y) return a.y - b.y;
+        return a.x - b.x;
+      });
 
       // Limpieza completa de espacios
       spaces = pruneSpaces(spaces);
@@ -253,17 +286,31 @@ function mergeSpaces(spaces: any[]) {
   return spaces;
 }
 
-function scoreFit(itemW: number, itemH: number, sp: Space) {
+function scoreFit(itemW: number, itemH: number, sp: Space, isRotated: boolean) {
   const areaLeft = sp.width * sp.height - itemW * itemH;
+  
+  // Penalizar rotación para piezas horizontales
+  const aspectRatio = itemW / itemH;
+  let rotationPenalty = 0;
+  if (isRotated && aspectRatio > 1.8) {
+    rotationPenalty = areaLeft * 0.5; // 50% de penalización para rotar piezas horizontales
+  }
 
-  // Aspect ratio (forma)
-  const ir = itemW / itemH;
-  const sr = sp.width / sp.height;
+  // Penalizar espacios muy angostos
+  const leftoverW = sp.width - itemW;
+  const leftoverH = sp.height - itemH;
+  
+  let narrowPenalty = 0;
+  if (leftoverW > 0 && leftoverW < 20) narrowPenalty += 1000;
+  if (leftoverH > 0 && leftoverH < 20) narrowPenalty += 1000;
 
-  // Penaliza espacios cuya forma no coincide con la forma de la pieza
-  const shapePenalty = Math.abs(ir - sr) * 50000;
+  // Penalizar mala relación de aspecto
+  const itemRatio = itemW / itemH;
+  const spaceRatio = sp.width / sp.height;
+  const ratioDiff = Math.abs(itemRatio - spaceRatio);
+  const ratioPenalty = ratioDiff * 1000;
 
-  return areaLeft + shapePenalty;
+  return areaLeft + rotationPenalty + narrowPenalty + ratioPenalty;
 }
 
 const sortMixed = (items: Item[]) => {

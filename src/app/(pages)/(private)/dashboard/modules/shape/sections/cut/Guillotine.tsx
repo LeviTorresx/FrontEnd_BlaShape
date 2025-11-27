@@ -2,26 +2,17 @@ import { Item } from "@/app/types/Item";
 import React, { useEffect, useMemo, useState } from "react";
 import { GuillotineAlgorithmTwoPass } from "./GuillotineAlgorithmTPss";
 import { GuillotineAlgorithm } from "./GuillotineAlgorithm";
+import Button from "@/app/components/ui/Button";
+import { PiFilePng } from "react-icons/pi";
 
 
 
 
-/**
- * Mejoras incluidas:
- * - Método "guillotine" (corregido)
- * - Método "shelf" (First-Fit Decreasing Height / Shelves)
- * - kerf (ancho de corte) para simular pérdida por sierra
- * - auto-escala del SVG
- * - líneas de corte / contornos y stroke por edges (si se incluye)
- * - export simple a PNG
- */
-
-/* ---------- Types ---------- */
 
 type Method = "guillotine" | "guillotine-Twopass";
 
 interface GuillotinePackingProps {
-  width: number; // ancho de la lámina en unidades (cm/mm según tu convención)
+  width: number; // ancho de la lámina en unidades (mm)
   height: number; // alto de la lámina
   items: Item[];
   method?: Method;
@@ -159,12 +150,13 @@ const Guillotine: React.FC<GuillotinePackingProps> = ({
           Desperdicio: {waste}%
         </div>
 
-        <button
+        <Button
           onClick={exportPNG}
-          className="ml-4 px-3 py-1 bg-green-500 text-white rounded hover:opacity-90"
-        >
-          Exportar PNG
-        </button>
+          className="ml-4 px-3 py-1 bg-purple-500 text-white rounded hover:opacity-90"
+          label="Exportar"
+          icon={<PiFilePng size={20} />}
+        />
+         
       </div>
 
       {/* Canvas */}

@@ -17,7 +17,7 @@ import { GuillotineAlgorithm } from "./GuillotineAlgorithm";
 
 /* ---------- Types ---------- */
 
-type Method = "guillotine" | "guillotine-Towpass";
+type Method = "guillotine" | "guillotine-Twopass";
 
 interface GuillotinePackingProps {
   width: number; // ancho de la lámina en unidades (cm/mm según tu convención)
@@ -71,7 +71,7 @@ const Guillotine: React.FC<GuillotinePackingProps> = ({
 
   useEffect(() => {
     // Packing dispatcher
-    if (method === "guillotine-Towpass") {
+    if (method === "guillotine-Twopass") {
       const { sheets: s, wastes: w } = GuillotineAlgorithmTwoPass(
         width,
         height,

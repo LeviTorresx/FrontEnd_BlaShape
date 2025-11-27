@@ -9,8 +9,10 @@ import {
   FaImage,
   FaUser,
   FaClipboardList,
+  FaCubes,
 } from "react-icons/fa";
 import { formatDate } from "@/app/utils/formatDate";
+import { useRouter } from "next/navigation";
 
 interface FurnitureCardProps {
   furniture: Furniture;
@@ -22,6 +24,8 @@ export default function FurnitureCard({
   customer,
 }: FurnitureCardProps) {
   if (!furniture) return null;
+
+  const router = useRouter();
 
   return (
     <div
@@ -92,39 +96,72 @@ export default function FurnitureCard({
 
       {/* Información adicional */}
       <div className="mt-6 grid sm:grid-cols-2 gap-6 text-sm text-gray-700">
-        <div className="space-y-2">
+        {/* Columna 1: Información del cliente */}
+        <div className="space-y-3 bg-purple-50/40 p-4 rounded-xl border border-purple-100 shadow-sm">
           <p className="flex items-center gap-2">
-            <FaUser className="text-purple-500" />
-            <strong>Cliente:</strong>{" "}
-            {customer ? `${customer.name} ${customer.lastName}` : "No asignado"}
+            <FaUser className="text-purple-600" />
+            <span className="font-medium text-gray-900">Cliente:</span>
+            {customer ? (
+              <span>
+                {customer.name} {customer.lastName}
+              </span>
+            ) : (
+              <span className="italic text-gray-500">No asignado</span>
+            )}
           </p>
+
           <p className="flex items-center gap-2">
-            <FaCalendarAlt className="text-purple-500" />
-            <strong>Creación:</strong> {formatDate(furniture.endDate) || "—"}
+            <FaCalendarAlt className="text-purple-600" />
+            <span className="font-medium text-gray-900">Creación:</span>
+            {formatDate(furniture.creationDate) || "—"}
           </p>
+
           <p className="flex items-center gap-2">
-            <FaCalendarAlt className="text-purple-500" />
-            <strong>Entrega:</strong> {formatDate(furniture.endDate) || "—"}
+            <FaCalendarAlt className="text-purple-600" />
+            <span className="font-medium text-gray-900">Entrega:</span>
+            {formatDate(furniture.endDate) || "—"}
           </p>
         </div>
 
-        <div className="space-y-2">
-          <p>
-            <strong>ID del mueble:</strong> {furniture.furnitureId}
+        {/* Columna 2: Info del mueble */}
+        <div className="space-y-3 bg-purple-50/40 p-4 rounded-xl border border-purple-100 shadow-sm">
+          <p className="flex items-center gap-2">
+            <span className="font-medium text-gray-900">ID del mueble:</span>
+            {furniture.furnitureId}
           </p>
-          <p>
-            <strong>Piezas:</strong>{" "}
-            {furniture.cutting.pieces
-              .map((p) => Number(p.quantity))
-              .reduce((a, b) => a + b, 0 || 0)}
+
+          <p className="flex items-center gap-2">
+            <span className="font-medium text-gray-900">Piezas:</span>
+            {furniture.cutting?.pieces?.length
+              ? furniture.cutting.pieces
+                  .map((p) => Number(p.quantity))
+                  .reduce((a, b) => a + b, 0)
+              : 0}
           </p>
+
+          {furniture.cutting?.pieces?.length > 0 && (
+            <button
+              onClick={() =>
+                router.push(`/dashboard/shape/${furniture.furnitureId}`)
+              }
+              className="flex items-center justify-center gap-2 
+                   bg-purple-600 text-white font-medium px-4 py-2 rounded-lg
+                   hover:bg-purple-700 transition duration-200 shadow-sm"
+            >
+              <FaCubes className="text-base" />
+              Ver piezas
+            </button>
+          )}
+
           {furniture.documentUrl && (
             <a
               href={furniture.documentUrl}
               target="_blank"
-              className="flex items-center gap-2 text-purple-600 hover:text-purple-800 transition underline"
+              className="flex items-center gap-2 text-purple-700 hover:text-purple-900 
+                   transition underline font-medium"
             >
-              <FaFilePdf /> Ver documento final
+              <FaFilePdf className="text-lg" />
+              Ver documento final
             </a>
           )}
         </div>

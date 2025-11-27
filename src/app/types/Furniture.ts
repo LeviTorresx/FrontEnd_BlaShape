@@ -2,11 +2,15 @@ import { Cutting } from "./Cutting";
 import { Piece } from "./Piece";
 
 export enum FurnitureType {
-  COCINA = "cocina",
-  SALA = "mueble de sala",
-  NOCHERO = "nochero",
-  GABETER0 = "gabetero",
-  CLOSET = "closet",
+  COCINA = "Cocina",
+  SALA = "Mueble de sala",
+  NOCHERO = "Nochero",
+  GABETER0 = "Gabetero",
+  CLOSET = "Closet",
+  BAÑO = "Mueble de baño",
+  ESCRITORIO = "Escritorio",
+  MESA = "Mesa",
+  SILLA = "Silla",
   OTRO = "otro",
 }
 

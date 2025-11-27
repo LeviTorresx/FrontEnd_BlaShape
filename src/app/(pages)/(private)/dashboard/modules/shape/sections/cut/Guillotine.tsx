@@ -5,6 +5,7 @@ import { GuillotineAlgorithm } from "./GuillotineAlgorithm";
 
 
 
+
 /**
  * Mejoras incluidas:
  * - Método "guillotine" (corregido)

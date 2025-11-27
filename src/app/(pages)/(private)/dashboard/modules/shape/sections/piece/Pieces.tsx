@@ -1,7 +1,7 @@
 import { Material } from '@/app/types/Material';
 import { gruopedPieces, Piece } from '@/app/types/Piece';
 import React from 'react';
-import GroupedPiecesTables from '../components/GroupedPiecesTables';
+import GroupedPiecesTables from '../../components/GroupedPiecesTables';
 import PiecesForm from '@/app/components/forms/PiecesForm';
 import { useAppDispatch } from '@/app/hooks/useRedux';
 import { addPiece } from '@/app/store/slices/piecesSlice';

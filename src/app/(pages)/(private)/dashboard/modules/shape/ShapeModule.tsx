@@ -1,6 +1,6 @@
 "use client";
 
-import Pieces from "./sections/Pieces";
+import Pieces from "./sections/piece/Pieces";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
@@ -10,6 +10,7 @@ import LayoutViewer from "./components/LayoutViewer";
 import { expandPiecesByQuantity } from "@/app/utils/ExpandPieces";
 import { piecesToItems } from "@/app/utils/PieceToItem";
 import { groupItemsByColor } from "@/app/utils/GroupItemsByColor";
+import Button from "@/app/components/ui/Button";
 
 export default function ShapeModule({
   shapeId,
@@ -29,60 +30,93 @@ export default function ShapeModule({
   const items = piecesToItems(expandedPieces);
   const groupedItems = groupItemsByColor(items);
 
-  const [section, setSection] = useState<"pieces" | "guillotine">("pieces");
+  const [section, setSection] = useState<"pieces" | "cut">("pieces");
+
+  const handleButtonClick = (shapeId: number | string) => {
+    if (shapeId) {
+      console.log("Agregar piezas al mueble existente", shapeId, pieces);
+    } else {
+      console.log("Crear un nuevo mueble y agregar piezas", pieces);
+    }
+  };
 
   return (
     <div className="p-6 flex flex-col gap-6 h-full rounded-2xl">
       {/* Header principal */}
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-3 mb-4 gap-3">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          {/* Título */}
-          <h2 className="text-2xl font-bold text-gray-800">Zona de Cortes</h2>
+      {/* Header principal */}
+      <header
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between 
+  border-b border-gray-200 pb-4 mb-6 gap-4"
+      >
+        {/* Título + switch */}
+        <div className="flex items-center gap-20">
+          {/* Título + info del mueble */}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Zona de Cortes</h2>
 
-          {/* Información del mueble */}
-          {shapeId ? (
-            <p className="text-sm text-gray-600">
-              Mueble asociado:{" "}
-              <span className="font-semibold text-purple-600">{shapeId}</span>
-            </p>
-          ) : (
-            <p className="text-sm text-gray-500 italic">
-              No está asociado a ningún mueble actualmente
-            </p>
-          )}
+            {shapeId ? (
+              <div className="flex gap-3">
+                <p className="text-sm text-gray-600 mt-1">
+                  Mueble asociado:
+                  <span className="font-semibold text-purple-700">
+                    {shapeId}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Nombre:
+                  <span className="font-semibold text-purple-700">
+                    {" "}
+                    {furniture ? furniture.name : "Cargando nombre..."}
+                  </span>
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500 italic mt-1">
+                No está asociado a ningún mueble actualmente
+              </p>
+            )}
+          </div>
+
+          {/* Switch al lado del título */}
+          <div className="relative inline-flex bg-gray-200 rounded-full p-1 w-max shadow-inner">
+            <div
+              className={`absolute top-0 left-0 h-full w-1/2 bg-purple-800 
+          rounded-full shadow-md transform transition-transform duration-300 ${
+            section === "cut" ? "translate-x-full" : "translate-x-0"
+          }`}
+            />
+
+            <button
+              onClick={() => setSection("pieces")}
+              className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
+                section === "pieces"
+                  ? "text-white"
+                  : "text-gray-700 hover:text-gray-900"
+              }`}
+            >
+              Piezas
+            </button>
+
+            <button
+              onClick={() => setSection("cut")}
+              className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
+                section === "cut"
+                  ? "text-white"
+                  : "text-gray-700 hover:text-gray-900"
+              }`}
+            >
+              Cortes
+            </button>
+          </div>
         </div>
 
-        {/* Switch de módulos tipo píldora */}
-        <div className="relative inline-flex bg-gray-200 rounded-full p-1 w-max shadow-inner">
-          {/* Fondo deslizante */}
-          <div
-            className={`absolute top-0 left-0 h-full w-1/2 bg-purple-800 rounded-full shadow-md transform transition-transform duration-300 ${
-              section === "guillotine" ? "translate-x-full" : "translate-x-0"
-            }`}
-          />
-
-          {/* Botones */}
-          <button
-            onClick={() => setSection("pieces")}
-            className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
-              section === "pieces"
-                ? "text-white"
-                : "text-gray-700 hover:text-gray-900"
-            }`}
-          >
-            Piezas
-          </button>
-          <button
-            onClick={() => setSection("guillotine")}
-            className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
-              section === "guillotine"
-                ? "text-white"
-                : "text-gray-700 hover:text-gray-900"
-            }`}
-          >
-            Guillotina
-          </button>
-        </div>
+        {/* Botón principal a la derecha */}
+        <Button
+          onClick={() => handleButtonClick(shapeId ?? "")}
+          disabled={pieces.length === 0}
+          className="shadow-md hover:shadow-lg px-5 py-2 text-sm"
+          label={shapeId ? "Agregarlas al mueble" : "Agregar a nuevo mueble"}
+        />
       </header>
 
       {/* Renderizado condicional de módulos */}

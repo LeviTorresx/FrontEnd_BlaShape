@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GroupedItems } from "@/app/types/Item";
-import Guillotine from "../sections/Guillotine";
+import Guillotine from "../sections/cut/Guillotine";
 
 type Props = {
   groupedItems: GroupedItems[];
@@ -58,8 +58,8 @@ export default function LayoutViewer({ groupedItems }: Props) {
       {/* VISOR DEL PACKING */}
       <div className="flex justify-center w-full h-full">
         <Guillotine
-        width={2130}
-        height={2430}
+        width={2430}
+        height={2130}
         items={itemsToRender}
         method="guillotine"
         kerf={0.5}

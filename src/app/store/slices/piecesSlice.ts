@@ -24,9 +24,27 @@ const piecesSlice = createSlice({
     removePiece: (state, action: PayloadAction<number>) => {
       state.list = state.list.filter((p) => p.pieceId !== action.payload);
     },
+
+    editPiece: (state, action: PayloadAction<Piece>) => {
+      state.list = state.list.map((p) =>
+        p.pieceId === action.payload.pieceId ? action.payload : p
+      );
+      
+    },
+    rotatePiece: (state, action: PayloadAction<number>) => {
+      state.list = state.list.map((p) => {
+        if (p.pieceId === action.payload) {
+          return {
+            ...p,
+            width: p.height,
+            height: p.width,
+          };
+        }
+        return p;
+      });
+    },
   },
 });
 
-
-export const {addPiece, removePiece} = piecesSlice.actions;
+export const { addPiece, removePiece, editPiece, rotatePiece } = piecesSlice.actions;
 export default piecesSlice.reducer;

@@ -7,5 +7,5 @@ export interface Customer {
   phone: string;
   role?: string;
   carpenterId?: number;
-  furnitureList: number[];
+  furnitureListIds: number[];
 }

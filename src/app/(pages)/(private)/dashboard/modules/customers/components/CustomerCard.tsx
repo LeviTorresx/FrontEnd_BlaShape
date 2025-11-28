@@ -50,9 +50,9 @@ export default function CustomerCard({ customer }: Props) {
           Muebles asociados
         </h3>
 
-        {customer.furnitureList && customer.furnitureList.length > 0 ? (
+        {customer.furnitureListIds && customer.furnitureListIds.length > 0 ? (
           <ul className="divide-y divide-gray-100 rounded-lg border border-gray-100 overflow-hidden">
-            {customer.furnitureList.map((furniture, i) => (
+            {customer.furnitureListIds.map((furniture, i) => (
               <li
                 key={i}
                 className="px-4 py-2 bg-gray-50 hover:bg-purple-100 transition-colors duration-200"

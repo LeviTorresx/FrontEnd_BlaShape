@@ -1,4 +1,4 @@
-import { Furniture, FurnitureDTO } from "../types/Furniture";
+import { Furniture, FurnitureDTO, FurnitureRequest } from "../types/Furniture";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface FurnitureMessage {
@@ -9,19 +9,18 @@ export const furnitureApi = createApi({
   reducerPath: "furnitureApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080/api_BS/furniture",
-  }), // Ajusta tu base URL
+    credentials: "include",
+  }),
+  tagTypes: ["Furniture"], // <-- declaras un tag
   endpoints: (builder) => ({
     getAllFurnitures: builder.query<Furniture[], void>({
-      query: () => ({
-        url: "/all",
-        method: "GET",
-        credentials: 'include'
-      }),
+      query: () => "/all",
+      providesTags: ["Furniture"], // <-- el query "proporciona" este tag
     }),
     createFurniture: builder.mutation<
       FurnitureMessage,
       {
-        data: any; // tu objeto furniture sin archivos
+        data: Partial<FurnitureRequest>;
         imageInit: File;
         imageEnd?: File;
         document?: File;
@@ -40,12 +39,13 @@ export const furnitureApi = createApi({
           body: formData,
         };
       },
+      invalidatesTags: ["Furniture"], // <-- invalidamos el tag, RTK refetch automáticamente
     }),
     updateFurniture: builder.mutation<
       FurnitureMessage,
       {
         id: number;
-        data: any;
+        data: Partial<FurnitureRequest>;
         imageInit?: File;
         imageEnd?: File;
         document?: File;
@@ -64,9 +64,11 @@ export const furnitureApi = createApi({
           body: formData,
         };
       },
+      invalidatesTags: ["Furniture"], // <-- invalidamos para que getAll se refetch
     }),
   }),
 });
+
 
 export const { useCreateFurnitureMutation, useUpdateFurnitureMutation, useGetAllFurnituresQuery } =
   furnitureApi;

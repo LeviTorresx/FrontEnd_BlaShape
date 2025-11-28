@@ -2,7 +2,6 @@
 import { ReactNode, useState } from "react";
 import FurnitureTable from "./components/FurnitureTable";
 import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
-import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
 import { Furniture, FurnitureRequest } from "@/app/types/Furniture";
@@ -182,6 +181,8 @@ export default function FurnitureModule({
           data={selectedFurniture || undefined}
           onSubmit={isEditing ? handleUpdateFurniture : handleCreateFurniture}
           customers={customers}
+          imagenInitUrl={selectedFurniture?.imageInitURL || ""}
+          imagenEndUrl={selectedFurniture?.imageEndURL || ""}
         />
       </AppModal>
 

@@ -5,6 +5,11 @@ interface FurnitureMessage {
   message: string;
 }
 
+const cleanData = (data: Partial<Furniture>) => {
+  const { documentURL, imageInitURL, imageEndURL, ...rest } = data;
+  return rest;
+};
+
 export const furnitureApi = createApi({
   reducerPath: "furnitureApi",
   baseQuery: fetchBaseQuery({
@@ -53,7 +58,8 @@ export const furnitureApi = createApi({
     >({
       query: ({ id, data, imageInit, imageEnd, document }) => {
         const formData = new FormData();
-        formData.append("data", JSON.stringify(data));
+        const cleanedData = cleanData(data);
+        formData.append("data", JSON.stringify(cleanedData));
         if (imageInit) formData.append("imageInit", imageInit);
         if (imageEnd) formData.append("imageEnd", imageEnd);
         if (document) formData.append("document", document);
@@ -69,6 +75,8 @@ export const furnitureApi = createApi({
   }),
 });
 
-
-export const { useCreateFurnitureMutation, useUpdateFurnitureMutation, useGetAllFurnituresQuery } =
-  furnitureApi;
+export const {
+  useCreateFurnitureMutation,
+  useUpdateFurnitureMutation,
+  useGetAllFurnituresQuery,
+} = furnitureApi;

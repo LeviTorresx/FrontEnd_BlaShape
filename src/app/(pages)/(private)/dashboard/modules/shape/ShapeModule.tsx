@@ -4,11 +4,6 @@ import Pieces from "./sections/piece/Pieces";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
-import {
-  useAddFurnitureMutation,
-  useGetFurnitureByIdQuery,
-  useUpdateFurnitureMutation,
-} from "@/app/services/mockFurnituresApi";
 import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
 import LayoutViewer from "./components/LayoutViewer";
 import { expandPiecesByQuantity } from "@/app/utils/ExpandPieces";
@@ -24,7 +19,10 @@ import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { clearPieces, setPieces } from "@/app/store/slices/piecesSlice";
 import { usePathname, useRouter } from "next/navigation";
-import { useCreateFurnitureMutation } from "@/app/services/furnitureApi";
+import {
+  useCreateFurnitureMutation,
+  useUpdateFurnitureMutation,
+} from "@/app/services/furnitureApi";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
 
 export default function ShapeModule({
@@ -34,7 +32,6 @@ export default function ShapeModule({
 }) {
   const [createFurniture] = useCreateFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
-
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -94,29 +91,47 @@ export default function ShapeModule({
     }
   }, [pathname]);
 
-  const handleButtonClick = async (furniture: Furniture | null) => {
+  const handleButtonClick = async (furniture: FurnitureRequest | null) => {
     if (furniture) {
       try {
-        const updatedFurniture: Furniture = {
-          ...furniture,
+        if (!furniture.furnitureId) {
+          return;
+        }
+
+        const { furnitureId, imageInit, imageEnd, document, ...data } =
+          furniture;
+
+        const updatedFurniture: FurnitureRequest = {
+          ...data,
           cutting: {
             ...(furniture.cutting ?? {}),
-            pieces: pieces,
+            pieces: pieces.map(({ pieceId, ...rest }) => ({ ...rest })),
           },
         };
 
-        await updateFurniture(updatedFurniture).unwrap();
+        const response = await updateFurniture({
+          id: furnitureId,
+          data: updatedFurniture,
+          imageInit: imageInit || undefined,
+          imageEnd: imageEnd || undefined,
+          document: document || undefined,
+        }).unwrap();
 
         showSnackbar(
           "success",
-          "Mueble actualizado correctamente",
+          response.message || "Mueble actualizado correctamente",
           <FaRegCheckCircle />
         );
 
         // limpiar el estado global de piezas
         dispatch(clearPieces());
-      } catch {
-        showSnackbar("error", "Error al actualizar el mueble", <FaRegAngry />);
+      } catch (err) {
+        const ErrorMessage = getErrorMessage(err);
+        showSnackbar(
+          "error",
+          ErrorMessage || "Error al actualizar el mueble",
+          <FaRegAngry />
+        );
       } finally {
         resetFormState();
       }

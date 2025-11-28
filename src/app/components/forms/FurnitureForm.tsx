@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import {
   Furniture,
   FurnitureRequest,
@@ -20,12 +20,16 @@ interface FurnitureFormProps {
   data?: FurnitureRequest;
   onSubmit: (furniture: FurnitureRequest) => void;
   customers?: Customer[];
+  imagenInitUrl?: string;
+  imagenEndUrl?: string;
 }
 
 export default function FurnitureForm({
   data,
   onSubmit,
   customers = [],
+  imagenEndUrl,
+  imagenInitUrl,
 }: FurnitureFormProps) {
   const router = useRouter();
   const isEditMode = Boolean(data);
@@ -58,14 +62,19 @@ export default function FurnitureForm({
         })()
   );
 
+  useEffect(() => {
+    setPreviews({
+      imageInit: imagenInitUrl || "",
+      imageEnd: imagenEndUrl || "",
+    });
+  }, [imagenInitUrl, imagenEndUrl]);
+
   const [previews, setPreviews] = useState<{
     imageInit: string;
     imageEnd: string;
-    document: string;
   }>({
     imageInit: typeof data?.imageInit === "string" ? data.imageInit : "",
     imageEnd: typeof data?.imageEnd === "string" ? data.imageEnd : "",
-    document: typeof data?.document === "string" ? data.document : "",
   });
 
   /* Manejo genérico de cambios */
@@ -101,7 +110,7 @@ export default function FurnitureForm({
         };
       }
 
-      const numericFields = ["customerId", "carpenterId", "furnitureId"];
+      const numericFields = ["customerId", "carpenterId"];
       return {
         ...prev,
         [name]: numericFields.includes(name) ? Number(value) : value,
@@ -266,7 +275,7 @@ export default function FurnitureForm({
           />
           {previews.imageInit && (
             <Image
-              src={previews.imageInit}
+              src={previews.imageInit || imagenInitUrl || ""}
               alt="Inicial"
               width={64}
               height={64}
@@ -295,7 +304,7 @@ export default function FurnitureForm({
               />
               {previews.imageEnd && (
                 <Image
-                  src={previews.imageEnd}
+                  src={previews.imageEnd || imagenEndUrl || ""}
                   alt="Final"
                   width={64}
                   height={64}

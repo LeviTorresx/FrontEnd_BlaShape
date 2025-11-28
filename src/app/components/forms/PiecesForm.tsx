@@ -20,8 +20,8 @@ export default function PiecesForm({
   const [piece, setPiece] = useState<Piece>({
     thickness: materials[0]?.sizes[0]?.thickness || 0,
     materialName: materials[0]?.name || "",
-    height: 0,
-    width: 0,
+    height: 30,
+    width: 30,
     quantity: 1,
     color: {
       name: materials[0].colors[0].name,
@@ -53,24 +53,23 @@ export default function PiecesForm({
   };
 
   const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  const hex = e.target.value;
-  const colorName = materials
-    .find((m) => m.name === piece.materialName)
-    ?.colors.find((c) => c.hex === hex)?.name || "";
+    const hex = e.target.value;
+    const colorName =
+      materials
+        .find((m) => m.name === piece.materialName)
+        ?.colors.find((c) => c.hex === hex)?.name || "";
 
-  setPiece({
-    ...piece,
-    color: {
-      name: colorName,
-      hex,
-    },
-  });
-};
-
+    setPiece({
+      ...piece,
+      color: {
+        name: colorName,
+        hex,
+      },
+    });
+  };
 
   const handleThicknessChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setPiece((prev) => ({ ...prev, thickness: Number(e.target.value) }));
-
 
   const toggleEdge = (edge: keyof Piece["edges"]) =>
     setPiece((prev) => ({
@@ -187,6 +186,7 @@ export default function PiecesForm({
           <input
             type="number"
             name="quantity"
+            required
             min={1}
             value={piece.quantity}
             onChange={handleChange}
@@ -201,12 +201,14 @@ export default function PiecesForm({
         <div>
           <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
             <FaRulerCombined className="text-purple-600" />
-            Alto (cm)
+            Alto (mm)
           </label>
           <input
             type="number"
             name="height"
-            min={0}
+            required
+            min={30}
+            max={2430}
             value={piece.height}
             onChange={handleChange}
             className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 
@@ -216,12 +218,14 @@ export default function PiecesForm({
 
         <div>
           <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Ancho (cm)
+            Ancho (mm)
           </label>
           <input
             type="number"
             name="width"
-            min={0}
+            required
+            min={30}
+            max={2130}
             value={piece.width}
             onChange={handleChange}
             className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 

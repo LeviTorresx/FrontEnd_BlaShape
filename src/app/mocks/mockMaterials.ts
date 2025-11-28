@@ -5,8 +5,7 @@ export const mock_MATERIALS: Material[] = [
     materialId: 1,
     name: "RH",
     sizes: [
-      { height: 200, width: 100, thickness: 3 },
-      { height: 250, width: 120, thickness: 5 },
+      { height: 200, width: 100, thickness: 15 },
     ],
     colors: [
       { name: "Blanco", hex: "#FFFFFF" },
@@ -17,8 +16,7 @@ export const mock_MATERIALS: Material[] = [
     materialId: 2,
     name: "Melamina",
     sizes: [
-      { width: 243, height: 183, thickness: 3 },
-      { width: 244, height: 122, thickness: 7 },
+      { width: 244, height: 122, thickness: 15 },
     ],
     colors: [
       { name: "Blanco", hex: "#FFFFFF" },
@@ -30,8 +28,7 @@ export const mock_MATERIALS: Material[] = [
     materialId: 3,
     name: "Triplex",
     sizes: [
-      { width: 244, height: 122, thickness: 3 },
-      { width: 244, height: 153, thickness: 7 },
+      { width: 244, height: 153, thickness: 15 },
     ],
     colors: [
       { name: "Natural", hex: "#D2B48C" },
@@ -42,8 +39,7 @@ export const mock_MATERIALS: Material[] = [
     materialId: 4,
     name: "MDF",
     sizes: [
-      { width: 244, height: 122, thickness: 3 },
-      { width: 244, height: 153, thickness: 7 },
+      { width: 244, height: 153, thickness: 15 },
     ],
     colors: [
       { name: "Natural", hex: "#D2B48C" },

@@ -127,12 +127,6 @@ export default function FurnitureForm({
     onSubmit(formData);
   };
 
-  /** Guardar y redirigir al módulo de piezas */
-  const handleSaveAndAddPieces = () => {
-    onSubmit(formData);
-    router.push("/dashboard/shape");
-  };
-
   const filteredCustomers = customers.filter((c) => {
     const text = searchCustomer.toLowerCase();
     return (
@@ -326,18 +320,7 @@ export default function FurnitureForm({
         {isEditMode ? (
           <Button onClick={handleSave} label="Guardar cambios" />
         ) : (
-          <>
-            <Button onClick={handleSave} label="Guardar" />
-
-            <button
-              onClick={handleSaveAndAddPieces}
-              className="bg-purple-50 text-purple-700 border border-purple-200 
-                         px-5 py-2.5 rounded-xl hover:bg-purple-100 font-medium 
-                         shadow-sm transition-all"
-            >
-              Ir a agregar piezas
-            </button>
-          </>
+          <Button onClick={handleSave} label="Guardar" />
         )}
       </div>
     </div>

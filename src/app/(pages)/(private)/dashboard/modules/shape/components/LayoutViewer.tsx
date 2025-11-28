@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { GroupedItems } from "@/app/types/Item";
-import Guillotine from "../sections/cut/Guillotine";
+import Guillotine, { GuillotineRef } from "../sections/cut/Guillotine";
+import Button from "@/app/components/ui/Button";
+import { PiFilePdf } from "react-icons/pi";
 
 type Props = {
   groupedItems: GroupedItems[];
@@ -8,9 +10,16 @@ type Props = {
 
 export default function LayoutViewer({ groupedItems }: Props) {
   const [selectedGroup, setSelectedGroup] = useState<GroupedItems | null>(null);
+  const guillotineRef = useRef<GuillotineRef>(null);
 
   // Items que se enviarán a Guillotine
   const itemsToRender = selectedGroup ? selectedGroup.items : [];
+
+  const handleExportPDF = async () => {
+    if (guillotineRef.current) {
+      await guillotineRef.current.exportAllSheetsToPDF();
+    }
+  };
 
   return (
     <div className="flex gap-6">
@@ -24,12 +33,12 @@ export default function LayoutViewer({ groupedItems }: Props) {
         <button
           onClick={() => setSelectedGroup(null)}
           className={`w-full mb-4 py-2.5 rounded-xl transition-all duration-200 font-medium
-      ${
-        !selectedGroup
-          ? "bg-purple-600 text-white shadow-md"
-          : "bg-purple-200 text-gray-700 hover:bg-purple-300"
-      }
-    `}
+            ${
+              !selectedGroup
+                ? "bg-purple-600 text-white shadow-md"
+                : "bg-purple-200 text-gray-700 hover:bg-purple-300"
+            }
+          `}
         >
           Blashape
         </button>
@@ -43,12 +52,12 @@ export default function LayoutViewer({ groupedItems }: Props) {
                 key={group.key}
                 onClick={() => setSelectedGroup(group)}
                 className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200
-            ${
-              active
-                ? "text-white bg-purple-700 shadow-md"
-                : "bg-purple-200 text-gray-800 hover:bg-purple-300"
-            }
-          `}
+                  ${
+                    active
+                      ? "text-white bg-purple-700 shadow-md"
+                      : "bg-purple-200 text-gray-800 hover:bg-purple-300"
+                  }
+                `}
               >
                 <span className="font-bold">{group.colorName}</span>
 
@@ -63,11 +72,13 @@ export default function LayoutViewer({ groupedItems }: Props) {
             );
           })}
         </div>
+
       </div>
 
       {/* VISOR DEL PACKING */}
       <div className="flex justify-center w-full h-full">
         <Guillotine
+          ref={guillotineRef}
           width={2430}
           height={2130}
           items={itemsToRender}

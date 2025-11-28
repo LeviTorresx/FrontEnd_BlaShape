@@ -34,7 +34,7 @@ export default function CustomerForm({
     dni: data?.dni || "",
     role: data?.role ,
     carpenterId: carpenterId,
-    furnitureList: data?.furnitureList || [],
+    furnitureListIds: data?.furnitureListIds || [],
   });
 
   useEffect(() => {

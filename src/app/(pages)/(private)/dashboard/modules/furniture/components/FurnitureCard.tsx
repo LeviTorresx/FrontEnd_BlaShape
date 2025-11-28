@@ -58,9 +58,9 @@ export default function FurnitureCard({
           <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
             <FaImage className="text-purple-500" /> Imagen inicial
           </label>
-          {furniture.imageInitUrl ? (
+          {furniture.imageInitURL ? (
             <Image
-              src={furniture.imageInitUrl}
+              src={furniture.imageInitURL}
               alt="Imagen inicial"
               width={400}
               height={250}
@@ -78,9 +78,9 @@ export default function FurnitureCard({
           <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
             <FaImage className="text-purple-500" /> Imagen final
           </label>
-          {furniture.imageEndUrl ? (
+          {furniture.imageEndURL ? (
             <Image
-              src={furniture.imageEndUrl}
+              src={furniture.imageEndURL}
               alt="Imagen final"
               width={400}
               height={250}
@@ -153,9 +153,9 @@ export default function FurnitureCard({
             </button>
           )}
 
-          {furniture.documentUrl && (
+          {furniture.documentURL && (
             <a
-              href={furniture.documentUrl}
+              href={furniture.documentURL}
               target="_blank"
               className="flex items-center gap-2 text-purple-700 hover:text-purple-900 
                    transition underline font-medium"

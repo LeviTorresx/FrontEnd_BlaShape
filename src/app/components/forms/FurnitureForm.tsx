@@ -46,9 +46,9 @@ export default function FurnitureForm({
             customerId: 0,
             creationDate: today.toISOString().split("T")[0],
             endDate: nextMonth.toISOString().split("T")[0],
-            imageInitUrl: "",
-            imageEndUrl: "",
-            documentUrl: "",
+            imageInitURL: "",
+            imageEndURL: "",
+            documentURL: "",
             name: "",
             cutting: {
               cuttingId: 0,
@@ -63,9 +63,9 @@ export default function FurnitureForm({
   );
 
   const [previews, setPreviews] = useState({
-    imageInit: data?.imageInitUrl || "",
-    imageFinal: data?.imageEndUrl || "",
-    document: data?.documentUrl || "",
+    imageInit: data?.imageInitURL || "",
+    imageFinal: data?.imageEndURL || "",
+    document: data?.documentURL || "",
   });
 
   /* Manejo genérico de cambios */

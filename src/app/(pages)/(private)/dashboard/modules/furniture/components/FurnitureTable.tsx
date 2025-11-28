@@ -71,7 +71,7 @@ export default function FurnitureTable({
                     >
                       <td className="p-3">
                         <Image
-                          src={f.imageInitUrl}
+                          src={f.imageInitURL}
                           alt={f.name}
                           width={64}
                           height={64}
@@ -187,7 +187,7 @@ export default function FurnitureTable({
                   {/* Imagen y datos principales */}
                   <div className="flex items-center gap-3 mb-3">
                     <Image
-                      src={f.imageInitUrl}
+                      src={f.imageInitURL}
                       alt={f.name}
                       width={80}
                       height={80}

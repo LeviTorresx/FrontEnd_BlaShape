@@ -21,9 +21,9 @@ export interface Furniture {
   furnitureId: number;
   name: string;
   type: FurnitureType;
-  documentUrl?: string;
-  imageInitUrl: string;
-  imageEndUrl?: string;
+  documentURL?: string;
+  imageInitURL: string;
+  imageEndURL?: string;
   creationDate: string;
   endDate: string;
   status: string;

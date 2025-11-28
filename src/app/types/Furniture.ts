@@ -7,7 +7,7 @@ export const FurnitureTypes = {
   NOCHERO:  { id: 3, label: "Nochero",          value: "NOCHERO",    ref: "bs-3ref" },
   GABETER0: { id: 4, label: "Gabetero",         value: "GABETER0",   ref: "bs-4ref" },
   CLOSET:   { id: 5, label: "Closet",           value: "CLOSET",     ref: "bs-5ref" },
-  BAÑO:     { id: 6, label: "Mueble de baño",   value: "BANO",       ref: "bs-6ref" },
+  BAÑO:     { id: 6, label: "Mueble de baño",   value: "BAÑO",       ref: "bs-6ref" },
   ESCRITORIO:{id: 7, label: "Escritorio",       value: "ESCRITORIO", ref: "bs-7ref" },
   MESA:     { id: 8, label: "Mesa",             value: "MESA",       ref: "bs-8ref" },
   SILLA:    { id: 9, label: "Silla",            value: "SILLA",      ref: "bs-9ref" },

@@ -9,6 +9,24 @@ const initialState: PeicesState = {
   list: [],
 };
 
+export function mergePieces(pieces: Piece[]): Piece[] {
+  const merged: Piece[] = [];
+
+  for (const p of pieces) {
+    const existing = merged.find(
+      (m) => m.width === p.width && m.height === p.height
+    );
+
+    if (existing) {
+      existing.quantity += Number(p.quantity);
+    } else {
+      merged.push({ ...p });
+    }
+  }
+
+  return merged;
+}
+
 const piecesSlice = createSlice({
   name: "pieces",
   initialState,
@@ -18,7 +36,8 @@ const piecesSlice = createSlice({
         ...action.payload,
         pieceId: state.list.length + 1,
       };
-      state.list.push(newPiece);
+
+      state.list = mergePieces([...state.list, newPiece]);
     },
 
     setPieces(state, action: PayloadAction<Piece[]>) {
@@ -30,10 +49,17 @@ const piecesSlice = createSlice({
     },
 
     editPiece: (state, action: PayloadAction<Piece>) => {
-      state.list = state.list.map((p) =>
-        p.pieceId === action.payload.pieceId ? action.payload : p
+      const updated = action.payload;
+
+      // reemplazar la pieza editada
+      const updatedList = state.list.map((p) =>
+        p.pieceId === updated.pieceId ? updated : p
       );
+
+      // fusionar por medidas
+      state.list = mergePieces(updatedList);
     },
+
     rotatePiece: (state, action: PayloadAction<number>) => {
       state.list = state.list.map((p) => {
         if (p.pieceId === action.payload) {
@@ -52,6 +78,12 @@ const piecesSlice = createSlice({
   },
 });
 
-export const { addPiece, removePiece, editPiece, rotatePiece, setPieces,clearPieces } =
-  piecesSlice.actions;
+export const {
+  addPiece,
+  removePiece,
+  editPiece,
+  rotatePiece,
+  setPieces,
+  clearPieces,
+} = piecesSlice.actions;
 export default piecesSlice.reducer;

@@ -16,9 +16,10 @@ type Props = {
 
 export default function GroupedPiecesTables({ groupedData }: Props) {
   const [editingPiece, setEditingPiece] = useState<Piece | null>(null);
-  const [form, setForm] = useState<{ width: number; height: number }>({
+  const [form, setForm] = useState<{ width: number; height: number; quantity:number }>({
     width: 0,
     height: 0,
+    quantity: 1,
   });
 
   const dispatch = useAppDispatch();
@@ -29,6 +30,7 @@ export default function GroupedPiecesTables({ groupedData }: Props) {
       setForm({
         width: piece.width,
         height: piece.height,
+        quantity: piece.quantity,
       });
     }
   };
@@ -41,6 +43,7 @@ export default function GroupedPiecesTables({ groupedData }: Props) {
         ...piece,
         width: form.width,
         height: form.height,
+        quantity: form.quantity,
       })
     );
 
@@ -54,7 +57,7 @@ export default function GroupedPiecesTables({ groupedData }: Props) {
 
     // actualizar form si esta editando
     if (editingPiece?.pieceId === piece.pieceId) {
-      setForm({ width: piece.height, height: piece.width });
+      setForm({ width: piece.height, height: piece.width, quantity: piece.quantity });
     }
   };
 

@@ -5,9 +5,9 @@ import React from "react";
 type Props = {
   piece: Piece;
   isEditing: boolean;
-  form: { width: number; height: number };
+  form: { width: number; height: number; quantity: number };
   setForm: React.Dispatch<
-    React.SetStateAction<{ width: number; height: number }>
+    React.SetStateAction<{ width: number; height: number; quantity: number }>
   >;
   onStartEditing: (p: Piece | null) => void;
   onSave: (p: Piece) => void;
@@ -36,9 +36,22 @@ function PieceRowComponent({
 
       {/* Cantidad */}
       <td className="p-3">
-        <span className="px-3 py-1 bg-blue-100 text-blue-700 font-semibold rounded-full shadow-sm text-xs">
-          x{piece.quantity}
-        </span>
+        {isEditing ? (
+          <div className="flex items-center justify-center gap-5">
+            <input
+              type="number"
+              value={form.quantity}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, quantity: Number(e.target.value) }))
+              }
+              className=" w-25 px-2 py-1 border border-purple-300 rounded-md focus:ring-2 focus:ring-purple-500"
+            /><span className="text-xs">u</span>
+          </div> 
+        ) : (
+          <span className="px-3 py-1 bg-blue-100 text-blue-700 font-semibold rounded-full shadow-sm text-xs">
+            x{piece.quantity}
+          </span>
+        )}
       </td>
 
       {/* ALTO */}
@@ -83,7 +96,6 @@ function PieceRowComponent({
         )}
       </td>
 
-      {/* BORDES */}
       {/* BORDES VISUALES */}
       <td className="p-3">
         <div className="flex items-center justify-center gap-3">

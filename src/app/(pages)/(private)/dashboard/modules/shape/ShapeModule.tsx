@@ -23,6 +23,7 @@ import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { clearPieces, setPieces } from "@/app/store/slices/piecesSlice";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function ShapeModule({
   shapeId,
@@ -32,6 +33,7 @@ export default function ShapeModule({
   const [createFurniture] = useAddFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const { data: furniture } = useGetFurnitureByIdQuery(Number(shapeId), {
     skip: !shapeId,
@@ -45,7 +47,7 @@ export default function ShapeModule({
   const expandedPieces = expandPiecesByQuantity(pieces);
   const items = piecesToItems(expandedPieces);
   const groupedItems = groupItemsByColor(items);
-  const [section, setSection] = useState<"pieces" | "cut">("pieces");
+
   const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
     null
   );
@@ -58,6 +60,13 @@ export default function ShapeModule({
     icon: <MdErrorOutline fontSize="inherit" />,
   });
   const customers = useSelector((state: RootState) => state.customers.list);
+
+  const pathname = usePathname();
+  const lastSegment = pathname.split("/").pop() as "pieces" | "cut";
+
+  const [section, setSection] = useState<"pieces" | "cut">(
+    lastSegment === "cut" ? "cut" : "pieces"
+  );
 
   const showSnackbar = (
     severity: "error" | "warning" | "info" | "success",
@@ -73,6 +82,14 @@ export default function ShapeModule({
       dispatch(clearPieces());
     }
   }, [furniture, dispatch]);
+
+  useEffect(() => {
+  const last = pathname.split("/").pop();
+  if (last === "cut" || last === "pieces") {
+    setSection(last);
+  }
+}, [pathname]);
+
 
   const handleButtonClick = async (furniture: Furniture | null) => {
     if (furniture) {
@@ -149,6 +166,14 @@ export default function ShapeModule({
     }
   };
 
+  const changeSection = (sec: "pieces" | "cut") => {
+    setSection(sec);
+
+    if (shapeId) {
+      router.push(`/dashboard/shape/${shapeId}/${sec}`);
+    }
+  };
+
   return (
     <div className="p-6 flex flex-col gap-6 h-full rounded-2xl">
       {/* Header principal */}
@@ -195,7 +220,7 @@ export default function ShapeModule({
             />
 
             <button
-              onClick={() => setSection("pieces")}
+              onClick={() => changeSection("pieces")}
               className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
                 section === "pieces"
                   ? "text-white"
@@ -206,7 +231,7 @@ export default function ShapeModule({
             </button>
 
             <button
-              onClick={() => setSection("cut")}
+              onClick={() => changeSection("cut")}
               className={`relative z-10 px-5 py-1 rounded-full font-medium transition-colors duration-300 ${
                 section === "cut"
                   ? "text-white"

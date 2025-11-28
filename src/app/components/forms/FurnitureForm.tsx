@@ -1,6 +1,10 @@
 "use client";
 import { useState, ChangeEvent } from "react";
-import { Furniture, FurnitureType } from "@/app/types/Furniture";
+import {
+  Furniture,
+  FurnitureType,
+  FurnitureTypes,
+} from "@/app/types/Furniture";
 import { Customer } from "@/app/types/Customer";
 import { useRouter } from "next/navigation";
 import { FaImage, FaUser } from "react-icons/fa";
@@ -53,7 +57,7 @@ export default function FurnitureForm({
               materialName: "",
             },
             status: "COTIZACION",
-            type: FurnitureType.OTRO,
+            type: FurnitureTypes.OTRO.value,
           };
         })()
   );
@@ -81,6 +85,19 @@ export default function FurnitureForm({
           ...prev,
           creationDate: value,
           endDate: newEnd.toISOString().split("T")[0],
+        };
+      }
+
+      if (name === "type") {
+        const selected = Object.values(FurnitureTypes).find(
+          (x) => x.value === value
+        );
+        const label = selected?.label ?? "";
+
+        return {
+          ...prev,
+          type: value as FurnitureType,
+          name: `${label} - ${prev.name.replace(/^[^-]+-\s*/, "")}`,
         };
       }
 
@@ -149,9 +166,10 @@ export default function FurnitureForm({
           className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white 
                focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
         >
-          {Object.values(FurnitureType).map((t) => (
-            <option key={t} value={t}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+          {Object.values(FurnitureTypes).map((t) => (
+            <option key={t.id} value={t.value}>
+              {t.label.charAt(0).toUpperCase() + t.label.slice(1).toLowerCase()}{" "}
+              [{t.ref}]
             </option>
           ))}
         </select>

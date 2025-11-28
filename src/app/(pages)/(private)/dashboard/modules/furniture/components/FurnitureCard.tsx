@@ -142,7 +142,7 @@ export default function FurnitureCard({
           {furniture.cutting?.pieces?.length > 0 && (
             <button
               onClick={() =>
-                router.push(`/dashboard/shape/${furniture.furnitureId}`)
+                router.push(`/dashboard/shape/${furniture.furnitureId}/cut`)
               }
               className="flex items-center justify-center gap-2 
                    bg-purple-600 text-white font-medium px-4 py-2 rounded-lg

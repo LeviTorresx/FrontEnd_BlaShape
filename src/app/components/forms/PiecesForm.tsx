@@ -18,13 +18,15 @@ export default function PiecesForm({
   buttonLabel = "Agregar Pieza",
 }: PiecesFormProps) {
   const [piece, setPiece] = useState<Piece>({
-    ColorHex: materials[0]?.colors[0]?.hex || "",
-    colorName: materials[0]?.colors[0]?.name || "",
     thickness: materials[0]?.sizes[0]?.thickness || 0,
     materialName: materials[0]?.name || "",
     height: 0,
     width: 0,
     quantity: 1,
+    color: {
+      name: materials[0].colors[0].name,
+      hex: materials[0].colors[0].hex,
+    },
     edges: { top: false, bottom: false, left: false, right: false },
   });
 
@@ -43,24 +45,32 @@ export default function PiecesForm({
       ...piece,
       materialName: selected.name,
       thickness: selected.sizes[0]?.thickness || 0,
-      ColorHex: selected.colors[0]?.hex || "",
-      colorName: selected.colors[0]?.name || "",
+      color: {
+        hex: selected.colors[0]?.hex || "",
+        name: selected.colors[0]?.name || "",
+      },
     });
   };
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const hex = e.target.value;
+  const colorName = materials
+    .find((m) => m.name === piece.materialName)
+    ?.colors.find((c) => c.hex === hex)?.name || "";
+
+  setPiece({
+    ...piece,
+    color: {
+      name: colorName,
+      hex,
+    },
+  });
+};
+
 
   const handleThicknessChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setPiece((prev) => ({ ...prev, thickness: Number(e.target.value) }));
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = materials.find((m) => m.name === piece.materialName);
-    const color = selected?.colors.find((c) => c.hex === e.target.value);
-    if (!color) return;
-    setPiece((prev) => ({
-      ...prev,
-      ColorHex: color.hex,
-      colorName: color.name,
-    }));
-  };
 
   const toggleEdge = (edge: keyof Piece["edges"]) =>
     setPiece((prev) => ({
@@ -126,7 +136,7 @@ export default function PiecesForm({
           <div className="flex items-center gap-3">
             <select
               name="ColorHex"
-              value={piece.ColorHex}
+              value={piece.color.hex}
               onChange={handleColorChange}
               className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 
                          focus:ring-purple-400 focus:border-purple-400 outline-none bg-white"
@@ -141,7 +151,7 @@ export default function PiecesForm({
             </select>
             <div
               className="w-8 h-8 rounded-full border border-gray-300 shadow-sm"
-              style={{ backgroundColor: piece.ColorHex }}
+              style={{ backgroundColor: piece.color.hex }}
             />
           </div>
         </div>

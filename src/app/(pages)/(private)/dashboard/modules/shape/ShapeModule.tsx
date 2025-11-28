@@ -18,19 +18,21 @@ import Button from "@/app/components/ui/Button";
 import { FaCube, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
-import { Furniture } from "@/app/types/Furniture";
+import { Furniture, FurnitureRequest } from "@/app/types/Furniture";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { clearPieces, setPieces } from "@/app/store/slices/piecesSlice";
 import { usePathname, useRouter } from "next/navigation";
+import { useCreateFurnitureMutation } from "@/app/services/furnitureApi";
+import { getErrorMessage } from "@/app/services/getErrorMessages";
 
 export default function ShapeModule({
   shapeId,
 }: {
   shapeId?: number | string;
 }) {
-  const [createFurniture] = useAddFurnitureMutation();
+  const [createFurniture] = useCreateFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -84,12 +86,11 @@ export default function ShapeModule({
   }, [furniture, dispatch]);
 
   useEffect(() => {
-  const last = pathname.split("/").pop();
-  if (last === "cut" || last === "pieces") {
-    setSection(last);
-  }
-}, [pathname]);
-
+    const last = pathname.split("/").pop();
+    if (last === "cut" || last === "pieces") {
+      setSection(last);
+    }
+  }, [pathname]);
 
   const handleButtonClick = async (furniture: Furniture | null) => {
     if (furniture) {
@@ -135,17 +136,25 @@ export default function ShapeModule({
   const handleCloseSnackbar = () =>
     setSnackbar((prev) => ({ ...prev, open: false }));
 
-  const handleCreateFurniture = async (newFurniture: Furniture) => {
+  const handleCreateFurniture = async (newFurniture: FurnitureRequest) => {
     try {
-      const furnitureWithPieces: Furniture = {
-        ...newFurniture,
+      const { imageInit, imageEnd, document, ...data } = newFurniture;
+
+      const furnitureWithPieces: FurnitureRequest = {
+        ...data,
         cutting: {
-          ...(newFurniture.cutting ?? {}),
+          materialName: pieces[0].materialName || "",
+          sheetQuantity: 0,
           pieces: pieces,
         },
       };
 
-      await createFurniture(furnitureWithPieces).unwrap();
+      const response = await createFurniture({
+        data: furnitureWithPieces,
+        imageInit: imageInit || new File([], ""),
+        imageEnd: imageEnd,
+        document: document,
+      }).unwrap();
 
       // limpiar el estado global
       dispatch(clearPieces());
@@ -156,9 +165,10 @@ export default function ShapeModule({
         <FaRegCheckCircle />
       );
     } catch (error) {
+      const ErrorMessage = getErrorMessage(error);
       showSnackbar(
         "warning",
-        "Hubo un error al crear el mueble",
+        ErrorMessage || "Hubo un error al crear el mueble",
         <FaRegAngry />
       );
     } finally {

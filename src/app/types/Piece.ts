@@ -1,11 +1,12 @@
+import { Color } from "./Color";
+
 export interface Piece {
   pieceId?: number;
   quantity: number;
   height: number;
   width: number;
   thickness: number;
-  colorName: string;
-  ColorHex: string;
+  color: Color
   materialName: string;
   edges: {
     top: boolean;

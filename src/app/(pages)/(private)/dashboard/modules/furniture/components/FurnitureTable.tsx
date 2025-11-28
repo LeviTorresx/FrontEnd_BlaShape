@@ -30,6 +30,13 @@ export default function FurnitureTable({
   onEdit,
   onView,
 }: Props) {
+  const statusLabels: Record<string, string> = {
+    COMPLETE: "Finalizado",
+    PENDING: "En proceso",
+    QUOTATION: "Cotización",
+    INITIAL: "Inicial",
+  };
+
   return (
     <TableContainer title="Muebles" data={filtered} itemsPerPage={5}>
       {(paginatedData) => (
@@ -71,7 +78,7 @@ export default function FurnitureTable({
                     >
                       <td className="p-3">
                         <Image
-                          src={f.imageInitURL}
+                          src={f.imageInitURL || ""}
                           alt={f.name}
                           width={64}
                           height={64}
@@ -95,27 +102,27 @@ export default function FurnitureTable({
                           className={`
       inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold
       ${
-        f.status === "TERMINADO"
+        f.status === "COMPLETE"
           ? "bg-green-100 text-green-700"
-          : f.status === "EN_PROGRESO"
+          : f.status === "PENDING"
           ? "bg-yellow-100 text-yellow-700"
-          : f.status === "COTIZACION"
+          : f.status === "QUOTATION"
           ? "bg-red-100 text-red-700"
           : "bg-gray-200 text-gray-700"
       }
     `}
                         >
                           {/* ÍCONOS POR ESTADO */}
-                          {f.status === "TERMINADO" && (
+                          {f.status === "COMPLETE" && (
                             <FaCheckCircle size={12} />
                           )}
-                          {f.status === "EN_PROGRESO" && <FaClock size={12} />}
-                          {f.status === "COTIZACION" && (
+                          {f.status === "PENDING" && <FaClock size={12} />}
+                          {f.status === "QUOTATION" && (
                             <FaExclamationTriangle size={12} />
                           )}
-                          {f.status === "INICIAL" && <FaRegCircle size={12} />}
+                          {f.status === "INITIAL" && <FaRegCircle size={12} />}
 
-                          {f.status}
+                          {statusLabels[f.status] || f.status}
                         </span>
                       </td>
 
@@ -187,7 +194,7 @@ export default function FurnitureTable({
                   {/* Imagen y datos principales */}
                   <div className="flex items-center gap-3 mb-3">
                     <Image
-                      src={f.imageInitURL}
+                      src={f.imageInitURL || ""}
                       alt={f.name}
                       width={80}
                       height={80}

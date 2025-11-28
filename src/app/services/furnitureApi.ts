@@ -1,35 +1,35 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "./axiosBaseQuery";
-import { FurnitureDTO } from "../types/Furniture";
+import { Furniture, FurnitureDTO } from "../types/Furniture";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+interface FurnitureMessage {
+  message: string;
+}
 
 export const furnitureApi = createApi({
   reducerPath: "furnitureApi",
-  baseQuery: axiosBaseQuery({
+  baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080/api_BS/furniture",
-  }),
-  tagTypes: ["Furniture"],
+  }), // Ajusta tu base URL
   endpoints: (builder) => ({
-    getAllFurniture: builder.query<FurnitureDTO[], void>({
+    getAllFurnitures: builder.query<Furniture[], void>({
       query: () => ({
         url: "/all",
         method: "GET",
-        withCredentials: true,
+        credentials: 'include'
       }),
-      providesTags: ["Furniture"],
     }),
-
     createFurniture: builder.mutation<
-      { message: string },
+      FurnitureMessage,
       {
-        furniture: FurnitureDTO;
+        data: any; // tu objeto furniture sin archivos
         imageInit: File;
         imageEnd?: File;
         document?: File;
       }
     >({
-      query: ({ furniture, imageInit, imageEnd, document }) => {
+      query: ({ data, imageInit, imageEnd, document }) => {
         const formData = new FormData();
-        formData.append("data", JSON.stringify(furniture));
+        formData.append("data", JSON.stringify(data));
         formData.append("imageInit", imageInit);
         if (imageEnd) formData.append("imageEnd", imageEnd);
         if (document) formData.append("document", document);
@@ -37,12 +37,36 @@ export const furnitureApi = createApi({
         return {
           url: "/create",
           method: "POST",
-          data: formData,
+          body: formData,
         };
       },
-      invalidatesTags: ["Furniture"],
+    }),
+    updateFurniture: builder.mutation<
+      FurnitureMessage,
+      {
+        id: number;
+        data: any;
+        imageInit?: File;
+        imageEnd?: File;
+        document?: File;
+      }
+    >({
+      query: ({ id, data, imageInit, imageEnd, document }) => {
+        const formData = new FormData();
+        formData.append("data", JSON.stringify(data));
+        if (imageInit) formData.append("imageInit", imageInit);
+        if (imageEnd) formData.append("imageEnd", imageEnd);
+        if (document) formData.append("document", document);
+
+        return {
+          url: `/edit/${id}`,
+          method: "PUT",
+          body: formData,
+        };
+      },
     }),
   }),
 });
 
-export const { useGetAllFurnitureQuery, useCreateFurnitureMutation } = furnitureApi;
+export const { useCreateFurnitureMutation, useUpdateFurnitureMutation, useGetAllFurnituresQuery } =
+  furnitureApi;

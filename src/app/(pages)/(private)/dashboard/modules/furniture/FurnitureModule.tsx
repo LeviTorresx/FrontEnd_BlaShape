@@ -2,20 +2,22 @@
 import { ReactNode, useState } from "react";
 import FurnitureTable from "./components/FurnitureTable";
 import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
-import {
-  useAddFurnitureMutation,
-  useGetFurnitureQuery,
-  useUpdateFurnitureMutation,
-} from "@/app/services/mockFurnituresApi";
+import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
-import { Furniture } from "@/app/types/Furniture";
+import { Furniture, FurnitureRequest } from "@/app/types/Furniture";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import FurnitureCard from "./components/FurnitureCard";
 import Button from "@/app/components/ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
+import {
+  useCreateFurnitureMutation,
+  useGetAllFurnituresQuery,
+  useUpdateFurnitureMutation,
+} from "@/app/services/furnitureApi";
+import { getErrorMessage } from "@/app/services/getErrorMessages";
 
 export default function FurnitureModule({
   onSelect,
@@ -37,10 +39,10 @@ export default function FurnitureModule({
     icon: <MdErrorOutline fontSize="inherit" />,
   });
 
-  const { data: furnitures = [] } = useGetFurnitureQuery();
-  const [createFurniture] = useAddFurnitureMutation();
+  const { data: furnitures = [] } = useGetAllFurnituresQuery();
+  const [createFurniture] = useCreateFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
-  const  customers  = useSelector((state: RootState) => state.customers.list);
+  const customers = useSelector((state: RootState) => state.customers.list);
 
   const handleCloseSnackbar = () =>
     setSnackbar((prev) => ({ ...prev, open: false }));
@@ -57,18 +59,26 @@ export default function FurnitureModule({
     )
   );
 
-  const handleCreateFurniture = async (newFurniture: Furniture) => {
+  const handleCreateFurniture = async (newFurniture: FurnitureRequest) => {
     try {
-      await createFurniture(newFurniture).unwrap();
+      const { imageInit, imageEnd, document, ...data } = newFurniture;
+
+      const response = await createFurniture({
+        data: data,
+        imageInit: imageInit || new File([], ""),
+        imageEnd: imageEnd,
+        document: document,
+      }).unwrap();
       showSnackbar(
         "success",
-        "¡Mueble creado con éxito!",
+        response.message || "¡Mueble creado con éxito!",
         <FaRegCheckCircle />
       );
-    } catch {
+    } catch (err) {
+      const ErrorMesage = getErrorMessage(err);
       showSnackbar(
         "warning",
-        "Hubo un error al crear el mueble",
+        ErrorMesage || "Hubo un error al crear el mueble",
         <FaRegAngry />
       );
     } finally {
@@ -76,16 +86,35 @@ export default function FurnitureModule({
     }
   };
 
-  const handleUpdateFurniture = async (updatedFurniture: Furniture) => {
+  const handleUpdateFurniture = async (updatedFurniture: FurnitureRequest) => {
     try {
-      await updateFurniture(updatedFurniture).unwrap();
+      const { furnitureId, imageInit, imageEnd, document, ...data } =
+        updatedFurniture;
+
+      if (!furnitureId) {
+        throw new Error("El ID del mueble es obligatorio");
+      }
+
+      const response = await updateFurniture({
+        id: furnitureId,
+        data,
+        imageInit: imageInit || undefined,
+        imageEnd: imageEnd || undefined,
+        document: document || undefined,
+      }).unwrap();
+
       showSnackbar(
         "success",
-        "Mueble actualizado correctamente",
+        response.message || "Mueble actualizado correctamente",
         <FaRegCheckCircle />
       );
-    } catch {
-      showSnackbar("error", "Error al actualizar el mueble", <FaRegAngry />);
+    } catch (err) {
+      const ErrorMessage = getErrorMessage(err);
+      showSnackbar(
+        "error",
+        ErrorMessage || "Error al actualizar el mueble",
+        <FaRegAngry />
+      );
     } finally {
       resetFormState();
     }
@@ -129,7 +158,6 @@ export default function FurnitureModule({
           label="Nuevo Mueble"
           icon={<FaPlus className="text-sm" />}
           onClick={() => setOpen(true)}
-         
         />
       </div>
 

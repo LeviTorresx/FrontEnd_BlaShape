@@ -2,6 +2,7 @@
 import { useState, ChangeEvent } from "react";
 import {
   Furniture,
+  FurnitureRequest,
   FurnitureType,
   FurnitureTypes,
 } from "@/app/types/Furniture";
@@ -12,10 +13,12 @@ import Image from "next/image";
 import Input from "../ui/Input";
 import { formatDateForInput } from "@/app/utils/formatDate";
 import Button from "../ui/Button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 interface FurnitureFormProps {
-  data?: Furniture;
-  onSubmit: (furniture: Furniture) => void;
+  data?: FurnitureRequest;
+  onSubmit: (furniture: FurnitureRequest) => void;
   customers?: Customer[];
 }
 
@@ -26,9 +29,9 @@ export default function FurnitureForm({
 }: FurnitureFormProps) {
   const router = useRouter();
   const isEditMode = Boolean(data);
-
+  const user = useSelector((state: RootState) => state.auth.user);
   const [searchCustomer, setSearchCustomer] = useState("");
-  const [formData, setFormData] = useState<Furniture>(
+  const [formData, setFormData] = useState<FurnitureRequest>(
     data
       ? {
           ...data,
@@ -41,31 +44,28 @@ export default function FurnitureForm({
           nextMonth.setMonth(today.getMonth() + 1);
 
           return {
-            furnitureId: 0,
-            carpenterId: 0,
+            carpenterId: user?.carpenterId || 0,
             customerId: 0,
             creationDate: today.toISOString().split("T")[0],
             endDate: nextMonth.toISOString().split("T")[0],
-            imageInitURL: "",
-            imageEndURL: "",
-            documentURL: "",
+            imageInit: new File([], ""),
+            imageEnd: new File([], ""),
+            document: new File([], ""),
             name: "",
-            cutting: {
-              cuttingId: 0,
-              sheetQuantity: 0,
-              pieces: [],
-              materialName: "",
-            },
-            status: "COTIZACION",
+            status: "QUOTATION",
             type: FurnitureTypes.OTRO.value,
           };
         })()
   );
 
-  const [previews, setPreviews] = useState({
-    imageInit: data?.imageInitURL || "",
-    imageEnd: data?.imageEndURL || "",
-    document: data?.documentURL || "",
+  const [previews, setPreviews] = useState<{
+    imageInit: string;
+    imageEnd: string;
+    document: string;
+  }>({
+    imageInit: typeof data?.imageInit === "string" ? data.imageInit : "",
+    imageEnd: typeof data?.imageEnd === "string" ? data.imageEnd : "",
+    document: typeof data?.document === "string" ? data.document : "",
   });
 
   /* Manejo genérico de cambios */
@@ -113,11 +113,22 @@ export default function FurnitureForm({
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onloadend = () => {
       const url = reader.result as string;
-      setFormData((prev) => ({ ...prev, [key]: url }));
-      setPreviews((prev) => ({ ...prev, [key]: url }));
+
+      // Actualizar formData con el File object
+      setFormData((prev) => ({
+        ...prev,
+        [key]: file, // Usar la key directamente
+      }));
+
+      // Actualizar previews con la URL string
+      setPreviews((prev) => ({
+        ...prev,
+        [key]: url,
+      }));
     };
     reader.readAsDataURL(file);
   };
@@ -248,7 +259,7 @@ export default function FurnitureForm({
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => handleFileChange(e, "imageInitURL")}
+            onChange={(e) => handleFileChange(e, "imageInit")} // Cambiado a "imageInit"
             className="text-sm text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-md 
                        file:border file:border-purple-200 file:bg-purple-50 
                        file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
@@ -277,7 +288,7 @@ export default function FurnitureForm({
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, "imageEndURL")}
+                onChange={(e) => handleFileChange(e, "imageEnd")} // Cambiado a "imageEnd"
                 className="text-sm text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-md 
                            file:border file:border-purple-200 file:bg-purple-50 
                            file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
@@ -308,10 +319,10 @@ export default function FurnitureForm({
           className="w-full border border-gray-300 rounded-lg px-3 py-2 
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
         >
-          <option value="INICIAL">INICIAL</option>
-          <option value="EN_PROGRESO">EN PROGRESO</option>
-          <option value="TERMINADO">TERMINADO</option>
-          <option value="COTIZACION">COTIZACION</option>
+          <option value="INITIAL">INICIAL</option>
+          <option value="PENDING">PENDIENTE</option>
+          <option value="COMPLETED">TERMINADO</option>
+          <option value="QUOTATION">COTIZACION</option>
         </select>
       </div>
 

@@ -44,7 +44,7 @@ export default function WorkshopForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
       {/* Nombre */}
       <Input
         label="Nombre del Taller"
@@ -53,6 +53,7 @@ export default function WorkshopForm({
         onChange={handleChange}
         placeholder="Ej: Taller Los Pinos"
         required
+        className="w-full"
       />
 
       {/* Dirección */}
@@ -63,17 +64,25 @@ export default function WorkshopForm({
         onChange={handleChange}
         placeholder="Ej: Calle 123 #45-67 Caucasia, Antioquia"
         required
+        className="w-full"
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* NIT */}
-        <Input
-          label="NIT (opcional si es trabajador independiente)"
-          name="nit"
-          value={formData.nit}
-          onChange={handleChange}
-          placeholder="Ej: 900123456-7"
-          required
-        />
+        <div className="w-full">
+          <Input
+            label="NIT"
+            name="nit"
+            value={formData.nit}
+            onChange={handleChange}
+            placeholder="Ej: 900123456-7"
+            required
+            className="w-full"
+          />
+          <p className="text-sm text-red-500 mt-1">
+            *Si es persona natural "No aplica"
+          </p>
+        </div>
 
         {/* Teléfono */}
         <Input
@@ -83,6 +92,7 @@ export default function WorkshopForm({
           onChange={handleChange}
           placeholder="+57 300 000 0000"
           required
+          className="w-full"
         />
       </div>
 
@@ -90,7 +100,7 @@ export default function WorkshopForm({
       <Button
         label={submitLabel}
         type="submit"
-        className="w-full py-2 rounded-md bg-purple-950 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
+        className="w-full py-3 rounded-md bg-purple-950 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
       />
     </form>
   );

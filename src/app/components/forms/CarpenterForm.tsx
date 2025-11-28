@@ -1,7 +1,7 @@
 "use client";
 
 import { Carpenter, CarpenterDTO } from "@/app/types/Carpenter";
-import { use, useState } from "react";
+import { useState } from "react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import PasswordInput from "../ui/PasswordInput";
@@ -44,7 +44,6 @@ export default function UserForm({
   });
 
   const [confirmPassword, setConfirmPasswoerd] = useState("");
-
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,13 +60,11 @@ export default function UserForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validación de contraseñas solo en modo "create"
     if (mode === "create" && formData.password !== confirmPassword) {
       setError("Las contraseñas no coinciden");
       return;
     }
 
-    // Se llama la función del padre con los datos
     const dataToSend: CarpenterDTO = {
       ...formData,
       password: formData.password || initialData.password || "",
@@ -76,9 +73,9 @@ export default function UserForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto">
       {/* Nombre y Apellido */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label="Nombre"
           name="name"
@@ -86,6 +83,7 @@ export default function UserForm({
           onChange={handleChange}
           placeholder="Tu nombre"
           required
+          className="w-full"
         />
         <Input
           label="Apellido"
@@ -94,11 +92,12 @@ export default function UserForm({
           onChange={handleChange}
           placeholder="Tu apellido"
           required
+          className="w-full"
         />
       </div>
 
       {/* Documento & RUT */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label="Cédula"
           name="dni"
@@ -107,6 +106,7 @@ export default function UserForm({
           placeholder="Ej: 1234567890"
           required
           disabled={mode === "edit"}
+          className="w-full"
         />
         <Input
           label="RUT"
@@ -114,11 +114,12 @@ export default function UserForm({
           value={formData.rut}
           onChange={handleChange}
           placeholder="Ej: 12345678-9"
+          className="w-full"
         />
       </div>
 
       {/* Correo y teléfono */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label="Correo Electrónico"
           name="email"
@@ -128,6 +129,7 @@ export default function UserForm({
           placeholder="ejemplo@correo.com"
           required
           disabled={mode === "edit"}
+          className="w-full"
         />
         <Input
           label="Teléfono"
@@ -136,12 +138,13 @@ export default function UserForm({
           onChange={handleChange}
           placeholder="+57 300 000 0000"
           required
+          className="w-full"
         />
       </div>
 
       {/* Contraseñas solo en modo creación */}
       {mode === "create" && (
-        <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <PasswordInput
             label="Contraseña"
             name="password"
@@ -158,7 +161,7 @@ export default function UserForm({
             placeholder="********"
             required
           />
-        </>
+        </div>
       )}
 
       {/* Error */}
@@ -168,7 +171,7 @@ export default function UserForm({
       <Button
         label={submitLabel}
         type="submit"
-        className="w-full py-2 rounded-md bg-purple-900 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
+        className="w-full py-3 rounded-md bg-purple-900 text-white font-medium shadow-md hover:bg-purple-800 transition-colors"
       />
     </form>
   );

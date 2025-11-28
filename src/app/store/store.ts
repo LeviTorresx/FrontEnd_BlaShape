@@ -22,6 +22,7 @@ import customerReducer from "./slices/customerSlice";
 import materialReducer from "./slices/materialSlice";
 import piecesReducer from "./slices/piecesSlice";
 import { mockMaterialApi } from "../services/mockMaterialApi";
+import { furnitureApi } from "../services/furnitureApi";
 
 const persistConfig = {
   key: "auth",
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [workshopApi.reducerPath]: workshopApi.reducer,
   [customerApi.reducerPath]: customerApi.reducer,
+  [furnitureApi.reducerPath]: furnitureApi.reducer,
   [mockCustomersApi.reducerPath]: mockCustomersApi.reducer,
   [mockFurnituresApi.reducerPath]: mockFurnituresApi.reducer,
   [mockAlertsApi.reducerPath]: mockAlertsApi.reducer,
@@ -57,6 +59,7 @@ export const store = configureStore({
       authApi.middleware,
       workshopApi.middleware,
       customerApi.middleware,
+      furnitureApi.middleware,
       mockCustomersApi.middleware,
       mockFurnituresApi.middleware,
       mockAlertsApi.middleware,

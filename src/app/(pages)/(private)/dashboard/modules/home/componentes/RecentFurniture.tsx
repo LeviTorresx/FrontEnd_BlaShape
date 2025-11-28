@@ -35,7 +35,7 @@ export default function RecentFurniture({ furnitureList }: Props) {
         {items.map((f, i) => (
           <FurnitureCard
             key={i}
-            image={f.imageInitUrl}
+            image={f.imageInitURL || ""}
             name={f.name}
             startDate={f.creationDate}
             endDate={f.endDate}

@@ -20,11 +20,7 @@ import {
 import { getErrorMessage } from "@/app/services/getErrorMessages";
 
 export default function ClientsModule() {
-  const { data: customersMocks = [] } = useGetCustomersQuery();
-  const globalCustomers = useSelector(
-    (state: RootState) => state.customers.list
-  );
-  const customers = globalCustomers ? globalCustomers : customersMocks;
+  const customers = useSelector((state: RootState) => state.customers.list);
   const userAuthID = useSelector(
     (state: RootState) => state.auth.user?.carpenterId
   );

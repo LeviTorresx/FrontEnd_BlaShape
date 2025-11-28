@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import {
   useCreateFurnitureMutation,
-  useGetAllFurnituresQuery,
   useUpdateFurnitureMutation,
 } from "@/app/services/furnitureApi";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
@@ -39,11 +38,10 @@ export default function FurnitureModule({
     icon: <MdErrorOutline fontSize="inherit" />,
   });
 
-  const { data: furnitures = [] } = useGetAllFurnituresQuery();
   const [createFurniture] = useCreateFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
   const customers = useSelector((state: RootState) => state.customers.list);
-
+  const furnitures = useSelector((state: RootState) => state.furnitures.list);
   const handleCloseSnackbar = () =>
     setSnackbar((prev) => ({ ...prev, open: false }));
 

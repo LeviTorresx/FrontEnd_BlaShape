@@ -34,14 +34,19 @@ export default function ShapeModule({
 }) {
   const [createFurniture] = useCreateFurnitureMutation();
   const [updateFurniture] = useUpdateFurnitureMutation();
+
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const pathname = usePathname();
 
-  const { data: furniture } = useGetFurnitureByIdQuery(Number(shapeId), {
-    skip: !shapeId,
-  });
+  const furnitures = useSelector((state: RootState) => state.furnitures.list);
   const materials = useSelector((state: RootState) => state.materials.list);
   const pieces = useSelector((state: RootState) => state.pieces.list);
+  const customers = useSelector((state: RootState) => state.customers.list);
+
+  const furniture = furnitures.find((f) => f.furnitureId === Number(shapeId));
+  console.log(furniture);
+
   const grouped = useMemo(() => {
     return gruopPiecesByAttributes(pieces);
   }, [pieces]);
@@ -61,11 +66,8 @@ export default function ShapeModule({
     message: "",
     icon: <MdErrorOutline fontSize="inherit" />,
   });
-  const customers = useSelector((state: RootState) => state.customers.list);
 
-  const pathname = usePathname();
   const lastSegment = pathname.split("/").pop() as "pieces" | "cut";
-
   const [section, setSection] = useState<"pieces" | "cut">(
     lastSegment === "cut" ? "cut" : "pieces"
   );

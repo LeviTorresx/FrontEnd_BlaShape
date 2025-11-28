@@ -4,10 +4,7 @@ import RecentFurniture from "./componentes/RecentFurniture";
 import Statistics from "./componentes/Statistics";
 import SummaryWorkshop from "./componentes/SummaryWorkshop";
 import { useGetWorkshopQuery } from "@/app/services/mockWorkshopApi";
-import { useGetFurnitureQuery } from "@/app/services/mockFurnituresApi";
 import { useGetAlertsQuery } from "@/app/services/mockAlertsApi";
-import AppModal from "@/app/components/ui/AppModal";
-import AlertForm from "@/app/components/forms/AlertForm";
 import { Alert } from "@/app/types/Alert";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -40,7 +37,9 @@ const StatisticsList = [
 
 export default function HomeModule() {
   const { data: workshop, isLoading } = useGetWorkshopQuery();
-  const { data: furnitureList = [] } = useGetFurnitureQuery();
+  const furnitureList = useSelector(
+    (state: RootState) => state.furnitures.list
+  );
   const { data: reminders = [] } = useGetAlertsQuery();
   const workshopInfo = useSelector(
     (state: RootState) => state.auth.user?.workshop

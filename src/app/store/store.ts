@@ -16,6 +16,7 @@ import { mockAlertsApi } from "../services/mockAlertsApi";
 import { mockWorkshopApi } from "../services/mockWorkshopApi";
 import { authApi } from "../services/authApi";
 import { authReducer } from "./slices/authSlice";
+import furnitureReducer from "./slices/furnitureSlice";
 import { workshopApi } from "../services/workshopApi";
 import { customerApi } from "../services/customersApi";
 import customerReducer from "./slices/customerSlice";
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
   customers: customerReducer,
   materials: materialReducer,
   pieces: piecesReducer,
+  furnitures: furnitureReducer,
 });
 
 export const store = configureStore({
@@ -64,7 +66,7 @@ export const store = configureStore({
       mockFurnituresApi.middleware,
       mockAlertsApi.middleware,
       mockWorkshopApi.middleware,
-      mockMaterialApi.middleware,
+      mockMaterialApi.middleware
     ),
 });
 

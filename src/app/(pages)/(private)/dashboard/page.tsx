@@ -115,7 +115,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-200 p-2 md:p-2 gap-4">
+    <div className="flex min-h-screen p-2 md:p-2 gap-4 bg-[url('/images/background.svg')] bg-cover bg-center bg-no-repeat">
       {/* Sidebar (desktop) */}
       <Sidebar
         selected={selected.key}

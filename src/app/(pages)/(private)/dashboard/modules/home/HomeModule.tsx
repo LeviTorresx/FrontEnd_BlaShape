@@ -50,17 +50,11 @@ export default function HomeModule() {
   const user = useSelector((state: RootState) => state.auth.user);
   const [open, setOpen] = useState(false);
 
+  const cuttingCount = furnitureList.filter(f => f.cutting.pieces.length > 0).length;
+
+
   if (isLoading) return <p>Cargando información del taller...</p>;
-  if (!workshop) return <p>No se encontró información del taller.</p>;
-
-  const handleAddAlert = () => {
-    setOpen(true);
-  };
-
-  const handleSubmitAlert = (alert: Alert) => {
-    console.log("Alerta guardada:", alert);
-    setOpen(false);
-  };
+  if (!workshop) return <p>No se encontró información del taller.</p>; 
 
   const StatisticsList = [
     {
@@ -77,7 +71,7 @@ export default function HomeModule() {
     },
     {
       label: "Cortes",
-      value: "0",
+      value: cuttingCount.toString(),
       color: "from-purple-50 to-purple-300",
       icon: <FaCut />,
     },

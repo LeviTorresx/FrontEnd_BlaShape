@@ -1,7 +1,9 @@
 import React from "react";
 import { Customer } from "@/app/types/Customer";
-import { FaPhone, FaEnvelope, FaIdCard } from "react-icons/fa";
+import { FaPhone, FaEnvelope, FaIdCard, FaCheckCircle, FaClock, FaExclamationTriangle, FaRegCircle } from "react-icons/fa";
 import { MdChair } from "react-icons/md";
+import { RootState } from "@/app/store/store";
+import { useSelector } from "react-redux";
 
 type Props = {
   customer: Customer;
@@ -9,6 +11,15 @@ type Props = {
 
 export default function CustomerCard({ customer }: Props) {
   if (!customer) return null;
+
+  const furnitures = useSelector((state: RootState) => state.furnitures.list);
+
+  const statusLabels: Record<string, string> = {
+    COMPLETE: "Finalizado",
+    PENDING: "En proceso",
+    QUOTATION: "Cotización",
+    INITIAL: "Inicial",
+  };
 
   return (
     <div className="p-6 bg-white rounded-2xl shadow-md border border-gray-200">
@@ -52,14 +63,55 @@ export default function CustomerCard({ customer }: Props) {
 
         {customer.furnitureListIds && customer.furnitureListIds.length > 0 ? (
           <ul className="divide-y divide-gray-100 rounded-lg border border-gray-100 overflow-hidden">
-            {customer.furnitureListIds.map((furniture, i) => (
-              <li
-                key={i}
-                className="px-4 py-2 bg-gray-50 hover:bg-purple-100 transition-colors duration-200"
-              >
-                <p className="font-medium text-gray-800">{furniture}</p>
-              </li>
-            ))}
+            {customer.furnitureListIds.map((id) => {
+              const furniture = furnitures.find((f) => f.furnitureId === id);
+
+              if (!furniture) return null; // por si algún ID no existe
+
+              return (
+                <li
+                  key={furniture.furnitureId}
+                  className="px-4 py-3 bg-gray-50 hover:bg-purple-50 transition-colors duration-200 flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-medium text-gray-800">
+                      {furniture.name}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {furniture.type || "Tipo no definido"} •{" "}
+                      {furniture.creationDate}
+                    </p>
+                  </div>
+
+                  <span
+                    className={`
+                inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold
+                ${
+                  furniture.status === "COMPLETE"
+                    ? "bg-green-100 text-green-700"
+                    : furniture.status === "PENDING"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : furniture.status === "QUOTATION"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-gray-200 text-gray-700"
+                }
+              `}
+                  >
+                    {furniture.status === "COMPLETE" && (
+                      <FaCheckCircle size={12} />
+                    )}
+                    {furniture.status === "PENDING" && <FaClock size={12} />}
+                    {furniture.status === "QUOTATION" && (
+                      <FaExclamationTriangle size={12} />
+                    )}
+                    {furniture.status === "INITIAL" && (
+                      <FaRegCircle size={12} />
+                    )}
+                    {statusLabels[furniture.status] || furniture.status}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <p className="text-gray-500 italic text-sm text-center py-4 border border-dashed border-gray-200 rounded-lg">

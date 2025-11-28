@@ -64,7 +64,7 @@ export default function FurnitureForm({
 
   const [previews, setPreviews] = useState({
     imageInit: data?.imageInitURL || "",
-    imageFinal: data?.imageEndURL || "",
+    imageEnd: data?.imageEndURL || "",
     document: data?.documentURL || "",
   });
 
@@ -248,7 +248,7 @@ export default function FurnitureForm({
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => handleFileChange(e, "imageInitUrl")}
+            onChange={(e) => handleFileChange(e, "imageInitURL")}
             className="text-sm text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-md 
                        file:border file:border-purple-200 file:bg-purple-50 
                        file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
@@ -277,14 +277,14 @@ export default function FurnitureForm({
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, "imageEndUrl")}
+                onChange={(e) => handleFileChange(e, "imageEndURL")}
                 className="text-sm text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-md 
                            file:border file:border-purple-200 file:bg-purple-50 
                            file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
               />
-              {previews.imageFinal && (
+              {previews.imageEnd && (
                 <Image
-                  src={previews.imageFinal}
+                  src={previews.imageEnd}
                   alt="Final"
                   width={64}
                   height={64}

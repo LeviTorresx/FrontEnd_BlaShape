@@ -77,7 +77,7 @@ export default function HomeModule() {
     },
     {
       label: "Reportes",
-      value: reminders.length.toString(),
+      value: "0",
       color: "from-purple-50 to-purple-300",
       icon: <FaChartLine />,
     },

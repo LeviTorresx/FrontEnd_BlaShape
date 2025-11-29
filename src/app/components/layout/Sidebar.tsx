@@ -84,7 +84,7 @@ export default function Sidebar({
         ))}
         <div className="flex justify-center">
           <Button
-            label="Cerrar cesion"
+            label="Cerrar sesión"
             type="button"
             icon={<FaSignOutAlt />}
             onClick={onLogout}

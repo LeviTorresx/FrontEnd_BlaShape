@@ -56,7 +56,10 @@ export default function LoginPage() {
       setSnackbar({
         open: true,
         severity: "success",
-        message: `¡${response.message}!` || "Inicio de sesión exitoso!",
+        message:
+          typeof response === "string"
+            ? response
+            : response?.message ?? "Inicio de sesión exitoso",
         icon: <FaRegCheckCircle fontSize="inherit" />,
       });
     } catch (err) {
@@ -142,6 +145,13 @@ export default function LoginPage() {
             Regístrate
           </a>
         </p>
+
+        <p className="text-sm text-center mt-2">
+          <a href="/forgot-password" className="text-purple-900 hover:underline">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </p>
+
       </div>
 
       <div className="mt-10">

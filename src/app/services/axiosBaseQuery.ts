@@ -6,6 +6,7 @@ interface AxiosBaseQueryArgs {
   method: AxiosRequestConfig["method"];
   data?: AxiosRequestConfig["data"];
   params?: AxiosRequestConfig["params"];
+  headers?: AxiosRequestConfig["headers"];
 }
 
 interface AxiosBaseQueryError {
@@ -19,7 +20,7 @@ export const axiosBaseQuery =
     unknown,
     AxiosBaseQueryError
   > =>
-  async ({ url, method, data, params }) => {
+  async ({ url, method, data, params, headers }) => {
     try {
       const result = await axios({
         url: baseUrl + url,
@@ -29,20 +30,35 @@ export const axiosBaseQuery =
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
+          ...headers,
         },
       });
 
-      return { data: result.data };
+      let responseData = result.data;
+
+      // Normalización automática de { message }
+      if (
+        responseData &&
+        typeof responseData === "object" &&
+        "message" in responseData &&
+        Object.keys(responseData).length === 1
+      ) {
+        responseData = responseData.message;
+      }
+
+      return { data: responseData };
     } catch (error) {
       const axiosError = error as AxiosError<{ message?: string }>;
 
       return {
         error: {
           status: axiosError.response?.status,
-          data: axiosError.response?.data || {
-            message: axiosError.message,
-          },
+          data:
+            axiosError.response?.data ?? {
+              message: axiosError.message,
+            },
         },
       };
     }
   };
+  

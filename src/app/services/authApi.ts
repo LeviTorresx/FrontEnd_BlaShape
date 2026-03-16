@@ -17,6 +17,11 @@ interface ProfileResponse {
   message: string;
 }
 
+interface ChangePasswordRequest {
+  currentPassword: string
+  newPassword: string
+}
+
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: axiosBaseQuery({ baseUrl: "http://localhost:8080/api_BS/auth" }),
@@ -53,6 +58,14 @@ export const authApi = createApi({
     verifyResetCode: builder.mutation<string, { email: string; code: string }>({
       query: (body) => ({
         url: "/verify-reset-code",
+        method: "POST",
+        data: body,
+      }),
+    }),
+
+    changePassword: builder.mutation<string, ChangePasswordRequest>({
+      query: (body) => ({
+        url: "/change-password",
         method: "POST",
         data: body,
       }),
@@ -105,6 +118,7 @@ export const {
   useResetPasswordMutation,
   useVerifyResetCodeMutation,
   useForgotPasswordMutation,
+  useChangePasswordMutation,
   useGetProfileQuery,
   useLazyGetProfileQuery,
   useLogoutMutation,

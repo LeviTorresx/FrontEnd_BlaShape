@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 const AUTH_COOKIE = "jwt";
 
-const PUBLIC_ONLY_ROUTES = ["/login", "/register"];
+const PUBLIC_ONLY_ROUTES = ["/login", "/register", "/verify-email"];
 const PRIVATE_ROUTES = ["/dashboard", "/workshop-register"];
 
 export function middleware(request: NextRequest) {

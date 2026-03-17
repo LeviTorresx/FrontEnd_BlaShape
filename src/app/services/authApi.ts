@@ -63,6 +63,21 @@ export const authApi = createApi({
       }),
     }),
 
+    verifyEmail: builder.query<string, string>({
+      query: (token) => ({
+        url: `/verify-email?token=${token}`,
+        method: "GET",
+      }),
+    }),
+
+    resendVerification: builder.mutation<string, string>({
+      query: (email) => ({
+        url: `/resend-verification`,
+        method: "POST",
+        data: { email },
+      }),
+    }),
+
     changePassword: builder.mutation<string, ChangePasswordRequest>({
       query: (body) => ({
         url: "/change-password",
@@ -121,6 +136,8 @@ export const {
   useChangePasswordMutation,
   useGetProfileQuery,
   useLazyGetProfileQuery,
+  useLazyVerifyEmailQuery,
+  useResendVerificationMutation,
   useLogoutMutation,
   useRegisterMutation,
   useEditProfileMutation,

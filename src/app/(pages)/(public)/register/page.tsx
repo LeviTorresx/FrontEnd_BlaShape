@@ -30,12 +30,12 @@ export default function RegisterPage() {
       setSnackbar({
         open: true,
         severity: "success",
-        message: `¡${response.message}!` || "Registro exitoso!",
+        message: "Registro exitoso. Revisa tu correo para verificar tu cuenta",
         icon: <FaRegCheckCircle fontSize="inherit" />,
       });
       setTimeout(() => {
         router.push("/login");
-      }, 1500);
+      }, 4000);
     } catch (error) {
       const errorBack = getErrorMessage(error);
 

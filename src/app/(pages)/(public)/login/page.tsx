@@ -9,7 +9,7 @@ import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import { MdErrorOutline, MdOutlineArrowBack } from "react-icons/md";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { useLoginMutation, useGetProfileQuery } from "@/app/services/authApi";
+import { useLoginMutation, useGetProfileQuery, useResendVerificationMutation } from "@/app/services/authApi";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { setAuthState } from "@/app/store/slices/authSlice";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
@@ -22,6 +22,9 @@ export default function LoginPage() {
 
   const [loginRequest, setLoginRequest] = useState({ email: "", password: "" });
   const [fetchProfile, setFetchProfile] = useState(false);
+  const [resendVerification] = useResendVerificationMutation();
+  const [showResend, setShowResend] = useState(false);
+  const [emailForResend, setEmailForResend] = useState("");
 
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
@@ -66,10 +69,35 @@ export default function LoginPage() {
     } catch (err) {
       const backendMessage = getErrorMessage(err);
 
+      if (backendMessage.toLowerCase().includes("verificar")) {
+        setShowResend(true);
+        setEmailForResend(loginRequest.email);
+      }
+
       setSnackbar({
         open: true,
         severity: "error",
         message: backendMessage,
+        icon: <MdErrorOutline fontSize="inherit" />,
+      });
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      await resendVerification(emailForResend).unwrap();
+
+      setSnackbar({
+        open: true,
+        severity: "success",
+        message: "Correo de verificación reenviado",
+        icon: <FaRegCheckCircle fontSize="inherit" />,
+      });
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        severity: "error",
+        message: getErrorMessage(err),
         icon: <MdErrorOutline fontSize="inherit" />,
       });
     }
@@ -109,8 +137,8 @@ export default function LoginPage() {
           <Link
             href="/"
             className="mt-0.5"
-            >
-            <MdOutlineArrowBack className="text-3xl"/>
+          >
+            <MdOutlineArrowBack className="text-3xl" />
           </Link>
           <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
             Iniciar Sesión
@@ -145,6 +173,15 @@ export default function LoginPage() {
           />
         </form>
 
+        {showResend && (
+          <button
+            onClick={handleResend}
+            className="text-purple-900 underline text-sm mt-2"
+          >
+            Reenviar correo de verificación
+          </button>
+        )}
+
         <p className="text-sm text-center text-gray-700 mt-4">
           ¿No tienes cuenta?{" "}
           <a
@@ -160,7 +197,6 @@ export default function LoginPage() {
             ¿Olvidaste tu contraseña?
           </a>
         </p>
-
       </div>
 
       <div className="mt-10">

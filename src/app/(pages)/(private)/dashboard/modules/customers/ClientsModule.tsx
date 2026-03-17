@@ -46,7 +46,7 @@ export default function ClientsModule() {
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
     message: "",
-    icon: <MdErrorOutline fontSize="inherit" />,
+    icon: <MdErrorOutline fontSize="inherit" /> as ReactNode,
   });
 
   const handleCloseSnackbar = () =>
@@ -137,7 +137,7 @@ export default function ClientsModule() {
     message: string,
     icon: ReactNode
   ) => {
-    setSnackbar({ open: true, severity, message, icon: <MdErrorOutline /> });
+    setSnackbar({ open: true, severity, message, icon });
   };
 
   const resetFormState = () => {

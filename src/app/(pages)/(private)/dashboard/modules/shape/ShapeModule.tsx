@@ -61,7 +61,7 @@ export default function ShapeModule({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
     message: "",
-    icon: <MdErrorOutline fontSize="inherit" />,
+    icon: <MdErrorOutline fontSize="inherit" /> as ReactNode,
   });
 
   const lastSegment = pathname.split("/").pop() as "pieces" | "cut";
@@ -73,7 +73,7 @@ export default function ShapeModule({
     severity: "error" | "warning" | "info" | "success",
     message: string,
     icon: ReactNode
-  ) => setSnackbar({ open: true, severity, message, icon: <MdErrorOutline /> });
+  ) => setSnackbar({ open: true, severity, message, icon });
 
   // Inyectar piezas del mueble al estado global si existen
   useEffect(() => {

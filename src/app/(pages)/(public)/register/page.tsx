@@ -7,10 +7,11 @@ import { getErrorMessage } from "@/app/services/getErrorMessages";
 import { CarpenterDTO } from "@/app/types/Carpenter";
 import { SnackbarState } from "@/app/types/SnackBarState";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
-import { MdErrorOutline } from "react-icons/md";
+import { MdErrorOutline, MdOutlineArrowBack } from "react-icons/md";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -59,9 +60,17 @@ export default function RegisterPage() {
       }}
     >
       <div className="w-full max-w-md bg-gray-200 shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
-          Registrarse
-        </h2>
+        <div className="flex justify-center gap-5">
+          <Link
+            href="/login"
+            className="mt-0.5"
+          >
+            <MdOutlineArrowBack className="text-3xl" />
+          </Link>
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
+            Registrarse
+          </h2>
+        </div>
 
         <CarpenterForm onSubmit={handleRegister} submitLabel="Registrarse" />
 

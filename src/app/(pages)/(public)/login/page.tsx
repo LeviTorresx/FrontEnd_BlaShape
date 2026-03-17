@@ -6,7 +6,7 @@ import Button from "@/app/components/ui/Button";
 import Input from "@/app/components/ui/Input";
 import PasswordInput from "@/app/components/ui/PasswordInput";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
-import { MdErrorOutline } from "react-icons/md";
+import { MdErrorOutline, MdOutlineArrowBack } from "react-icons/md";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useLoginMutation, useGetProfileQuery } from "@/app/services/authApi";
@@ -14,6 +14,7 @@ import { useAppDispatch } from "@/app/hooks/useRedux";
 import { setAuthState } from "@/app/store/slices/authSlice";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
 import { SnackbarState } from "@/app/types/SnackBarState";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -104,9 +105,17 @@ export default function LoginPage() {
     >
       {/* Card */}
       <div className="w-full max-w-sm bg-gray-200 shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
-          Iniciar Sesión
-        </h2>
+        <div className="flex justify-center gap-5">
+          <Link
+            href="/"
+            className="mt-0.5"
+            >
+            <MdOutlineArrowBack className="text-3xl"/>
+          </Link>
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
+            Iniciar Sesión
+          </h2>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input

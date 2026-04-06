@@ -10,10 +10,6 @@ import {
   REGISTER,
 } from "redux-persist";
 
-import { mockCustomersApi } from "../services/mockCustomersApi";
-import { mockFurnituresApi } from "../services/mockFurnituresApi";
-import { mockAlertsApi } from "../services/mockAlertsApi";
-import { mockWorkshopApi } from "../services/mockWorkshopApi";
 import { authApi } from "../services/authApi";
 import { authReducer } from "./slices/authSlice";
 import furnitureReducer from "./slices/furnitureSlice";
@@ -38,10 +34,6 @@ const rootReducer = combineReducers({
   [workshopApi.reducerPath]: workshopApi.reducer,
   [customerApi.reducerPath]: customerApi.reducer,
   [furnitureApi.reducerPath]: furnitureApi.reducer,
-  [mockCustomersApi.reducerPath]: mockCustomersApi.reducer,
-  [mockFurnituresApi.reducerPath]: mockFurnituresApi.reducer,
-  [mockAlertsApi.reducerPath]: mockAlertsApi.reducer,
-  [mockWorkshopApi.reducerPath]: mockWorkshopApi.reducer,
   [mockMaterialApi.reducerPath]: mockMaterialApi.reducer,
 
   customers: customerReducer,
@@ -62,10 +54,6 @@ export const store = configureStore({
       workshopApi.middleware,
       customerApi.middleware,
       furnitureApi.middleware,
-      mockCustomersApi.middleware,
-      mockFurnituresApi.middleware,
-      mockAlertsApi.middleware,
-      mockWorkshopApi.middleware,
       mockMaterialApi.middleware
     ),
 });

@@ -3,9 +3,6 @@ import Reminder from "./componentes/Reminder";
 import RecentFurniture from "./componentes/RecentFurniture";
 import Statistics from "./componentes/Statistics";
 import SummaryWorkshop from "./componentes/SummaryWorkshop";
-import { useGetWorkshopQuery } from "@/app/services/mockWorkshopApi";
-import { useGetAlertsQuery } from "@/app/services/mockAlertsApi";
-import { Alert } from "@/app/types/Alert";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
@@ -36,25 +33,22 @@ const StatisticsList = [
 ];
 
 export default function HomeModule() {
-  const { data: workshop, isLoading } = useGetWorkshopQuery();
   const furnitureList = useSelector(
-    (state: RootState) => state.furnitures.list
+    (state: RootState) => state.furnitures.list,
   );
-  const { data: reminders = [] } = useGetAlertsQuery();
   const workshopInfo = useSelector(
-    (state: RootState) => state.auth.user?.workshop
+    (state: RootState) => state.auth.user?.workshop,
   );
   const customersCount = useSelector(
-    (state: RootState) => state.customers.list.length
+    (state: RootState) => state.customers.list.length,
   );
   const user = useSelector((state: RootState) => state.auth.user);
+
   const [open, setOpen] = useState(false);
 
-  const cuttingCount = furnitureList.filter(f => f.cutting.pieces.length > 0).length;
-
-
-  if (isLoading) return <p>Cargando información del taller...</p>;
-  if (!workshop) return <p>No se encontró información del taller.</p>; 
+  const cuttingCount = furnitureList.filter(
+    (f) => f.cutting.pieces.length > 0,
+  ).length;
 
   const StatisticsList = [
     {
@@ -95,14 +89,14 @@ export default function HomeModule() {
       {/* Carpintero */}
       <div className="col-span-4 md:col-span-1 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          {user && <SummaryCarpenter carpenter={user} />}
+          {<SummaryCarpenter carpenter={user || null} />}
         </div>
       </div>
 
       {/* Taller */}
       <div className="col-span-4 md:col-span-1 md:row-start-3 md:row-span-2 rounded-2xl bg-white shadow-sm">
         <div className="h-full overflow-y-auto p-2">
-          <SummaryWorkshop workshop={workshopInfo || workshop} />
+          <SummaryWorkshop workshop={workshopInfo || null} />
         </div>
       </div>
 

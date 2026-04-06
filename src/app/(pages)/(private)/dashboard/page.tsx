@@ -10,6 +10,7 @@ import HomeModule from "./modules/home/HomeModule";
 import ClientsModule from "./modules/customers/ClientsModule";
 import ReportsModule from "./modules/ReportsModule";
 import ProfileModule from "./modules/profile/ProfileModule";
+import AccountModule from "./modules/account/AccountModule";
 import FurnitureModule from "./modules/furniture/FurnitureModule";
 import WorkshopModule from "./modules/workshop/WorkshopModule";
 import ShapeModule from "./modules/shape/ShapeModule";
@@ -41,8 +42,7 @@ const mainMenu = [
 ];
 
 const accountMenu = [
-  { key: "profile", label: "Perfil", icon: <FaUserCircle size={20} /> },
-  { key: "workshop", label: "Taller", icon: <FaShop size={20} /> },
+  { key: "account", label: "Cuenta", icon: <FaUserCircle size={20} /> },
 ];
 
 export default function DashboardPage() {
@@ -93,10 +93,8 @@ export default function DashboardPage() {
         return <ClientsModule />;
       case "reports":
         return <ReportsModule />;
-      case "profile":
-        return <ProfileModule />;
-      case "workshop":
-        return <WorkshopModule />;
+      case "account":
+        return <AccountModule />;
       case "shape":
         return <ShapeModule shapeId={selected.id} />;
       default:

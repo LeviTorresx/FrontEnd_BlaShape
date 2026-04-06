@@ -34,7 +34,7 @@ export default function FurnitureModule({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
     message: "",
-    icon: <MdErrorOutline fontSize="inherit" />,
+    icon: <MdErrorOutline fontSize="inherit"/> as ReactNode,
   });
 
   const [createFurniture] = useCreateFurnitureMutation();
@@ -48,7 +48,7 @@ export default function FurnitureModule({
     severity: "error" | "warning" | "info" | "success",
     message: string,
     icon: ReactNode
-  ) => setSnackbar({ open: true, severity, message, icon: <MdErrorOutline /> });
+  ) => setSnackbar({ open: true, severity, message, icon });
 
   const filtered = furnitures.filter((item) =>
     Object.values(item).some((v) =>

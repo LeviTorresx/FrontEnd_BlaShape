@@ -2,7 +2,7 @@
 import Image from "next/image";
 import WorkshopForm from "@/app/components/forms/WorkshopForm";
 import PurpleStepper from "../../../components/ui/Stepper";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCreateWorkshopMutation } from "@/app/services/workshopApi";
 import { Workshop} from "@/app/types/Workshop";
@@ -28,7 +28,7 @@ export default function WorkshopRegister() {
     open: false,
     severity: "info",
     message: "",
-    icon: <MdErrorOutline fontSize="inherit" />,
+    icon: <MdErrorOutline fontSize="inherit" /> as ReactNode,
   });
 
   const handleWorkshopSubmit = async (data: Workshop) => {
@@ -42,7 +42,7 @@ export default function WorkshopRegister() {
         open: true,
         severity: "success",
         message: response.message || "Taller registrado exitosamente",
-        icon: <MdErrorOutline fontSize="inherit" />,
+        icon: <FaRegCheckCircle fontSize="inherit" />,
       });
 
       setActiveStep((prev) => prev + 1);
@@ -53,7 +53,7 @@ export default function WorkshopRegister() {
         open: true,
         severity: "error",
         message: errorMessage || "Error al registrar el taller",
-        icon: <FaRegCheckCircle fontSize="inherit" />,
+        icon: <MdErrorOutline fontSize="inherit" />,
       });
 
       console.error(err);

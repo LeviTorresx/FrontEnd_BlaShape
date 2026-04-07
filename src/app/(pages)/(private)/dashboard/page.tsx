@@ -18,11 +18,12 @@ import ModuleSkeleton from "@/app/components/ui/ModuleSkeleton";
 import { FaChartBar, FaHome, FaUserCircle, FaUsers } from "react-icons/fa";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { FaShop } from "react-icons/fa6";
-import { MdChair } from "react-icons/md";
+import { MdChair, MdPayment } from "react-icons/md";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { useLogoutMutation } from "@/app/services/authApi";
 import { clearAuthState } from "@/app/store/slices/authSlice";
 import { useGetCustomersQuery } from "@/app/services/customersApi";
+import PaymentModule from "./modules/payment/PaymentModule";
 
 interface SelectedModule {
   key: string;
@@ -43,6 +44,7 @@ const mainMenu = [
 
 const accountMenu = [
   { key: "account", label: "Cuenta", icon: <FaUserCircle size={20} /> },
+  { key: "payment", label: "Suscripción", icon: <MdPayment size={20} /> },
 ];
 
 export default function DashboardPage() {
@@ -97,6 +99,8 @@ export default function DashboardPage() {
         return <AccountModule />;
       case "shape":
         return <ShapeModule shapeId={selected.id} />;
+      case "payment":
+        return <PaymentModule />;
       default:
         return <ModuleSkeleton />;
     }

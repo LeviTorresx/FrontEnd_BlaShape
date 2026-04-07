@@ -1,61 +1,39 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./axiosBaseQuery";
-import {
-    Plan,
-    Subscription,
-    CreateSubscriptionRequest,
-    CreateSubscriptionResponse,
-    CreateSingleCutPaymentRequest,
-    CreateSingleCutPaymentResponse,
-} from "@/app/types/Subscription";
+import { Plan, Subscription, CheckoutRequest } from "@/app/types/Subscription";
 
-export const paymentApi = createApi({
-    reducerPath: "paymentApi",
+// Planes disponibles — GET /api_BS/monetization/plans
+export const monetizationApi = createApi({
+    reducerPath: "monetizationApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: "http://localhost:8080/api_BS/payment",
+        baseUrl: "http://localhost:8080/api_BS/monetization",
     }),
     tagTypes: ["Subscription"],
     endpoints: (builder) => ({
         getPlans: builder.query<Plan[], void>({
-            query: () => ({
-                url: "/plans", method: "GET"
-            }),
+            query: () => ({ url: "/plans", method: "GET" }),
         }),
-        getCurrentSubscription: builder.query<Subscription, void>({
-            query: () => ({ url: "/subscription/current", method: "GET" }),
+
+        getCurrentSubscription: builder.query<Subscription, number>({
+            query: (carpenterId) => ({
+                url: `/active-subscription/${carpenterId}`,
+                method: "GET",
+            }),
             providesTags: ["Subscription"],
         }),
-        createSetupIntent: builder.mutation<{ clientSecret: string }, void>({
-            query: () => ({ url: "/setup-intent", method: "POST" }),
-        }),
-        createSubscription: builder.mutation<
-            CreateSubscriptionResponse,
-            CreateSubscriptionRequest
-        >({
+    }),
+});
+
+// Stripe Checkout — POST /api_BS/stripe/create-checkout-session
+export const stripeApi = createApi({
+    reducerPath: "stripeApi",
+    baseQuery: axiosBaseQuery({
+        baseUrl: "http://localhost:8080/api_BS/stripe",
+    }),
+    endpoints: (builder) => ({
+        createCheckoutSession: builder.mutation<string, CheckoutRequest>({
             query: (body) => ({
-                url: "/subscription/create",
-                method: "POST",
-                data: body,
-            }),
-            invalidatesTags: ["Subscription"],
-        }),
-
-        cancelSubscription: builder.mutation<Subscription, void>({
-            query: () => ({ url: "/subscription/cancel", method: "POST" }),
-            invalidatesTags: ["Subscription"],
-        }),
-
-        reactivateSubscription: builder.mutation<Subscription, void>({
-            query: () => ({ url: "/subscription/reactivate", method: "POST" }),
-            invalidatesTags: ["Subscription"],
-        }),
-
-        createSingleCutPayment: builder.mutation<
-            CreateSingleCutPaymentResponse,
-            CreateSingleCutPaymentRequest
-        >({
-            query: (body) => ({
-                url: "/single-cut/intent",
+                url: "/create-checkout-session",
                 method: "POST",
                 data: body,
             }),
@@ -63,12 +41,5 @@ export const paymentApi = createApi({
     }),
 });
 
-export const {
-  useGetPlansQuery,
-  useGetCurrentSubscriptionQuery,
-  useCreateSetupIntentMutation,
-  useCreateSubscriptionMutation,
-  useCancelSubscriptionMutation,
-  useReactivateSubscriptionMutation,
-  useCreateSingleCutPaymentMutation,
-} = paymentApi;
+export const { useGetPlansQuery, useGetCurrentSubscriptionQuery } = monetizationApi;
+export const { useCreateCheckoutSessionMutation } = stripeApi;

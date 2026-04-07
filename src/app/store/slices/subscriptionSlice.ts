@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Subscription } from "@/app/types/Subscription";
-import { paymentApi } from "@/app/services/paymentApi";
+import { monetizationApi } from "@/app/services/paymentApi";
 
 interface SubscriptionState {
   current: Subscription | null;
@@ -23,7 +23,7 @@ const subscriptionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      paymentApi.endpoints.getCurrentSubscription.matchFulfilled,
+      monetizationApi.endpoints.getCurrentSubscription.matchFulfilled,
       (state, { payload }) => {
         state.current = payload;
       }

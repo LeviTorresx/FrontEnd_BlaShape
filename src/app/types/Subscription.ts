@@ -1,66 +1,41 @@
-// SINGLE_CUT = pago puntual por corte
-// BASIC / PRO  = suscripciones mensuales recurrentes
-export type PlanId = "SINGLE_CUT" | "BASIC" | "PRO";
-
-export type SubscriptionStatus =
-  | "active"
-  | "inactive"
-  | "canceled"
-  | "past_due"
-  | "trialing";
+export type SubscriptionStatus = "ACTIVE" | "CANCELED" | "PAST_DUE" | "INCOMPLETE";
+export type PaymentType = "SUBSCRIPTION" | "ONE_TIME_PRODUCT";
+export type PlanInterval = "DAY" | "WEEK" | "MONTH" | "YEAR";
 
 export interface Plan {
-  planId: PlanId;
-  name: string;
-  price: number;          // en centavos USD  (ej: 200 = $2, 1000 = $10)
-  currency: string;       // "usd"
-  interval: "month" | "one_time";   // SINGLE_CUT → "one_time"
+  planId: number;              
+  planName: string;        
+  description: string;
+  interval: PlanInterval;
+  price: number;           
+  currency: string;
   stripePriceId: string;
-  features: PlanFeatures;
-}
-
-export interface PlanFeatures {
+  cuttingLimit: number;    // 0 = ilimitado (PRO), N = límite mensual (BASIC), 1 (SINGLE_CUT)
+  svg: boolean;
+  limitedSvg: boolean;
   pdf: boolean;
-  svg: "full" | "limited" | false;
-  cuts: number | "unlimited";        // SINGLE_CUT=1, BASIC=20, PRO=unlimited
-  history: "full" | "limited" | "single";
-  commercialLicense: boolean;
-  analytics: boolean;
+  limitedRecord: boolean;
+  meaningPieces: boolean;
+  analyticsModule: boolean;
+  businessLicence: boolean;
 }
 
-// Suscripción activa del usuario (BASIC o PRO)
+// Request para POST /api_BS/stripe/create-checkout-session
+export interface CheckoutRequest {
+  id: number;              // Plan ID en BD
+  carpenterId: number;
+  paymentType: PaymentType;
+  description: string;
+  successUrl: string;
+  cancelUrl: string;
+}
+
+
+// Suscripción activa del usuario
 export interface Subscription {
-  subscriptionId: string;
-  planId: PlanId;
+  id: number;
+  plan: Plan;
   status: SubscriptionStatus;
-  currentPeriodStart: string;    // ISO date
-  currentPeriodEnd: string;      // ISO date
-  cancelAtPeriodEnd: boolean;
-  cutsUsed?: number;             // relevante para BASIC (cortes usados del mes)
-  cutsLimit?: number;            // relevante para BASIC (límite del mes, ej: 20)
+  startDate: string;
+  endDate: string;
 }
-
-// Para BASIC/PRO: flujo SetupIntent + createSubscription
-export interface CreateSubscriptionRequest {
-  planId: PlanId;
-  paymentMethodId: string;
-}
-
-export interface CreateSubscriptionResponse {
-  subscriptionId: string;
-  clientSecret: string | null;
-  status: SubscriptionStatus;
-}
-
-// Para SINGLE_CUT: flujo PaymentIntent directo (pago único)
-export interface CreateSingleCutPaymentRequest {
-  cutId: string;                 // ID del corte que el usuario quiere comprar
-  paymentMethodId: string;
-}
-
-export interface CreateSingleCutPaymentResponse {
-  paymentIntentId: string;
-  clientSecret: string | null;
-  status: "succeeded" | "requires_action";
-}
-

@@ -1,85 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import { useGetPlansQuery, useCreateSetupIntentMutation, useCreateSingleCutPaymentMutation } from "@/app/services/paymentApi";
+import { useGetPlansQuery, useCreateCheckoutSessionMutation } from "@/app/services/paymentApi";
 import { Plan, Subscription } from "@/app/types/Subscription";
+import { useAppSelector } from "@/app/hooks/useRedux";
 import PlanCard from "./PlanCard";
-import CheckoutModal from "./CheckoutModal";
-
-const MOCK_PLANS: Plan[] = [
-  {
-    planId: "SINGLE_CUT",
-    name: "Pago Individual",
-    price: 200,
-    currency: "usd",
-    interval: "one_time",
-    stripePriceId: "",
-    features: {
-      pdf: true,
-      svg: "limited",
-      cuts: 1,
-      history: "single",
-      commercialLicense: false,
-      analytics: false,
-    },
-  },
-  {
-    planId: "BASIC",
-    name: "Basic",
-    price: 1000,
-    currency: "usd",
-    interval: "month",
-    stripePriceId: "",
-    features: {
-      pdf: true,
-      svg: "full",
-      cuts: 20,
-      history: "limited",
-      commercialLicense: false,
-      analytics: false,
-    },
-  },
-  {
-    planId: "PRO",
-    name: "Pro",
-    price: 2500,
-    currency: "usd",
-    interval: "month",
-    stripePriceId: "",
-    features: {
-      pdf: true,
-      svg: "full",
-      cuts: "unlimited",
-      history: "full",
-      commercialLicense: true,
-      analytics: true,
-    },
-  },
-];
 
 interface Props {
     currentSubscription: Subscription | null;
 }
 
 export default function PlansSection({ currentSubscription }: Props) {
-    const { data: plans = MOCK_PLANS, isLoading } = useGetPlansQuery();
-    const [createSetupIntent] = useCreateSetupIntentMutation();
-    const [createSingleCutPayment] = useCreateSingleCutPaymentMutation();
-
-    const [checkoutData, setCheckoutData] = useState<{
-        clientSecret: string;
-        planId: Plan["planId"];
-        mode: "subscription" | "payment";
-    } | null>(null);
+    const { data: plans = [], isLoading } = useGetPlansQuery();
+    const [createCheckoutSession] = useCreateCheckoutSessionMutation();
+    const user = useAppSelector((state) => state.auth.user);
+    const [loadingPlanId, setLoadingPlanId] = useState<number | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleSelectPlan = async (plan: Plan) => {
-        if (plan.planId === "SINGLE_CUT") {
-            // TODO: pasar el cutId activo del módulo Shape
-            const res = await createSingleCutPayment({ cutId: "", paymentMethodId: "" }).unwrap();
-            setCheckoutData({ clientSecret: res.clientSecret ?? "", planId: plan.planId, mode: "payment" });
-        } else {
-            const res = await createSetupIntent().unwrap();
-            setCheckoutData({ clientSecret: res.clientSecret, planId: plan.planId, mode: "subscription" });
+        if (!user?.carpenterId) return;
+
+        setLoadingPlanId(plan.planId);
+        try {
+            const url = await createCheckoutSession({
+                id: plan.planId,
+                carpenterId: user.carpenterId,
+                paymentType: plan.planName === "SINGLE_CUT" ? "ONE_TIME_PRODUCT" : "SUBSCRIPTION",
+                description: plan.planName,
+                successUrl: `${window.location.origin}/dashboard/payment?success=true`,
+                cancelUrl: `${window.location.origin}/dashboard/payment`,
+            }).unwrap();
+
+            window.location.href = url;
+        } catch (err: unknown) {
+            setLoadingPlanId(null);
+            const status = (err as { status?: number })?.status;
+            if (status === 409) {
+                setErrorMessage("Ya tienes una suscripción activa. Gestiona tu plan desde la pestaña Suscripción.");
+            } else {
+                setErrorMessage("Error al procesar el pago. Intenta de nuevo.");
+            }
         }
     };
 
@@ -94,27 +54,21 @@ export default function PlansSection({ currentSubscription }: Props) {
     }
 
     return (
-        <>
+        <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {plans.map((plan) => (
                     <PlanCard
-                        key={plan.planId}
+                        key={plan.planId ?? plan.planName}
                         plan={plan}
-                        isCurrentPlan={currentSubscription?.planId === plan.planId}
+                        isCurrentPlan={currentSubscription != null && currentSubscription.plan.planId === plan.planId}
+                        isLoading={loadingPlanId === plan.planId}
                         onSelect={() => handleSelectPlan(plan)}
                     />
                 ))}
             </div>
-
-            {checkoutData && (
-                <CheckoutModal
-                    clientSecret={checkoutData.clientSecret}
-                    planId={checkoutData.planId}
-                    mode={checkoutData.mode}
-                    onClose={() => setCheckoutData(null)}
-                    onSuccess={() => setCheckoutData(null)}
-                />
+            {errorMessage && (
+                <p className="text-sm text-red-600 text-center">{errorMessage}</p>
             )}
-        </>
+        </div>
     );
 }

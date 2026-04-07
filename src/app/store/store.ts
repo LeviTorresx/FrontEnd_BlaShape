@@ -16,9 +16,9 @@ import furnitureReducer from "./slices/furnitureSlice";
 import { workshopApi } from "../services/workshopApi";
 import { customerApi } from "../services/customersApi";
 import customerReducer from "./slices/customerSlice";
-import materialReducer from "./slices/materialSlice";
+import inventoryMaterialReducer from "./slices/inventoryMaterialSlice";
 import piecesReducer from "./slices/piecesSlice";
-import { mockMaterialApi } from "../services/mockMaterialApi";
+import { mockInventoryMaterialApi } from "../services/mockInventoryMaterialApi";
 import { furnitureApi } from "../services/furnitureApi";
 import { monetizationApi, stripeApi } from "../services/paymentApi";
 import subscriptionReducer from "./slices/subscriptionSlice";
@@ -36,12 +36,12 @@ const rootReducer = combineReducers({
   [workshopApi.reducerPath]: workshopApi.reducer,
   [customerApi.reducerPath]: customerApi.reducer,
   [furnitureApi.reducerPath]: furnitureApi.reducer,
-  [mockMaterialApi.reducerPath]: mockMaterialApi.reducer,
+  [mockInventoryMaterialApi.reducerPath]: mockInventoryMaterialApi.reducer,
   [monetizationApi.reducerPath]: monetizationApi.reducer,
   [stripeApi.reducerPath]: stripeApi.reducer,
 
   customers: customerReducer,
-  materials: materialReducer,
+  inventoryMaterials: inventoryMaterialReducer,
   pieces: piecesReducer,
   furnitures: furnitureReducer,
   subscription: subscriptionReducer,
@@ -61,7 +61,7 @@ export const store = configureStore({
       furnitureApi.middleware,
       monetizationApi.middleware,
       stripeApi.middleware,
-      mockMaterialApi.middleware
+      mockInventoryMaterialApi.middleware
     ),
 });
 

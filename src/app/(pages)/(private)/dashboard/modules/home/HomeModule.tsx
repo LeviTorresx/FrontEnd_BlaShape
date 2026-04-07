@@ -47,7 +47,7 @@ export default function HomeModule() {
   const [open, setOpen] = useState(false);
 
   const cuttingCount = furnitureList.filter(
-    (f) => f.cutting.pieces.length > 0,
+    ( f ) => f.cutting.pieces.length > 0,
   ).length;
 
   const StatisticsList = [

@@ -24,6 +24,9 @@ import {
   useUpdateFurnitureMutation,
 } from "@/app/services/furnitureApi";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
+import { buildPreviewGroups } from "@/app/utils/previewGroupBuilder";
+import { mock_INVENTORY_MATERIALS } from "@/app/mocks/mockInventoryMaterials";
+
 
 export default function ShapeModule({
   shapeId,
@@ -37,20 +40,26 @@ export default function ShapeModule({
   const pathname = usePathname();
 
   const furnitures = useSelector((state: RootState) => state.furnitures.list);
-  const materials = useSelector((state: RootState) => state.materials.list);
+  const invMaterials = useSelector((state: RootState) => state.inventoryMaterials.list);
   const pieces = useSelector((state: RootState) => state.pieces.list);
   const customers = useSelector((state: RootState) => state.customers.list);
 
   const furniture = furnitures.find((f) => f.furnitureId === Number(shapeId));
   console.log(furniture);
 
+  const previewGroups = buildPreviewGroups(
+  pieces,
+  mock_INVENTORY_MATERIALS
+);
+
   const grouped = useMemo(() => {
     return gruopPiecesByAttributes(pieces);
   }, [pieces]);
 
-  const expandedPieces = expandPiecesByQuantity(pieces);
-  const items = piecesToItems(expandedPieces);
-  const groupedItems = groupItemsByColor(items);
+  //const expandedPieces = expandPiecesByQuantity(pieces);
+  //const items = piecesToItems(expandedPieces);
+  //const groupedItems = groupItemsByColor(items);
+
 
   const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
     null
@@ -199,6 +208,11 @@ export default function ShapeModule({
     if (shapeId) {
       router.push(`/dashboard/shape/${shapeId}/${sec}`);
     }
+
+    if (sec === "cut") {
+      console.log(previewGroups)
+    }
+
   };
 
   return (
@@ -297,9 +311,14 @@ export default function ShapeModule({
       {/* Renderizado condicional de módulos */}
       <div className="h-full">
         {section === "pieces" ? (
-          <Pieces materials={materials} pieces={grouped} />
+          <Pieces materials={invMaterials} pieces={grouped} />
         ) : (
-          <LayoutViewer groupedItems={groupedItems} />
+
+          <div className=" flex justify-center items-center h-full">
+            worked in progress, soon will be available
+          </div>
+          
+          //<LayoutViewer groupedItems={groupedItems} />
         )}
       </div>
 

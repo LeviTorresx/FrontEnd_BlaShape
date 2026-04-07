@@ -58,7 +58,6 @@ export const store = configureStore({
       workshopApi.middleware,
       customerApi.middleware,
       furnitureApi.middleware,
-      mockMaterialApi.middleware,
       paymentApi.middleware,
       mockMaterialApi.middleware
     ),

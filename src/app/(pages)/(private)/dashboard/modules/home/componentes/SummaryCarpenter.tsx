@@ -3,10 +3,17 @@ import { FaUserTie, FaPhoneAlt, FaIdCard, FaEnvelope } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 
 type Props = {
-  carpenter: Carpenter;
+  carpenter: Carpenter | null;
 };
 
 export default function SummaryCarpenter({ carpenter }: Props) {
+  if (!carpenter) {
+  return (
+    <div className="h-full flex items-center justify-center text-gray-500">
+      No hay información del carpintero
+    </div>
+  );
+}
   return (
     <div
       className="

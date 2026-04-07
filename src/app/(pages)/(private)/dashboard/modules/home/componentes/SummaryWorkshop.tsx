@@ -8,10 +8,18 @@ import {
 import { MdVerified } from "react-icons/md";
 
 type Props = {
-  workshop: Workshop;
+  workshop: Workshop | null;
 };
 
 export default function SummaryWorkshop({ workshop }: Props) {
+  if (!workshop) {
+    return (
+      <div className="h-full flex items-center justify-center text-gray-500">
+        No hay información del taller
+      </div>
+    );
+  }
+
   return (
     <div
       className="
@@ -31,7 +39,7 @@ export default function SummaryWorkshop({ workshop }: Props) {
         <p className="text-xs text-purple-700 font-semibold mt-1 tracking-wide uppercase">
           Taller
         </p>
-        
+
         {/* Nombre del taller */}
         <h2 className="text-xl md:text-2xl font-semibold text-gray-800 tracking-tight">
           {workshop.name}

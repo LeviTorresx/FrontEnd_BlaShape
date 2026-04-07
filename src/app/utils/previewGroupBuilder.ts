@@ -7,6 +7,7 @@ import { SheetDTO } from "../types/Sheet";
 
 export function buildPreviewGroups(
   pieces: Piece[],
+  plan: string,
   inventoryMaterials: InventoryMaterial[]
 ): PreviewRequestDTO {
   const groups = Object.values(
@@ -55,5 +56,5 @@ export function buildPreviewGroups(
     return { sheet: sheetDTO, pieces: piecesDTO };
   });
 
-  return { groups };
+  return { groups, plan };
 }

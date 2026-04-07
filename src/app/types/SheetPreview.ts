@@ -4,10 +4,10 @@ export interface SheetPreviewDTO {
   svgContent: string;
   percentageUtilized: number;
   totalPieces: number;
-  sheetWidt: number;
+  sheetWidth: number;
   sheetHeight: number;
   materialName: string;
-  materialTickness: number;
+  materialThickness: number;
   colorName: string;
   colorHex: string;
 }

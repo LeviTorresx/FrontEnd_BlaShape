@@ -1,7 +1,7 @@
-import { Piece } from "./Piece";
-import { Sheet } from "./Sheet";
+import { PieceDTO } from "./Piece";
+import { SheetDTO } from "./Sheet";
 
-export interface PreviewGroup {
-    sheet: Sheet;
-    pieces: Piece[];
+export interface PreviewGroupDTO {
+    sheet: SheetDTO;
+    pieces: PieceDTO[];
 }

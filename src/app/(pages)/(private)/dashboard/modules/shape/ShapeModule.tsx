@@ -26,6 +26,8 @@ import {
 import { getErrorMessage } from "@/app/services/getErrorMessages";
 import { buildPreviewGroups } from "@/app/utils/previewGroupBuilder";
 import { mock_INVENTORY_MATERIALS } from "@/app/mocks/mockInventoryMaterials";
+import PreviewsRenderer from "./components/PreviewsRenderer";
+import { useGeneratePreviewsMutation } from "@/app/services/cuttingApi";
 
 
 export default function ShapeModule({
@@ -45,7 +47,6 @@ export default function ShapeModule({
   const customers = useSelector((state: RootState) => state.customers.list);
 
   const furniture = furnitures.find((f) => f.furnitureId === Number(shapeId));
-  console.log(furniture);
 
   const previewGroups = buildPreviewGroups(
   pieces,
@@ -55,6 +56,15 @@ export default function ShapeModule({
   const grouped = useMemo(() => {
     return gruopPiecesByAttributes(pieces);
   }, [pieces]);
+
+  const previews = useSelector((state: RootState) => state.cutting.previews);
+  const [generatePreviews, { isLoading }] = useGeneratePreviewsMutation();
+
+  const handleGeneratePreviews = async () => {
+    if (!pieces.length) return;
+    console.log(previewGroups)
+   await generatePreviews(previewGroups).unwrap(); // Aquí hace la llamada a tu API
+  };
 
   //const expandedPieces = expandPiecesByQuantity(pieces);
   //const items = piecesToItems(expandedPieces);
@@ -99,6 +109,12 @@ export default function ShapeModule({
       setSection(last);
     }
   }, [pathname]);
+
+  useEffect(() => {
+  if (section === "cut" && pieces.length) {
+    handleGeneratePreviews();
+  }
+}, [section, pieces]);
 
   const handleButtonClick = async (furniture: FurnitureRequest | null) => {
     if (furniture) {
@@ -314,11 +330,17 @@ export default function ShapeModule({
           <Pieces materials={invMaterials} pieces={grouped} />
         ) : (
 
-          <div className=" flex justify-center items-center h-full">
-            worked in progress, soon will be available
-          </div>
-          
-          //<LayoutViewer groupedItems={groupedItems} />
+          <div>
+      <button onClick={handleGeneratePreviews}>
+        Generar Previews
+      </button>
+
+      {isLoading && <p>Cargando previews...</p>}
+
+      {previews.length > 0 && (
+        <PreviewsRenderer previews={previews} />
+      )}
+    </div>
         )}
       </div>
 

@@ -1,4 +1,4 @@
-import { Color } from "./Color";
+import { Color, ColorDTO } from "./Color";
 
 export interface Piece {
   pieceId?: number;
@@ -9,6 +9,24 @@ export interface Piece {
   color: Color
   materialName: string;
   edges: {
+    top: boolean;
+    bottom: boolean;
+    left: boolean;
+    right: boolean;
+  };
+}
+
+export interface PieceDTO {
+  pieceId?: number;
+  name: string;
+  quantity: number;
+  height: number;
+  width: number;
+  thickness: number;
+  colorDTO: ColorDTO;
+  materialName: string;
+  rotationAllowed: boolean;
+  edgesDTO: {
     top: boolean;
     bottom: boolean;
     left: boolean;

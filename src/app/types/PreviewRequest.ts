@@ -1,5 +1,5 @@
-import { PreviewGroup } from "./PreviewGroup";
+import { PreviewGroupDTO } from "./PreviewGroup";
 
-export interface PreviewRequest {
-    grouos: PreviewGroup[];
+export interface PreviewRequestDTO {
+    groups: PreviewGroupDTO[];
 }

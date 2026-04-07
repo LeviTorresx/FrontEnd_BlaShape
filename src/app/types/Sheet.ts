@@ -6,3 +6,10 @@ export interface Sheet {
     width: number;
     material: Material;
 }
+
+export interface SheetDTO {
+    sheetId?: number;
+    height: number;
+    width: number;
+    materialDTO: Material;
+}

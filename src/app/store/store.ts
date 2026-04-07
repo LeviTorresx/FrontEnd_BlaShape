@@ -22,6 +22,8 @@ import { mockInventoryMaterialApi } from "../services/mockInventoryMaterialApi";
 import { furnitureApi } from "../services/furnitureApi";
 import { monetizationApi, stripeApi } from "../services/paymentApi";
 import subscriptionReducer from "./slices/subscriptionSlice";
+import { cuttingApi } from "../services/cuttingApi";
+import cuttingReducer from "./slices/cuttingSlice";
 
 const persistConfig = {
   key: "auth",
@@ -39,12 +41,14 @@ const rootReducer = combineReducers({
   [mockInventoryMaterialApi.reducerPath]: mockInventoryMaterialApi.reducer,
   [monetizationApi.reducerPath]: monetizationApi.reducer,
   [stripeApi.reducerPath]: stripeApi.reducer,
+  [cuttingApi.reducerPath]: cuttingApi.reducer,
 
   customers: customerReducer,
   inventoryMaterials: inventoryMaterialReducer,
   pieces: piecesReducer,
   furnitures: furnitureReducer,
   subscription: subscriptionReducer,
+  cutting: cuttingReducer,
 });
 
 export const store = configureStore({
@@ -61,7 +65,8 @@ export const store = configureStore({
       furnitureApi.middleware,
       monetizationApi.middleware,
       stripeApi.middleware,
-      mockInventoryMaterialApi.middleware
+      mockInventoryMaterialApi.middleware,
+      cuttingApi.middleware
     ),
 });
 

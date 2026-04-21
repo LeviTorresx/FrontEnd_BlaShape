@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Furniture } from "@/app/types/Furniture";
+import { Furniture, FurnitureResponse } from "@/app/types/Furniture";
 import { furnitureApi } from "@/app/services/furnitureApi";
 
 interface FurnitureState {
-  list: Furniture[];
+  list: FurnitureResponse[];
 }
 
 const initialState: FurnitureState = {

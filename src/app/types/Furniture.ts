@@ -1,5 +1,5 @@
-import { Cutting } from "./Cutting";
-import { Piece } from "./Piece";
+import { Cutting, CuttingDTO } from "./Cutting";
+import { mapPieceToDTO, Piece, PieceDTO } from "./Piece";
 
 export const FurnitureTypes = {
   COCINA: { id: 1, label: "Cocina", value: "COCINA", ref: "bs-1ref" },
@@ -62,5 +62,22 @@ export interface FurnitureRequest {
   status: string;
   carpenterId: number;
   customerId: number;
-  cutting?: Cutting;
+  cutting?: CuttingDTO;
 }
+
+export interface FurnitureResponse {
+  furnitureId: number;
+  name: string;
+  type: FurnitureType;
+  documentURL?: string;
+  imageInitURL?: string;
+  imageEndURL?: string;
+  creationDate: string;
+  endDate: string;
+  status: string;
+  carpenterId: number;
+  customerId: number;
+  cutting: CuttingDTO;
+}
+
+

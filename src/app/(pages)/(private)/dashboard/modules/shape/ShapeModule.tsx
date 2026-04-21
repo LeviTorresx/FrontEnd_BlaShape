@@ -5,15 +5,14 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
-import LayoutViewer from "./components/LayoutViewer";
-import { expandPiecesByQuantity } from "@/app/utils/ExpandPieces";
-import { piecesToItems } from "@/app/utils/PieceToItem";
-import { groupItemsByColor } from "@/app/utils/GroupItemsByColor";
 import Button from "@/app/components/ui/Button";
 import { FaCube, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
-import { Furniture, FurnitureRequest } from "@/app/types/Furniture";
+import {
+  Furniture,
+  FurnitureRequest,
+} from "@/app/types/Furniture";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/useRedux";
@@ -29,7 +28,7 @@ import { mock_INVENTORY_MATERIALS } from "@/app/mocks/mockInventoryMaterials";
 import PreviewsRenderer from "./components/PreviewsRenderer";
 import { useGeneratePreviewsMutation } from "@/app/services/cuttingApi";
 import { useGetCurrentSubscriptionQuery } from "@/app/services/paymentApi";
-
+import { mapPieceDTOToPiece, mapPieceToDTO, PieceDTO } from "@/app/types/Piece";
 
 export default function ShapeModule({
   shapeId,
@@ -43,22 +42,24 @@ export default function ShapeModule({
   const pathname = usePathname();
 
   const furnitures = useSelector((state: RootState) => state.furnitures.list);
-  const invMaterials = useSelector((state: RootState) => state.inventoryMaterials.list);
+  const invMaterials = useSelector(
+    (state: RootState) => state.inventoryMaterials.list,
+  );
   const pieces = useSelector((state: RootState) => state.pieces.list);
   const customers = useSelector((state: RootState) => state.customers.list);
-   const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
   const { data: subscription = null, isLoading: isLoadingSubscription } =
-          useGetCurrentSubscriptionQuery(user?.carpenterId ?? 0, {
-              skip: !user?.carpenterId,
-          });
+    useGetCurrentSubscriptionQuery(user?.carpenterId ?? 0, {
+      skip: !user?.carpenterId,
+    });
 
   const furniture = furnitures.find((f) => f.furnitureId === Number(shapeId));
 
   const previewGroups = buildPreviewGroups(
-  pieces,subscription?.plan.planName || "Free", 
-  mock_INVENTORY_MATERIALS
-  // Aquí se debería usar el plan real del usuario
-);
+    pieces,
+    subscription?.plan.planName || "Free",
+    mock_INVENTORY_MATERIALS,
+  );
 
   const grouped = useMemo(() => {
     return gruopPiecesByAttributes(pieces);
@@ -69,17 +70,12 @@ export default function ShapeModule({
 
   const handleGeneratePreviews = async () => {
     if (!pieces.length) return;
-    console.log(previewGroups)
-   await generatePreviews(previewGroups).unwrap(); // Aquí hace la llamada a tu API
+    console.log(previewGroups);
+    await generatePreviews(previewGroups).unwrap();
   };
 
-  //const expandedPieces = expandPiecesByQuantity(pieces);
-  //const items = piecesToItems(expandedPieces);
-  //const groupedItems = groupItemsByColor(items);
-
-
-  const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
-    null
+  const [selectedFurniture, setSelectedFurniture] = useState<FurnitureRequest | null>(
+    null,
   );
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -87,24 +83,24 @@ export default function ShapeModule({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
     message: "",
-    icon: <MdErrorOutline fontSize="inherit" /> as ReactNode,
+    icon: (<MdErrorOutline fontSize="inherit" />) as ReactNode,
   });
 
   const lastSegment = pathname.split("/").pop() as "pieces" | "cut";
   const [section, setSection] = useState<"pieces" | "cut">(
-    lastSegment === "cut" ? "cut" : "pieces"
+    lastSegment === "cut" ? "cut" : "pieces",
   );
 
   const showSnackbar = (
     severity: "error" | "warning" | "info" | "success",
     message: string,
-    icon: ReactNode
+    icon: ReactNode,
   ) => setSnackbar({ open: true, severity, message, icon });
 
   // Inyectar piezas del mueble al estado global si existen
   useEffect(() => {
-    if (furniture?.cutting.pieces?.length) {
-      dispatch(setPieces(furniture.cutting.pieces));
+    if (furniture?.cutting?.pieces?.length) {
+      dispatch(setPieces(furniture.cutting.pieces.map(mapPieceDTOToPiece)));
     } else {
       dispatch(clearPieces());
     }
@@ -118,10 +114,10 @@ export default function ShapeModule({
   }, [pathname]);
 
   useEffect(() => {
-  if (section === "cut" && pieces.length) {
-    handleGeneratePreviews();
-  }
-}, [section, pieces]);
+    if (section === "cut" && pieces.length) {
+      handleGeneratePreviews();
+    }
+  }, [section, pieces]);
 
   const handleButtonClick = async (furniture: FurnitureRequest | null) => {
     if (furniture) {
@@ -136,8 +132,10 @@ export default function ShapeModule({
         const updatedFurniture: FurnitureRequest = {
           ...data,
           cutting: {
-            ...(furniture.cutting ?? {}),
-            pieces: pieces.map(({ pieceId, ...rest }) => ({ ...rest })),
+            cuttingId: furniture.cutting?.cuttingId,
+            materialName: furniture.cutting?.materialName ?? "",
+            sheetQuantity: furniture.cutting?.sheetQuantity ?? 0,
+            pieces: pieces.map(mapPieceToDTO),
           },
         };
 
@@ -152,7 +150,7 @@ export default function ShapeModule({
         showSnackbar(
           "success",
           response.message || "Mueble actualizado correctamente",
-          <FaRegCheckCircle />
+          <FaRegCheckCircle />,
         );
 
         // limpiar el estado global de piezas
@@ -162,7 +160,7 @@ export default function ShapeModule({
         showSnackbar(
           "error",
           ErrorMessage || "Error al actualizar el mueble",
-          <FaRegAngry />
+          <FaRegAngry />,
         );
       } finally {
         resetFormState();
@@ -192,9 +190,9 @@ export default function ShapeModule({
       const furnitureWithPieces: FurnitureRequest = {
         ...data,
         cutting: {
-          materialName: pieces[0].materialName || "",
+          materialName: "",
           sheetQuantity: 0,
-          pieces: pieces,
+          pieces: pieces.map(mapPieceToDTO),
         },
       };
 
@@ -211,14 +209,14 @@ export default function ShapeModule({
       showSnackbar(
         "success",
         "¡Mueble creado con éxito!",
-        <FaRegCheckCircle />
+        <FaRegCheckCircle />,
       );
     } catch (error) {
       const ErrorMessage = getErrorMessage(error);
       showSnackbar(
         "warning",
         ErrorMessage || "Hubo un error al crear el mueble",
-        <FaRegAngry />
+        <FaRegAngry />,
       );
     } finally {
       resetFormState();
@@ -233,9 +231,8 @@ export default function ShapeModule({
     }
 
     if (sec === "cut") {
-      console.log(previewGroups)
+      console.log(previewGroups);
     }
-
   };
 
   return (
@@ -323,7 +320,11 @@ export default function ShapeModule({
 
           {/* Botón de acción */}
           <Button
-            onClick={() => handleButtonClick(furniture ?? null)}
+            onClick={() =>
+              handleButtonClick(
+                furniture ? furniture : null,
+              )
+            }
             disabled={pieces.length === 0}
             label={shapeId ? "Agregarlas al mueble" : "Agregar a un mueble"}
           />
@@ -336,15 +337,11 @@ export default function ShapeModule({
         {section === "pieces" ? (
           <Pieces materials={invMaterials} pieces={grouped} />
         ) : (
-
           <div>
+            {isLoading && <p>Cargando previews...</p>}
 
-      {isLoading && <p>Cargando previews...</p>}
-
-      {previews.length > 0 && (
-        <PreviewsRenderer previews={previews} />
-      )}
-    </div>
+            {previews.length > 0 && <PreviewsRenderer previews={previews} />}
+          </div>
         )}
       </div>
 
@@ -356,7 +353,11 @@ export default function ShapeModule({
         maxWidth="md"
       >
         <FurnitureForm
-          data={selectedFurniture || undefined}
+          data={
+            selectedFurniture
+              ? selectedFurniture
+              : undefined
+          }
           onSubmit={handleCreateFurniture}
           customers={customers}
         />

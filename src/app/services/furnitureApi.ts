@@ -1,12 +1,12 @@
-import { Furniture, FurnitureDTO, FurnitureRequest } from "../types/Furniture";
+import { Furniture, FurnitureDTO, FurnitureRequest, FurnitureResponse } from "../types/Furniture";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface FurnitureMessage {
   message: string;
 }
 
-const cleanData = (data: Partial<Furniture>) => {
-  const { documentURL, imageInitURL, imageEndURL, ...rest } = data;
+const cleanData = <T extends object>(data: T): Omit<T, "documentURL" | "imageInitURL" | "imageEndURL"> => {
+  const { documentURL, imageInitURL, imageEndURL, ...rest } = data as any;
   return rest;
 };
 
@@ -18,7 +18,7 @@ export const furnitureApi = createApi({
   }),
   tagTypes: ["Furniture"], // <-- declaras un tag
   endpoints: (builder) => ({
-    getAllFurnitures: builder.query<Furniture[], void>({
+    getAllFurnitures: builder.query<FurnitureResponse[], void>({
       query: () => "/all",
       providesTags: ["Furniture"], // <-- el query "proporciona" este tag
     }),

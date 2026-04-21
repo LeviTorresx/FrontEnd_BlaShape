@@ -20,6 +20,8 @@ export default function PiecesForm({
   const [piece, setPiece] = useState<Piece>({
     thickness: materials[0]?.sizes[0]?.thickness || 0,
     materialName: materials[0]?.name || "",
+    name: "",
+    rotationAllowed: true,
     height: 300,
     width: 300,
     quantity: 1,

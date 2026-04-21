@@ -26,7 +26,7 @@ export default function FurnitureModule({
   const [open, setOpen] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
-    null
+    null,
   );
   const [isEditing, setIsEditing] = useState(false);
 
@@ -34,7 +34,7 @@ export default function FurnitureModule({
     open: false,
     severity: "info" as "error" | "warning" | "info" | "success",
     message: "",
-    icon: <MdErrorOutline fontSize="inherit"/> as ReactNode,
+    icon: (<MdErrorOutline fontSize="inherit" />) as ReactNode,
   });
 
   const [createFurniture] = useCreateFurnitureMutation();
@@ -47,13 +47,13 @@ export default function FurnitureModule({
   const showSnackbar = (
     severity: "error" | "warning" | "info" | "success",
     message: string,
-    icon: ReactNode
+    icon: ReactNode,
   ) => setSnackbar({ open: true, severity, message, icon });
 
   const filtered = furnitures.filter((item) =>
     Object.values(item).some((v) =>
-      String(v).toLowerCase().includes(search.toLowerCase())
-    )
+      String(v).toLowerCase().includes(search.toLowerCase()),
+    ),
   );
 
   const handleCreateFurniture = async (newFurniture: FurnitureRequest) => {
@@ -69,14 +69,14 @@ export default function FurnitureModule({
       showSnackbar(
         "success",
         response.message || "¡Mueble creado con éxito!",
-        <FaRegCheckCircle />
+        <FaRegCheckCircle />,
       );
     } catch (err) {
       const ErrorMesage = getErrorMessage(err);
       showSnackbar(
         "warning",
         ErrorMesage || "Hubo un error al crear el mueble",
-        <FaRegAngry />
+        <FaRegAngry />,
       );
     } finally {
       resetFormState();
@@ -103,14 +103,14 @@ export default function FurnitureModule({
       showSnackbar(
         "success",
         response.message || "Mueble actualizado correctamente",
-        <FaRegCheckCircle />
+        <FaRegCheckCircle />,
       );
     } catch (err) {
       const ErrorMessage = getErrorMessage(err);
       showSnackbar(
         "error",
         ErrorMessage || "Error al actualizar el mueble",
-        <FaRegAngry />
+        <FaRegAngry />,
       );
     } finally {
       resetFormState();
@@ -200,7 +200,7 @@ export default function FurnitureModule({
           <FurnitureCard
             furniture={selectedFurniture}
             customer={customers.find(
-              (c) => c.customerId === selectedFurniture?.customerId
+              (c) => c.customerId === selectedFurniture?.customerId,
             )}
           />
         )}

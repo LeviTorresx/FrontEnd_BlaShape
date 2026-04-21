@@ -1,111 +1,48 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { FaUser } from "react-icons/fa6";
 import Image from "next/image";
+import Link from "next/link";
+import { FiLogIn } from "react-icons/fi";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-
   return (
-    <nav className=" bg-white fixed w-full top-0 left-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href={"/"}>
-              <Image
-                src="/images/logo1CB.webp"
-                alt="Logo Blashape"
-                width={180}
-                height={80}
-                className="mx-auto"
-              />
-            </Link>
-          </div>
-
-          {/* Links Desktop */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link
-              href="#sobre-nosotros"
-              className="flex items-center gap-2 text-gray-800 font-bold hover:text-purple-700 transition-colors"
-            >
-              <span>Sobre nosotros</span>
-            </Link>
-
-            <Link
-              href="/login"
-              className="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-2xl bg-purple-900 text-white font-medium hover:bg-purple-800 transition-colors"
-            >
-              <FaUser className="text-lg" />
-              <span>Iniciar sesión</span>
-            </Link>
-          </div>
-
-          {/* Botón hamburguesa */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setOpen(!open)}
-              className="text-gray-700 hover:text-purple-700 focus:outline-none transition"
-            >
-              {open ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
+    <nav className="flex items-center justify-between px-6 lg:px-12 py-5 border-b border-purple-200 relative z-10 bg-white">
+      {/* Logo */}
+      <div className="flex items-center gap-3">
+        <Image
+          src="/images/logo2W.webp"
+          alt="Blashape Logo"
+          width={32}
+          height={32}
+        />
+        <span className="font-display font-extrabold text-xl tracking-tight text-purple-900">
+          Blashape
+        </span>
       </div>
 
-      {/* Menú móvil */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          open ? "max-h-40" : "max-h-0"
-        }`}
+      {/* Links */}
+      <ul className="hidden md:flex items-center gap-8 list-none text-sm text-gray-500 font-sans">
+        <li className="cursor-pointer hover:text-purple-700 transition-colors">
+          Producto
+        </li>
+        <li className="cursor-pointer hover:text-purple-700 transition-colors">
+          Precios
+        </li>
+        <Link href="/documentation" className="cursor-pointer hover:text-purple-700 transition-colors">
+          Documentación
+        </Link>
+      </ul>
+
+      <Link
+        href="/login"
+        className="group flex items-center gap-2 bg-purple-800 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:-translate-y-0.5 transition-transform duration-200"
       >
-        <div className="px-7 pt-2 pb-8 space-y-2 bg-white shadow-md">
-          <Link
-            href="#sobre-nosotros"
-            className="flex items-center justify-center gap-2 font-bold text-gray-800 hover:text-purple-700 transition-colors"
-          >
-            <span>Sobre nosotros</span>
-          </Link>
-
-          <Link
-            href="/login"
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-2xl bg-purple-900 text-white font-medium hover:bg-purple-800 transition-colors"
-          >
-            <FaUser className="text-lg" />
-            <span>Iniciar sesión</span>
-          </Link>
-        </div>
-      </div>
+        Ingresa
+        <FiLogIn
+          size={16}
+          className="transition-transform duration-200 group-hover:translate-x-1"
+        />
+      </Link>
     </nav>
   );
 }

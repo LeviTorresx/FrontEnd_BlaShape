@@ -338,9 +338,6 @@ export default function ShapeModule({
         ) : (
 
           <div>
-      <button onClick={handleGeneratePreviews}>
-        Generar Previews
-      </button>
 
       {isLoading && <p>Cargando previews...</p>}
 

@@ -1,4 +1,4 @@
-import { Material } from '@/app/types/Material';
+import { InventoryMaterial } from '@/app/types/InventoryMaterial';
 import { gruopedPieces, Piece } from '@/app/types/Piece';
 import React from 'react';
 import GroupedPiecesTables from '../../components/GroupedPiecesTables';
@@ -8,7 +8,7 @@ import { addPiece } from '@/app/store/slices/piecesSlice';
 
 type Props = {
   pieces: gruopedPieces[];
-  materials: Material[];
+  materials: InventoryMaterial[];
 };
 
 export default function Pieces({ pieces, materials }: Props) {

@@ -9,7 +9,7 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake",
     phone: "555-1234",
     role: "default",
-    furnitureList: [1, 2],
+    furnitureListIds: [1, 2],
   },
   {
     customerId: 2,
@@ -19,7 +19,7 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake2",
     phone: "555-5678",
     role: "default",
-    furnitureList: [3],
+    furnitureListIds: [3],
   },
   {
     customerId: 3,
@@ -29,7 +29,7 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake3",
     phone: "555-9012",
     role: "default",
-    furnitureList: [],
+    furnitureListIds: [],
   },
   {
     customerId: 4,
@@ -39,7 +39,7 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake4",
     phone: "555-9013",
     role: "default",
-    furnitureList: [],
+    furnitureListIds: [],
   },
   {
     customerId: 5,
@@ -49,7 +49,7 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake5",
     phone: "555-9014",
     role: "default",
-    furnitureList: [],
+    furnitureListIds: [],
   },
   {
     customerId: 6,
@@ -59,7 +59,7 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake4",
     phone: "555-9015",
     role: "default",
-    furnitureList: [],
+    furnitureListIds: [],
   },
   {
     customerId: 7,
@@ -69,7 +69,7 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake6",
     phone: "555-9016",
     role: "default",
-    furnitureList: [],
+    furnitureListIds: [],
   },
   {
     customerId: 8,
@@ -79,6 +79,6 @@ export const mock_CUSTOMERS: Customer[] = [
     email: "fake6",
     phone: "555-9017",
     role: "default",
-    furnitureList: [],
+    furnitureListIds: [],
   },
 ];

@@ -16,7 +16,7 @@ import FurnitureForm from "@/app/components/forms/FurnitureForm";
 import { Furniture, FurnitureRequest } from "@/app/types/Furniture";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
-import { useAppDispatch } from "@/app/hooks/useRedux";
+import { useAppDispatch, useAppSelector } from "@/app/hooks/useRedux";
 import { clearPieces, setPieces } from "@/app/store/slices/piecesSlice";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -24,6 +24,12 @@ import {
   useUpdateFurnitureMutation,
 } from "@/app/services/furnitureApi";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
+import { buildPreviewGroups } from "@/app/utils/previewGroupBuilder";
+import { mock_INVENTORY_MATERIALS } from "@/app/mocks/mockInventoryMaterials";
+import PreviewsRenderer from "./components/PreviewsRenderer";
+import { useGeneratePreviewsMutation } from "@/app/services/cuttingApi";
+import { useGetCurrentSubscriptionQuery } from "@/app/services/paymentApi";
+
 
 export default function ShapeModule({
   shapeId,
@@ -37,20 +43,40 @@ export default function ShapeModule({
   const pathname = usePathname();
 
   const furnitures = useSelector((state: RootState) => state.furnitures.list);
-  const materials = useSelector((state: RootState) => state.materials.list);
+  const invMaterials = useSelector((state: RootState) => state.inventoryMaterials.list);
   const pieces = useSelector((state: RootState) => state.pieces.list);
   const customers = useSelector((state: RootState) => state.customers.list);
+   const user = useAppSelector((state) => state.auth.user);
+  const { data: subscription = null, isLoading: isLoadingSubscription } =
+          useGetCurrentSubscriptionQuery(user?.carpenterId ?? 0, {
+              skip: !user?.carpenterId,
+          });
 
   const furniture = furnitures.find((f) => f.furnitureId === Number(shapeId));
-  console.log(furniture);
+
+  const previewGroups = buildPreviewGroups(
+  pieces,subscription?.plan.planName || "Free", 
+  mock_INVENTORY_MATERIALS
+  // Aquí se debería usar el plan real del usuario
+);
 
   const grouped = useMemo(() => {
     return gruopPiecesByAttributes(pieces);
   }, [pieces]);
 
-  const expandedPieces = expandPiecesByQuantity(pieces);
-  const items = piecesToItems(expandedPieces);
-  const groupedItems = groupItemsByColor(items);
+  const previews = useSelector((state: RootState) => state.cutting.previews);
+  const [generatePreviews, { isLoading }] = useGeneratePreviewsMutation();
+
+  const handleGeneratePreviews = async () => {
+    if (!pieces.length) return;
+    console.log(previewGroups)
+   await generatePreviews(previewGroups).unwrap(); // Aquí hace la llamada a tu API
+  };
+
+  //const expandedPieces = expandPiecesByQuantity(pieces);
+  //const items = piecesToItems(expandedPieces);
+  //const groupedItems = groupItemsByColor(items);
+
 
   const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
     null
@@ -90,6 +116,12 @@ export default function ShapeModule({
       setSection(last);
     }
   }, [pathname]);
+
+  useEffect(() => {
+  if (section === "cut" && pieces.length) {
+    handleGeneratePreviews();
+  }
+}, [section, pieces]);
 
   const handleButtonClick = async (furniture: FurnitureRequest | null) => {
     if (furniture) {
@@ -199,6 +231,11 @@ export default function ShapeModule({
     if (shapeId) {
       router.push(`/dashboard/shape/${shapeId}/${sec}`);
     }
+
+    if (sec === "cut") {
+      console.log(previewGroups)
+    }
+
   };
 
   return (
@@ -297,9 +334,17 @@ export default function ShapeModule({
       {/* Renderizado condicional de módulos */}
       <div className="h-full">
         {section === "pieces" ? (
-          <Pieces materials={materials} pieces={grouped} />
+          <Pieces materials={invMaterials} pieces={grouped} />
         ) : (
-          <LayoutViewer groupedItems={groupedItems} />
+
+          <div>
+
+      {isLoading && <p>Cargando previews...</p>}
+
+      {previews.length > 0 && (
+        <PreviewsRenderer previews={previews} />
+      )}
+    </div>
         )}
       </div>
 

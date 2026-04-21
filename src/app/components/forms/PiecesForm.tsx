@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { FaCubes, FaRulerCombined } from "react-icons/fa";
-import { Material } from "@/app/types/Material";
+import { InventoryMaterial } from "@/app/types/InventoryMaterial";
 import { Piece } from "@/app/types/Piece";
 import Button from "../ui/Button";
 
 type PiecesFormProps = {
-  materials: Material[];
+  materials: InventoryMaterial[];
   onSubmit: (piece: Piece) => void;
   buttonLabel?: string;
 };
@@ -20,8 +20,8 @@ export default function PiecesForm({
   const [piece, setPiece] = useState<Piece>({
     thickness: materials[0]?.sizes[0]?.thickness || 0,
     materialName: materials[0]?.name || "",
-    height: 30,
-    width: 30,
+    height: 300,
+    width: 300,
     quantity: 1,
     color: {
       name: materials[0].colors[0].name,
@@ -31,7 +31,7 @@ export default function PiecesForm({
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setPiece((prev) => ({ ...prev, [name]: value }));
@@ -89,6 +89,12 @@ export default function PiecesForm({
     });
   };
 
+  const selectedMaterial = materials.find((m) => m.name === piece.materialName);
+
+  const selectedSize = selectedMaterial?.sizes.find(
+    (s) => s.thickness === piece.thickness,
+  );
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -96,16 +102,27 @@ export default function PiecesForm({
                  border border-purple-200 rounded-2xl shadow-md p-6 md:p-8 space-y-6"
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b pb-3">
-        <div className="flex items-center gap-2">
-          <FaCubes className="text-purple-700 text-lg" />
-          <h2 className="text-xl font-semibold text-purple-900">
-            Agregar piezas
-          </h2>
+      <div className="border-b pb-3 space-y-3">
+        {/* Fila superior */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FaCubes className="text-purple-700 text-lg" />
+            <h2 className="text-xl font-semibold text-purple-900">
+              Agregar piezas
+            </h2>
+          </div>
+
+          <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
+            Configurar pieza
+          </span>
         </div>
-        <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
-          Configurar pieza
-        </span>
+
+        {/* Fila inferior (lámina) */}
+        {selectedSize && (
+          <span className="text-xs bg-purple-200 text-purple-800 px-3 py-1 rounded-full">
+            {selectedSize.width}×{selectedSize.height}mm · {piece.thickness}mm
+          </span>
+        )}
       </div>
 
       {/* Material y Espesor */}
@@ -122,7 +139,7 @@ export default function PiecesForm({
                        focus:ring-purple-400 focus:border-purple-400 outline-none bg-white"
           >
             {materials.map((m) => (
-              <option key={m.materialId} value={m.name}>
+              <option key={m.inventoryMaterialId} value={m.name}>
                 {m.name}
               </option>
             ))}
@@ -251,13 +268,13 @@ export default function PiecesForm({
                   edge === "top"
                     ? "top-0 left-0 w-full h-3 rounded-t-lg"
                     : edge === "bottom"
-                    ? "bottom-0 left-0 w-full h-3 rounded-b-lg"
-                    : edge === "left"
-                    ? "top-0 left-0 w-3 h-full rounded-l-lg"
-                    : "top-0 right-0 w-3 h-full rounded-r-lg"
+                      ? "bottom-0 left-0 w-full h-3 rounded-b-lg"
+                      : edge === "left"
+                        ? "top-0 left-0 w-3 h-full rounded-l-lg"
+                        : "top-0 right-0 w-3 h-full rounded-r-lg"
                 }`}
               />
-            )
+            ),
           )}
         </div>
       </div>

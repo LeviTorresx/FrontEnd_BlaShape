@@ -24,6 +24,8 @@ import { monetizationApi, stripeApi } from "../services/paymentApi";
 import subscriptionReducer from "./slices/subscriptionSlice";
 import { cuttingApi } from "../services/cuttingApi";
 import cuttingReducer from "./slices/cuttingSlice";
+import { pqrsApi } from "../services/pqrsApi";
+import pqrsReducer from "./slices/pqrsSlice";
 
 const persistConfig = {
   key: "auth",
@@ -42,6 +44,7 @@ const rootReducer = combineReducers({
   [monetizationApi.reducerPath]: monetizationApi.reducer,
   [stripeApi.reducerPath]: stripeApi.reducer,
   [cuttingApi.reducerPath]: cuttingApi.reducer,
+  [pqrsApi.reducerPath]: pqrsApi.reducer,
 
   customers: customerReducer,
   inventoryMaterials: inventoryMaterialReducer,
@@ -49,6 +52,7 @@ const rootReducer = combineReducers({
   furnitures: furnitureReducer,
   subscription: subscriptionReducer,
   cutting: cuttingReducer,
+  pqrs: pqrsReducer,
 });
 
 export const store = configureStore({
@@ -66,7 +70,8 @@ export const store = configureStore({
       monetizationApi.middleware,
       stripeApi.middleware,
       mockInventoryMaterialApi.middleware,
-      cuttingApi.middleware
+      cuttingApi.middleware,
+      pqrsApi.middleware
     ),
 });
 

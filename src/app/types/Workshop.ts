@@ -7,3 +7,10 @@ export interface Workshop {
   email: string;
   carpenterId: number;
 }
+
+export interface WorkshopPublic {
+  workshopId: number;
+  carpenterId: number;
+  name: string;
+  address: string;
+}

@@ -24,6 +24,8 @@ import { useLogoutMutation } from "@/app/services/authApi";
 import { clearAuthState } from "@/app/store/slices/authSlice";
 import { useGetCustomersQuery } from "@/app/services/customersApi";
 import PaymentModule from "./modules/payment/PaymentModule";
+import PqrsModule from "./modules/pqrs/PqrsModule";
+import { FaCommentDots } from "react-icons/fa";
 
 interface SelectedModule {
   key: string;
@@ -45,6 +47,7 @@ const mainMenu = [
 const accountMenu = [
   { key: "account", label: "Cuenta", icon: <FaUserCircle size={20} /> },
   { key: "payment", label: "Suscripción", icon: <MdPayment size={20} /> },
+  { key: "pqrs", label: "PQRS", icon: <FaCommentDots size={20} /> },
 ];
 
 export default function DashboardPage() {
@@ -101,6 +104,8 @@ export default function DashboardPage() {
         return <ShapeModule shapeId={selected.id} />;
       case "payment":
         return <PaymentModule />;
+      case "pqrs":
+        return <PqrsModule />;
       default:
         return <ModuleSkeleton />;
     }

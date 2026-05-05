@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./axiosBaseQuery";
-import { Workshop} from "../types/Workshop";
+import { Workshop, WorkshopPublic } from "../types/Workshop";
 
 interface WorkshopResponse {
   message: string;
@@ -35,6 +35,13 @@ export const workshopApi = createApi({
         method: "GET",
       }),
     }),
+
+    searchPublicWorkshops: builder.query<WorkshopPublic[], string>({
+      query: (q) => ({
+        url: `/public/search?q=${encodeURIComponent(q)}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -42,4 +49,5 @@ export const {
   useCreateWorkshopMutation,
   useEditWorkshopMutation,
   useGetWorkshopByIdQuery,
+  useLazySearchPublicWorkshopsQuery,
 } = workshopApi;

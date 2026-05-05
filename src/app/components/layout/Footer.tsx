@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -22,6 +23,8 @@ export default function Footer() {
           <span className="cursor-pointer hover:text-gray-700 transition-colors">Privacidad</span>
           <span className="cursor-pointer hover:text-gray-700 transition-colors">Términos</span>
           <span className="cursor-pointer hover:text-gray-700 transition-colors">Contacto</span>
+          <Link href="/pqrs"
+            className="cursor-pointer hover:text-gray-700 transition-colors">PQRS</Link>
         </div>
       </div>
     </footer>

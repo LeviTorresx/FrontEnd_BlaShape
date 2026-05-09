@@ -27,6 +27,8 @@ import { WorkshopPublic } from "@/app/types/Workshop";
 import { Carpenter } from "@/app/types/Carpenter";
 import { SnackbarState } from "@/app/types/SnackBarState";
 
+type Scope = "GENERAL" | "WORKSHOP";
+
 export default function PqrsPublicPage() {
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
@@ -160,73 +162,53 @@ interface FormPanelProps {
   onSubmit: (data: PqrsRequest) => void | Promise<void>;
 }
 
-function FormPanel({
-  user,
-  isLoading,
-  selectedWorkshop,
-  onSelectWorkshop,
-  onSubmit,
-}: FormPanelProps) {
+function FormPanel({ user, isLoading, selectedWorkshop, onSelectWorkshop, onSubmit }: FormPanelProps) {
+  const [scope, setScope] = useState<Scope>("WORKSHOP");
+
   return (
     <>
-      {/* Header */}
       <div className="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-8">
-        <p className="text-xs uppercase tracking-widest text-purple-200 mb-2">
-          Atención al usuario
-        </p>
+        <p className="text-xs uppercase tracking-widest text-purple-200 mb-2">Atención al usuario</p>
         <h1 className="text-3xl font-bold">Radica una PQRS</h1>
         <p className="mt-2 text-sm text-purple-100 max-w-xl">
-          Cuéntanos tu petición, queja, reclamo o sugerencia. Te responderemos
-          en el menor tiempo posible y podrás consultar el estado en cualquier
-          momento.
+          Cuéntanos tu petición, queja, reclamo o sugerencia.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 px-8 pt-6">
-        <InfoTip
-          number="01"
-          title="Selecciona el taller"
-          description="Busca al taller al que va dirigida tu solicitud."
-        />
-        <InfoTip
-          number="02"
-          title="Diligencia tu PQRS"
-          description="Cuéntanos con detalle tu solicitud."
-        />
-        <InfoTip
-          number="03"
-          title="Recibe tu radicado"
-          description="Consulta el estado en cualquier momento."
-        />
+      <div className="px-8 pt-6">
+        <p className="text-sm font-medium text-gray-700 mb-2">¿A quién va dirigida?</p>
+        <div className="inline-flex rounded-xl border border-purple-200 overflow-hidden">
+          <button type="button" onClick={() => setScope("WORKSHOP")}
+            className={`px-5 py-2 text-sm font-medium transition-colors ${scope === "WORKSHOP" ? "bg-purple-700 text-white" : "bg-white text-purple-800 hover:bg-purple-50"}`}>
+            Taller específico
+          </button>
+          <button type="button" onClick={() => { setScope("GENERAL"); onSelectWorkshop(null); }}
+            className={`px-5 py-2 text-sm font-medium transition-colors border-l border-purple-200 ${scope === "GENERAL" ? "bg-purple-700 text-white" : "bg-white text-purple-800 hover:bg-purple-50"}`}>
+            PQRS general
+          </button>
+        </div>
+        <p className="text-xs text-gray-500 mt-2">
+          {scope === "WORKSHOP"
+            ? "Tu solicitud será enviada directamente al taller que elijas."
+            : "Tu solicitud será atendida por el equipo central de BlaShape."}
+        </p>
       </div>
 
       <div className="p-8 pt-6 space-y-6">
-        {/* Selector de taller (siempre visible) */}
-        <WorkshopSelector
-          selected={selectedWorkshop}
-          onSelect={onSelectWorkshop}
-        />
+        {scope === "WORKSHOP" && (
+          <WorkshopSelector selected={selectedWorkshop} onSelect={onSelectWorkshop} />
+        )}
 
-        {/* Formulario solo aparece con taller seleccionado */}
-        {selectedWorkshop ? (
+        {scope === "GENERAL" || selectedWorkshop ? (
           <div className="border-t border-gray-100 pt-6">
             <PqrsForm
-              carpenterId={selectedWorkshop.carpenterId}
-              initialGuestData={
-                user
-                  ? {
-                    name: user.name,
-                    lastName: user.lastName,
-                    email: user.email,
-                    phone: user.phone,
-                  }
-                  : undefined
-              }
-              prefillNotice={
-                user
-                  ? "Hemos prellenado tus datos automáticamente. Puedes editarlos si lo necesitas antes de enviar."
-                  : undefined
-              }
+              scope={scope}
+              workshopId={scope === "WORKSHOP" ? selectedWorkshop?.workshopId : undefined}
+              carpenterId={scope === "WORKSHOP" ? selectedWorkshop?.carpenterId : undefined}
+              initialGuestData={user ? {
+                name: user.name, lastName: user.lastName, email: user.email, phone: user.phone,
+              } : undefined}
+              prefillNotice={user ? "Hemos prellenado tus datos automáticamente." : undefined}
               onSubmit={onSubmit}
               isLoading={isLoading}
             />

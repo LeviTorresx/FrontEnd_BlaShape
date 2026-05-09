@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import { PqrsRequest, PqrsType, PqrsTypeLabels } from "@/app/types/Pqrs";
+import { PqrsRequest, PqrsScope, PqrsType, PqrsTypeLabels } from "@/app/types/Pqrs";
 
 export interface GuestPrefill {
   name?: string;
@@ -19,10 +19,10 @@ export interface GuestPrefill {
 }
 
 interface PqrsFormProps {
-  carpenterId: number;
-  /** Datos a precargar en los campos guest (ej: del carpintero logueado) */
+  scope: PqrsScope;
+  workshopId?: number;
+  carpenterId?: number;
   initialGuestData?: GuestPrefill;
-  /** Mensaje opcional que aparece arriba si los datos vienen precargados */
   prefillNotice?: string;
   onSubmit: (data: PqrsRequest) => void | Promise<void>;
   submitLabel?: string;
@@ -30,6 +30,8 @@ interface PqrsFormProps {
 }
 
 export default function PqrsForm({
+  scope,
+  workshopId,
   carpenterId,
   initialGuestData,
   prefillNotice,
@@ -38,10 +40,8 @@ export default function PqrsForm({
   isLoading = false,
 }: PqrsFormProps) {
   const [formData, setFormData] = useState<PqrsRequest>({
-    subject: "",
-    message: "",
-    type: "PETICION",
-    carpenterId,
+    subject: "", message: "", type: "PETICION",
+    scope, workshopId, carpenterId,
     guestName: initialGuestData?.name ?? "",
     guestLastName: initialGuestData?.lastName ?? "",
     guestEmail: initialGuestData?.email ?? "",
@@ -63,8 +63,8 @@ export default function PqrsForm({
 
   // Si cambia el carpenterId (cuando el usuario cambia de taller en el selector)
   useEffect(() => {
-    setFormData((prev) => ({ ...prev, carpenterId }));
-  }, [carpenterId]);
+    setFormData(p => ({ ...p, scope, workshopId, carpenterId }));
+  }, [scope, workshopId, carpenterId]);
 
   const handleChange = (
     e: React.ChangeEvent<

@@ -2,6 +2,8 @@ export type PqrsType = "PETICION" | "QUEJA" | "RECLAMO" | "SUGERENCIA";
 
 export type PqrsStatus = "PENDIENTE" | "EN_PROCESO" | "RESUELTA" | "CERRADA";
 
+export type PqrsScope = "GENERAL" | "WORKSHOP";
+
 export const PqrsTypeLabels: Record<PqrsType, string> = {
   PETICION: "Petición",
   QUEJA: "Queja",
@@ -31,35 +33,37 @@ export const PqrsTypeStyles: Record<PqrsType, string> = {
 };
 
 /** Vista completa que devuelve el backend */
+export interface PqrsRequest {
+  subject: string;
+  message: string;
+  type: PqrsType;
+  scope: PqrsScope;
+  workshopId?: number;
+  carpenterId?: number;
+  guestName?: string;
+  guestLastName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+}
+
 export interface Pqrs {
   pqrsId: number;
   subject: string;
   message: string;
   type: PqrsType;
   status: PqrsStatus;
+  scope: PqrsScope;
   response?: string;
   trackingCode: string;
   createdAt: string;
   respondedAt?: string;
   customerId?: number;
-  carpenterId: number;
+  carpenterId?: number;
+  workshopId?: number;
   guestName?: string;
   guestLastName?: string;
   guestEmail?: string;
   linkedToAccount: boolean;
-}
-
-/** Payload de creación (formulario híbrido) */
-export interface PqrsRequest {
-  subject: string;
-  message: string;
-  type: PqrsType;
-  carpenterId: number;
-  // Solo se envían si no hay sesión activa
-  guestName?: string;
-  guestLastName?: string;
-  guestEmail?: string;
-  guestPhone?: string;
 }
 
 /** Respuesta del POST /create */

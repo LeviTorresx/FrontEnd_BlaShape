@@ -5,14 +5,12 @@ import { FaRegAngry, FaRegCheckCircle, FaCommentDots } from "react-icons/fa";
 import { MdErrorOutline } from "react-icons/md";
 import {
   useGetPqrsByCarpenterQuery,
-  useDeletePqrsMutation,
   useRespondPqrsMutation,
 } from "@/app/services/pqrsApi";
 import { Pqrs, PqrsStatus, PqrsType } from "@/app/types/Pqrs";
 import { getErrorMessage } from "@/app/services/getErrorMessages";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import AppModal from "@/app/components/ui/AppModal";
-import Button from "@/app/components/ui/Button";
 import PqrsTable from "./components/PqrsTable";
 import PqrsCard from "./components/PqrsCard";
 import PqrsRespondForm from "./components/PqrsRespondForm";
@@ -20,7 +18,6 @@ import PqrsRespondForm from "./components/PqrsRespondForm";
 export default function PqrsModule() {
   const { data = [], isLoading } = useGetPqrsByCarpenterQuery();
   const [respondPqrs] = useRespondPqrsMutation();
-  const [deletePqrs] = useDeletePqrsMutation();
 
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<PqrsStatus | "ALL">("ALL");
@@ -99,27 +96,6 @@ export default function PqrsModule() {
     }
   };
 
-  const confirmDelete = (pqrs: Pqrs) => {
-    setSelected(pqrs);
-    setOpenConfirmDelete(true);
-  };
-
-  const handleDelete = async () => {
-    if (!selected) return;
-    try {
-      await deletePqrs(selected.pqrsId).unwrap();
-      showSnackbar("success", "PQRS eliminada", <FaRegCheckCircle />);
-    } catch (err) {
-      showSnackbar(
-        "error",
-        getErrorMessage(err) || "Error al eliminar la PQRS",
-        <FaRegAngry />
-      );
-    } finally {
-      setOpenConfirmDelete(false);
-      setSelected(null);
-    }
-  };
 
   const stats = useMemo(() => {
     return {
@@ -188,7 +164,6 @@ export default function PqrsModule() {
           setSearch={setSearch}
           onView={handleView}
           onRespond={handleStartRespond}
-          onDelete={confirmDelete}
         />
       </div>
 
@@ -218,34 +193,6 @@ export default function PqrsModule() {
         {selected && (
           <PqrsRespondForm pqrs={selected} onSubmit={handleRespond} />
         )}
-      </AppModal>
-
-      {/* Modal: confirmar eliminación */}
-      <AppModal
-        open={openConfirmDelete}
-        onClose={() => setOpenConfirmDelete(false)}
-        title="Eliminar PQRS"
-      >
-        <div className="text-center space-y-4">
-          <p className="text-gray-700">
-            ¿Estás seguro de eliminar la PQRS{" "}
-            <span className="font-semibold text-purple-900">
-              {selected?.trackingCode}
-            </span>
-            ?
-          </p>
-          <div className="flex justify-center gap-4 mt-6">
-            <Button
-              label="Eliminar"
-              onClick={handleDelete}
-              className="bg-red-500 hover:bg-red-400"
-            />
-            <Button
-              label="Cancelar"
-              onClick={() => setOpenConfirmDelete(false)}
-            />
-          </div>
-        </div>
       </AppModal>
 
       <NotificationSnackbar

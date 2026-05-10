@@ -38,7 +38,13 @@ export const pqrsApi = createApi({
         // === Detalle por ID ===
         getPqrsById: builder.query<Pqrs, number>({
             query: (id) => ({ url: `/get/${id}`, method: "GET" }),
-            providesTags: ["Pqrs"],
+            providesTags: (_r, _e, id) => [{ type: "Pqrs", id }, "Pqrs"],
+            async onQueryStarted(_id, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(pqrsApi.util.invalidateTags(["Pqrs"]));
+                } catch { /* noop */ }
+            },
         }),
 
         // === Historial del cliente (panel privado del cliente) ===
@@ -79,13 +85,7 @@ export const pqrsApi = createApi({
                 data,
             }),
             invalidatesTags: ["Pqrs"],
-        }),
-
-        // === Eliminar (soft delete, carpintero) ===
-        deletePqrs: builder.mutation<{ message: string }, number>({
-            query: (id) => ({ url: `/delete/${id}`, method: "DELETE" }),
-            invalidatesTags: ["Pqrs"],
-        }),
+        })
     }),
 });
 
@@ -97,5 +97,4 @@ export const {
     useLazyTrackByMagicLinkQuery,
     useLazyTrackByCodeQuery,
     useRespondPqrsMutation,
-    useDeletePqrsMutation,
 } = pqrsApi;

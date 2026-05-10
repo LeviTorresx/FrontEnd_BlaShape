@@ -14,7 +14,6 @@ type Props = {
   filtered: Pqrs[];
   onView: (p: Pqrs) => void;
   onRespond: (p: Pqrs) => void;
-  onDelete: (p: Pqrs) => void;
 };
 
 export default function PqrsTable({
@@ -23,7 +22,6 @@ export default function PqrsTable({
   filtered,
   onView,
   onRespond,
-  onDelete,
 }: Props) {
   return (
     <TableContainer title="PQRS recibidas" data={filtered} itemsPerPage={6}>
@@ -104,13 +102,6 @@ export default function PqrsTable({
                             color="green"
                           >
                             <FaReply />
-                          </IconBtn>
-                          <IconBtn
-                            title="Eliminar"
-                            onClick={() => onDelete(p)}
-                            color="red"
-                          >
-                            <FaTrash />
                           </IconBtn>
                         </div>
                       </td>

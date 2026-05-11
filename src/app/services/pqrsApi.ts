@@ -21,28 +21,31 @@ export const pqrsApi = createApi({
     endpoints: (builder) => ({
         // === Creación pública (formulario híbrido) ===
         createPqrs: builder.mutation<PqrsCreateResponse, PqrsRequest>({
-            query: (body) => ({
-                url: "/create",
-                method: "POST",
-                data: body,
-            }),
-            invalidatesTags: ["Pqrs"],
+            query: (body) => ({ url: "/create", method: "POST", data: body }),
+            invalidatesTags: [{ type: "Pqrs", id: "LIST" }],
         }),
 
         // === Listado del carpintero logueado ===
         getPqrsByCarpenter: builder.query<Pqrs[], void>({
             query: () => ({ url: "/all", method: "GET" }),
-            providesTags: ["Pqrs"],
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map((p) => ({ type: "Pqrs" as const, id: p.pqrsId })),
+                        { type: "Pqrs" as const, id: "LIST" },
+                    ]
+                    : [{ type: "Pqrs" as const, id: "LIST" }],
         }),
 
         // === Detalle por ID ===
         getPqrsById: builder.query<Pqrs, number>({
             query: (id) => ({ url: `/get/${id}`, method: "GET" }),
-            providesTags: (_r, _e, id) => [{ type: "Pqrs", id }, "Pqrs"],
+            providesTags: (_r, _e, id) => [{ type: "Pqrs", id }],
             async onQueryStarted(_id, { dispatch, queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    dispatch(pqrsApi.util.invalidateTags(["Pqrs"]));
+                    // Sólo invalida la LISTA — nunca el propio detalle.
+                    dispatch(pqrsApi.util.invalidateTags([{ type: "Pqrs", id: "LIST" }]));
                 } catch { /* noop */ }
             },
         }),
@@ -53,7 +56,13 @@ export const pqrsApi = createApi({
                 url: `/by-customer/${customerId}`,
                 method: "GET",
             }),
-            providesTags: ["Pqrs"],
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map((p) => ({ type: "Pqrs" as const, id: p.pqrsId })),
+                        { type: "Pqrs" as const, id: "LIST" },
+                    ]
+                    : [{ type: "Pqrs" as const, id: "LIST" }],
         }),
 
         // === Magic link (público) ===
@@ -84,8 +93,11 @@ export const pqrsApi = createApi({
                 method: "PUT",
                 data,
             }),
-            invalidatesTags: ["Pqrs"],
-        })
+            invalidatesTags: (_r, _e, { id }) => [
+                { type: "Pqrs", id },
+                { type: "Pqrs", id: "LIST" },
+            ],
+        }),
     }),
 });
 

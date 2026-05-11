@@ -5,6 +5,7 @@ import { FaRegAngry, FaRegCheckCircle, FaCommentDots } from "react-icons/fa";
 import { MdErrorOutline } from "react-icons/md";
 import {
   useGetPqrsByCarpenterQuery,
+  useGetPqrsByIdQuery,
   useRespondPqrsMutation,
 } from "@/app/services/pqrsApi";
 import { Pqrs, PqrsStatus, PqrsType } from "@/app/types/Pqrs";
@@ -23,10 +24,16 @@ export default function PqrsModule() {
   const [filterStatus, setFilterStatus] = useState<PqrsStatus | "ALL">("ALL");
   const [filterType, setFilterType] = useState<PqrsType | "ALL">("ALL");
 
-  const [selected, setSelected] = useState<Pqrs | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const { data: detailed } = useGetPqrsByIdQuery(selectedId as number, {
+    skip: selectedId === null,
+    refetchOnMountOrArgChange: true,
+  });
   const [openView, setOpenView] = useState(false);
   const [openRespond, setOpenRespond] = useState(false);
-  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
+
+  const selected = detailed ?? data.find((p) => p.pqrsId === selectedId) ?? null;
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -63,12 +70,12 @@ export default function PqrsModule() {
   }, [data, search, filterStatus, filterType]);
 
   const handleView = (pqrs: Pqrs) => {
-    setSelected(pqrs);
+    setSelectedId(pqrs.pqrsId);
     setOpenView(true);
   };
 
   const handleStartRespond = (pqrs: Pqrs) => {
-    setSelected(pqrs);
+    setSelectedId(pqrs.pqrsId);
     setOpenRespond(true);
   };
 
@@ -92,7 +99,7 @@ export default function PqrsModule() {
       );
     } finally {
       setOpenRespond(false);
-      setSelected(null);
+      setSelectedId(null);
     }
   };
 
@@ -170,10 +177,7 @@ export default function PqrsModule() {
       {/* Modal: ver detalle */}
       <AppModal
         open={openView}
-        onClose={() => {
-          setOpenView(false);
-          setSelected(null);
-        }}
+        onClose={() => { setOpenView(false); setSelectedId(null); }}
         title="Detalle de la PQRS"
         maxWidth="md"
       >
@@ -183,10 +187,7 @@ export default function PqrsModule() {
       {/* Modal: responder */}
       <AppModal
         open={openRespond}
-        onClose={() => {
-          setOpenRespond(false);
-          setSelected(null);
-        }}
+        onClose={() => { setOpenRespond(false); setSelectedId(null); }}
         title={`Responder · ${selected?.trackingCode ?? ""}`}
         maxWidth="sm"
       >

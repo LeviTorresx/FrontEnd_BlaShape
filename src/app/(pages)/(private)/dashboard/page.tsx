@@ -8,7 +8,7 @@ import BottomMenu from "@/app/components/layout/ButtomMenu";
 import { motion, AnimatePresence } from "framer-motion";
 import HomeModule from "./modules/home/HomeModule";
 import ClientsModule from "./modules/customers/ClientsModule";
-import ReportsModule from "./modules/ReportsModule";
+import ReportsModule from "./modules/reports/ReportsModule";
 import ProfileModule from "./modules/profile/ProfileModule";
 import AccountModule from "./modules/account/AccountModule";
 import FurnitureModule from "./modules/furniture/FurnitureModule";

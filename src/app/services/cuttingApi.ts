@@ -22,7 +22,7 @@ export const cuttingApi = createApi({
             }),
             invalidatesTags: ["Cutting"],
         })
-     }),
+     }),  
 });
 
 export const { useGeneratePreviewsMutation } = cuttingApi;

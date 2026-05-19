@@ -11,6 +11,7 @@ import {
 } from "redux-persist";
 
 import { authApi } from "../services/authApi";
+import { analyticsApi } from "../services/analyticsApi";
 import { authReducer } from "./slices/authSlice";
 import furnitureReducer from "./slices/furnitureSlice";
 import { workshopApi } from "../services/workshopApi";
@@ -45,6 +46,7 @@ const rootReducer = combineReducers({
   [stripeApi.reducerPath]: stripeApi.reducer,
   [cuttingApi.reducerPath]: cuttingApi.reducer,
   [pqrsApi.reducerPath]: pqrsApi.reducer,
+  [analyticsApi.reducerPath]: analyticsApi.reducer,
 
   customers: customerReducer,
   inventoryMaterials: inventoryMaterialReducer,
@@ -71,7 +73,8 @@ export const store = configureStore({
       stripeApi.middleware,
       mockInventoryMaterialApi.middleware,
       cuttingApi.middleware,
-      pqrsApi.middleware
+      pqrsApi.middleware,
+      analyticsApi.middleware
     ),
 });
 

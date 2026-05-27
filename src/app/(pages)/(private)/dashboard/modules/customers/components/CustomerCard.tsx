@@ -18,9 +18,10 @@ type Props = {
 };
 
 export default function CustomerCard({ customer }: Props) {
+  const furnitures = useSelector((state: RootState) => state.furnitures.list);
+
   if (!customer) return null;
 
-  const furnitures = useSelector((state: RootState) => state.furnitures.list);
   const customerFurnitures = furnitures.filter((f) =>
     customer.furnitureListIds?.includes(f.furnitureId)
   );

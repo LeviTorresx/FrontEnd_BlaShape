@@ -9,7 +9,7 @@ interface CustomerResponse {
 export const customerApi = createApi({
   reducerPath: "customerApi",
   baseQuery: axiosBaseQuery({
-    baseUrl: "http://localhost:8080/api_BS/customer",
+    baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/customer`,
   }),
   tagTypes: ["Customer"],
   endpoints: (builder) => ({

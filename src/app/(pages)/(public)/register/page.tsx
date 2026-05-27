@@ -15,7 +15,7 @@ import { MdErrorOutline, MdOutlineArrowBack } from "react-icons/md";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
     severity: "info",
@@ -25,7 +25,7 @@ export default function RegisterPage() {
 
   const handleRegister = async (data: CarpenterDTO) => {
     try {
-      const response = await register(data).unwrap();
+      await register(data).unwrap();
 
       setSnackbar({
         open: true,

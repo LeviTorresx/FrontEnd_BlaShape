@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
@@ -13,7 +13,7 @@ import { SnackbarState } from "@/app/types/SnackBarState";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
-export default function VerifyCodePage() {
+function VerifyCodeContent() {
     const router = useRouter();
 
     const searchParams = useSearchParams();
@@ -118,5 +118,13 @@ export default function VerifyCodePage() {
                 message={snackbar.message}
             />
         </div>
+    );
+}
+
+export default function VerifyCodePage() {
+    return (
+        <Suspense fallback={null}>
+            <VerifyCodeContent />
+        </Suspense>
     );
 }

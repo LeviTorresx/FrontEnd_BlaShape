@@ -1,5 +1,5 @@
 import { Cutting, CuttingDTO } from "./Cutting";
-import { mapPieceToDTO, Piece, PieceDTO } from "./Piece";
+import { Piece } from "./Piece";
 
 export const FurnitureTypes = {
   COCINA: { id: 1, label: "Cocina", value: "COCINA", ref: "bs-1ref" },

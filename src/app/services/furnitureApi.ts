@@ -1,4 +1,4 @@
-import { Furniture, FurnitureDTO, FurnitureRequest, FurnitureResponse } from "../types/Furniture";
+import { FurnitureRequest, FurnitureResponse } from "../types/Furniture";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface FurnitureMessage {
@@ -6,14 +6,17 @@ interface FurnitureMessage {
 }
 
 const cleanData = <T extends object>(data: T): Omit<T, "documentURL" | "imageInitURL" | "imageEndURL"> => {
-  const { documentURL, imageInitURL, imageEndURL, ...rest } = data as any;
-  return rest;
+  const rest = { ...data } as Record<string, unknown>;
+  delete rest.documentURL;
+  delete rest.imageInitURL;
+  delete rest.imageEndURL;
+  return rest as Omit<T, "documentURL" | "imageInitURL" | "imageEndURL">;
 };
 
 export const furnitureApi = createApi({
   reducerPath: "furnitureApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/api_BS/furniture",
+    baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/furniture`,
     credentials: "include",
   }),
   tagTypes: ["Furniture"], // <-- declaras un tag

@@ -17,7 +17,7 @@ import PqrsCard from "./components/PqrsCard";
 import PqrsRespondForm from "./components/PqrsRespondForm";
 
 export default function PqrsModule() {
-  const { data = [], isLoading } = useGetPqrsByCarpenterQuery();
+  const { data = [] } = useGetPqrsByCarpenterQuery();
   const [respondPqrs] = useRespondPqrsMutation();
 
   const [search, setSearch] = useState("");

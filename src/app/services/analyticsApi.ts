@@ -18,7 +18,7 @@ import { FurnitureResponse } from "../types/Furniture"; // tipo correcto: tiene 
 export const analyticsApi = createApi({
   reducerPath: "analyticsApi",
   baseQuery: axiosBaseQuery({
-    baseUrl: "http://localhost:8080/api_BS/analytics",
+    baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/analytics`,
   }),
   endpoints: (builder) => ({
     // ── Carpintero ────────────────────────────────────────────────────────────

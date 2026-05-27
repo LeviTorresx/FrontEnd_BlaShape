@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Furniture } from "@/app/types/Furniture";
+import { FurnitureResponse } from "@/app/types/Furniture";
 import { Customer } from "@/app/types/Customer";
 import {
   FaCalendarAlt,
@@ -15,7 +15,7 @@ import { formatDate } from "@/app/utils/formatDate";
 import { useRouter } from "next/navigation";
 
 interface FurnitureCardProps {
-  furniture: Furniture;
+  furniture: FurnitureResponse;
   customer?: Customer;
 }
 
@@ -23,9 +23,9 @@ export default function FurnitureCard({
   furniture,
   customer,
 }: FurnitureCardProps) {
-  if (!furniture) return null;
-
   const router = useRouter();
+
+  if (!furniture) return null;
 
   return (
     <div

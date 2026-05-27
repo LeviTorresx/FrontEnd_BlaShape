@@ -1,13 +1,11 @@
 "use client";
 import { useState, ChangeEvent, useEffect } from "react";
 import {
-  Furniture,
   FurnitureRequest,
   FurnitureType,
   FurnitureTypes,
 } from "@/app/types/Furniture";
 import { Customer } from "@/app/types/Customer";
-import { useRouter } from "next/navigation";
 import { FaImage, FaUser } from "react-icons/fa";
 import Image from "next/image";
 import Input from "../ui/Input";
@@ -31,7 +29,6 @@ export default function FurnitureForm({
   imagenEndUrl,
   imagenInitUrl,
 }: FurnitureFormProps) {
-  const router = useRouter();
   const isEditMode = Boolean(data);
   const user = useSelector((state: RootState) => state.auth.user);
   const [searchCustomer, setSearchCustomer] = useState("");

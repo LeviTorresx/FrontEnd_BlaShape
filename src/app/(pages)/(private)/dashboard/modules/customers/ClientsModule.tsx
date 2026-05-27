@@ -7,7 +7,6 @@ import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import AppModal from "@/app/components/ui/AppModal";
 import CustomerForm from "@/app/components/forms/CustomerForm";
 import CustomerCard from "./components/CustomerCard";
-import { useGetCustomersQuery } from "@/app/services/mockCustomersApi";
 import { Customer } from "@/app/types/Customer";
 import Button from "@/app/components/ui/Button";
 import { useSelector } from "react-redux";

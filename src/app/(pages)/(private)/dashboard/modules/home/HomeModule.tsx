@@ -1,36 +1,11 @@
 import Banner from "./componentes/Banner";
-import Reminder from "./componentes/Reminder";
 import RecentFurniture from "./componentes/RecentFurniture";
 import Statistics from "./componentes/Statistics";
 import SummaryWorkshop from "./componentes/SummaryWorkshop";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { FaChartLine, FaCouch, FaCut, FaUsers } from "react-icons/fa";
 import SummaryCarpenter from "./componentes/SummaryCarpenter";
-
-const StatisticsList = [
-  {
-    label: "Clientes",
-    value: "24",
-    color: "from-purple-50 to-purple-400",
-  },
-  {
-    label: "Muebles",
-    value: "12",
-    color: "from-purple-50 to-purple-400",
-  },
-  {
-    label: "Cortes",
-    value: "5",
-    color: "from-purple-50 to-purple-400",
-  },
-  {
-    label: "Reportes",
-    value: "8",
-    color: "from-purple-50 to-red-200",
-  },
-];
 
 export default function HomeModule() {
   const furnitureList = useSelector(
@@ -43,8 +18,6 @@ export default function HomeModule() {
     (state: RootState) => state.customers.list.length,
   );
   const user = useSelector((state: RootState) => state.auth.user);
-
-  const [open, setOpen] = useState(false);
 
   const cuttingCount = furnitureList.filter(
     ( f ) => f.cutting.pieces.length > 0,

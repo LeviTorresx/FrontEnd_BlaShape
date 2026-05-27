@@ -18,8 +18,7 @@ export function GuillotineAlgorithmTwoPass(
   containerWidth: number,
   containerHeight: number,
   itemsIn: Item[],
-  kerf = 0,
-  relaxation = 5
+  kerf = 0
 ) {
   const sheets: Item[][] = [];
   const wastes: string[] = [];
@@ -110,11 +109,11 @@ function guillotineSinglePass(
 
       // PRIMERO probar orientación NORMAL (sin rotación)
       if (fitsNormal) {
-        const score = scoreFit(iw, ih, sp, false, isSecondPass);
+        const score = scoreFit(iw, ih, sp, false);
         // BONUS por orientación natural
         const naturalBonus = isSecondPass ? 50 : 100; // Bonus más alto en primera pasada
         const finalScore = score - naturalBonus;
-        
+
         if (finalScore < bestScore) {
           bestScore = finalScore;
           bestIndex = i;
@@ -124,7 +123,7 @@ function guillotineSinglePass(
 
       // LUEGO probar orientación ROTADA (con mayor penalización)
       if (fitsRot) {
-        const score = scoreFit(ih, iw, sp, true, isSecondPass);
+        const score = scoreFit(ih, iw, sp, true);
         // PENALIZACIÓN más alta por rotación
         const rotationPenalty = isSecondPass ? 200 : 150; // Penalización más alta
         const finalScore = score + rotationPenalty;
@@ -148,8 +147,8 @@ function guillotineSinglePass(
     
     if (fitsNormal && bestRot) {
       // Solo rotar si realmente es necesario (mejora significativa)
-      const scoreNormal = scoreFit(iw, ih, chosen, false, isSecondPass);
-      const scoreRotated = scoreFit(ih, iw, chosen, true, isSecondPass);
+      const scoreNormal = scoreFit(iw, ih, chosen, false);
+      const scoreRotated = scoreFit(ih, iw, chosen, true);
       
       // Solo rotar si la mejora es significativa (más del 20%)
       const improvementThreshold = 0.2;
@@ -235,8 +234,8 @@ function reorderForSecondPass(items: Item[]): Item[] {
   // En segunda pasada, priorizar piezas que podrían beneficiarse de reubicación
   return items.sort((a, b) => {
     // Priorizar piezas rotadas (para intentar desrotarlas)
-    if ((a as any).rotated !== (b as any).rotated) {
-      return (a as any).rotated ? -1 : 1;
+    if (a.rotated !== b.rotated) {
+      return a.rotated ? -1 : 1;
     }
     
     // Luego por relación de aspecto
@@ -252,7 +251,7 @@ function reorderForSecondPass(items: Item[]): Item[] {
   });
 }
 
-function scoreFit(itemW: number, itemH: number, sp: Space, isRotated: boolean, isSecondPass: boolean) {
+function scoreFit(itemW: number, itemH: number, sp: Space, isRotated: boolean) {
   const areaLeft = sp.width * sp.height - itemW * itemH;
   
   const leftoverW = sp.width - itemW;
@@ -293,7 +292,7 @@ function scoreFit(itemW: number, itemH: number, sp: Space, isRotated: boolean, i
 /* ------------------------------------
    Funciones auxiliares (sin cambios)
 ------------------------------------ */
-function pruneSpaces(spaces: any[]) {
+function pruneSpaces(spaces: Space[]) {
   return spaces.filter((s, i) => {
     return !spaces.some(
       (o, j) =>
@@ -306,7 +305,7 @@ function pruneSpaces(spaces: any[]) {
   });
 }
 
-function mergeSpaces(spaces: any[]) {
+function mergeSpaces(spaces: Space[]) {
   let merged = true;
   while (merged) {
     merged = false;

@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import {
   useLazyTrackByMagicLinkQuery,
@@ -19,7 +18,7 @@ import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
 import { FaArrowLeft, FaSearch } from "react-icons/fa";
 
-export default function PqrsTrackingPage() {
+function PqrsTrackingContent() {
   const searchParams = useSearchParams();
   const tokenParam = searchParams.get("token");
 
@@ -183,5 +182,13 @@ export default function PqrsTrackingPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PqrsTrackingPage() {
+  return (
+    <Suspense fallback={null}>
+      <PqrsTrackingContent />
+    </Suspense>
   );
 }

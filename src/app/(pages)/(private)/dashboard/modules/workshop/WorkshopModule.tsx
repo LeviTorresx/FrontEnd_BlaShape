@@ -29,7 +29,7 @@ export default function WorkshopModule() {
 
   const dispatch = useAppDispatch();
 
-  const [editWorshop, { isError, isLoading }] = useEditWorkshopMutation();
+  const [editWorshop] = useEditWorkshopMutation();
 
   const [open, setOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({

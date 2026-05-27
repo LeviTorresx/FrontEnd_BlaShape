@@ -21,7 +21,7 @@ export default function WorkshopRegister() {
   const [activeStep, setActiveStep] = useState(0);
   const userAuth = useSelector((state: RootState) => state.auth.user);
   const [fetchProfile] = useLazyGetProfileQuery();
-  const [createWorkshop, { isLoading, error }] = useCreateWorkshopMutation();
+  const [createWorkshop, { isLoading }] = useCreateWorkshopMutation();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [snackbar, setSnackbar] = useState<SnackbarState>({

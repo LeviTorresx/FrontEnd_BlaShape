@@ -3,14 +3,10 @@ import { axiosBaseQuery } from "./axiosBaseQuery";
 import { SheetPreviewDTO } from "../types/SheetPreview";
 import { PreviewRequestDTO } from "../types/PreviewRequest";
 
-interface CuttingResponse {
-  message: string;
-}
-
 export const cuttingApi = createApi({
   reducerPath: "cuttingApi",
   baseQuery: axiosBaseQuery({
-    baseUrl: "http://localhost:8080/api_BS/cutting",
+    baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/cutting`,
   }),
     tagTypes: ["Cutting"],
     endpoints: (builder) => ({ 

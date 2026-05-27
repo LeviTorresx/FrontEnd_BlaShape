@@ -24,7 +24,7 @@ interface ChangePasswordRequest {
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: axiosBaseQuery({ baseUrl: "http://localhost:8080/api_BS/auth" }),
+  baseQuery: axiosBaseQuery({ baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth` }),
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({

@@ -114,7 +114,7 @@ const Guillotine = forwardRef<GuillotineRef, GuillotinePackingProps>(({
 
       // Dibujar piezas de esta lámina
       const sheet = sheets[sheetIndex];
-      sheet.forEach((it, i) => {
+      sheet.forEach((it) => {
         const w = ((it.rotated ? it.height : it.width) - 0) * scale;
         const h = ((it.rotated ? it.width : it.height) - 0) * scale;
         const x = (it.x ?? 0) * scale;

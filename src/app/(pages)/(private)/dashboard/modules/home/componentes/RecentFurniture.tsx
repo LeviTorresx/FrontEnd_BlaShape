@@ -1,9 +1,9 @@
-import { Furniture } from "@/app/types/Furniture";
+import { FurnitureResponse } from "@/app/types/Furniture";
 import FurnitureCard from "./FurnitureCard";
 import Image from "next/image";
 
 type Props = {
-  furnitureList: Furniture[];
+  furnitureList: FurnitureResponse[];
 };
 
 export default function RecentFurniture({ furnitureList }: Props) {

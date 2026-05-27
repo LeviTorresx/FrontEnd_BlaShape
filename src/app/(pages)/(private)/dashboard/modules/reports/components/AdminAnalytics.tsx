@@ -18,7 +18,6 @@ import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
 import {
   FaHammer,
-  FaUsers,
   FaSearch,
   FaBoxOpen,
   FaDollarSign,

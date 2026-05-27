@@ -1,7 +1,7 @@
 "use client";
 
 import Pieces from "./sections/piece/Pieces";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { gruopPiecesByAttributes } from "@/app/utils/groupPieces";
@@ -9,10 +9,7 @@ import Button from "@/app/components/ui/Button";
 import { FaCube, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
-import {
-  Furniture,
-  FurnitureRequest,
-} from "@/app/types/Furniture";
+import { FurnitureRequest } from "@/app/types/Furniture";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/useRedux";
@@ -28,7 +25,7 @@ import { mock_INVENTORY_MATERIALS } from "@/app/mocks/mockInventoryMaterials";
 import PreviewsRenderer from "./components/PreviewsRenderer";
 import { useGeneratePreviewsMutation } from "@/app/services/cuttingApi";
 import { useGetCurrentSubscriptionQuery } from "@/app/services/paymentApi";
-import { mapPieceDTOToPiece, mapPieceToDTO, PieceDTO } from "@/app/types/Piece";
+import { mapPieceDTOToPiece, mapPieceToDTO } from "@/app/types/Piece";
 
 export default function ShapeModule({
   shapeId,
@@ -48,10 +45,12 @@ export default function ShapeModule({
   const pieces = useSelector((state: RootState) => state.pieces.list);
   const customers = useSelector((state: RootState) => state.customers.list);
   const user = useAppSelector((state) => state.auth.user);
-  const { data: subscription = null, isLoading: isLoadingSubscription } =
-    useGetCurrentSubscriptionQuery(user?.carpenterId ?? 0, {
+  const { data: subscription = null } = useGetCurrentSubscriptionQuery(
+    user?.carpenterId ?? 0,
+    {
       skip: !user?.carpenterId,
-    });
+    },
+  );
 
   const furniture = furnitures.find((f) => f.furnitureId === Number(shapeId));
 
@@ -68,11 +67,11 @@ export default function ShapeModule({
   const previews = useSelector((state: RootState) => state.cutting.previews);
   const [generatePreviews, { isLoading }] = useGeneratePreviewsMutation();
 
-  const handleGeneratePreviews = async () => {
+  const handleGeneratePreviews = useCallback(async () => {
     if (!pieces.length) return;
     console.log(previewGroups);
     await generatePreviews(previewGroups).unwrap();
-  };
+  }, [pieces, previewGroups, generatePreviews]);
 
   const [selectedFurniture, setSelectedFurniture] = useState<FurnitureRequest | null>(
     null,
@@ -117,7 +116,7 @@ export default function ShapeModule({
     if (section === "cut" && pieces.length) {
       handleGeneratePreviews();
     }
-  }, [section, pieces]);
+  }, [section, pieces, handleGeneratePreviews]);
 
   const handleButtonClick = async (furniture: FurnitureRequest | null) => {
     if (furniture) {
@@ -196,7 +195,7 @@ export default function ShapeModule({
         },
       };
 
-      const response = await createFurniture({
+      await createFurniture({
         data: furnitureWithPieces,
         imageInit: imageInit || new File([], ""),
         imageEnd: imageEnd,

@@ -19,8 +19,7 @@ export function GuillotineAlgorithm(
   containerWidth: number,
   containerHeight: number,
   itemsIn: Item[],
-  kerf = 0,
-  relaxation = 5
+  kerf = 0
 ) {
   type Space = { x: number; y: number; width: number; height: number };
 
@@ -200,7 +199,7 @@ export function GuillotineAlgorithm(
    Elimina espacios redundantes:
    Si un espacio está completamente dentro otro, se borra.
 ------------------------------------ */
-function pruneSpaces(spaces: any[]) {
+function pruneSpaces(spaces: Space[]) {
   return spaces.filter((s, i) => {
     return !spaces.some(
       (o, j) =>
@@ -217,7 +216,7 @@ function pruneSpaces(spaces: any[]) {
    Fusiona espacios que se pueden unificar
    (misma X y ancho adyacente o misma Y y alto adyacente)
 ------------------------------------ */
-function mergeSpaces(spaces: any[]) {
+function mergeSpaces(spaces: Space[]) {
   let merged = true;
   while (merged) {
     merged = false;

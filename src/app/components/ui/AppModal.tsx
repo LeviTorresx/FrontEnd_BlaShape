@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   IconButton,
 } from "@mui/material";
 import { FaTimes } from "react-icons/fa";

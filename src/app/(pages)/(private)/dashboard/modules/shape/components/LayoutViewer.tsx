@@ -1,8 +1,6 @@
 import { useState, useRef } from "react";
 import { GroupedItems } from "@/app/types/Item";
 import Guillotine, { GuillotineRef } from "../sections/cut/Guillotine";
-import Button from "@/app/components/ui/Button";
-import { PiFilePdf } from "react-icons/pi";
 
 type Props = {
   groupedItems: GroupedItems[];
@@ -12,14 +10,7 @@ export default function LayoutViewer({ groupedItems }: Props) {
   const [selectedGroup, setSelectedGroup] = useState<GroupedItems | null>(null);
   const guillotineRef = useRef<GuillotineRef>(null);
 
-  // Items que se enviarán a Guillotine
   const itemsToRender = selectedGroup ? selectedGroup.items : [];
-
-  const handleExportPDF = async () => {
-    if (guillotineRef.current) {
-      await guillotineRef.current.exportAllSheetsToPDF();
-    }
-  };
 
   return (
     <div className="flex gap-6">

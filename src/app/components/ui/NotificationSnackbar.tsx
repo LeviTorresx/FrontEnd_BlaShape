@@ -32,7 +32,6 @@ export default function NotificationSnackbar({
   severity,
   icon,
   message,
-  autoHideDuration = 3000,
 }: Props) {
   return (
     <AnimatePresence>

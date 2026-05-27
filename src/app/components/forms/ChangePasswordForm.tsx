@@ -35,8 +35,11 @@ export default function ChangePasswordForm({ onSuccess }: ChangePasswordFormProp
             setNewPassword("");
             setConfirmPassword("");
             onSuccess?.();
-        } catch (err: any) {
-            setError(err?.data?.message || "Error al cambiar contraseña");
+        } catch (err) {
+            const message =
+                (err as { data?: { message?: string } })?.data?.message ||
+                "Error al cambiar contraseña";
+            setError(message);
         }
     };
 

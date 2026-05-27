@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -303,28 +302,6 @@ function SuccessPanel({
           className="bg-white !text-purple-900 border border-purple-300 hover:bg-purple-50"
         />
       </div>
-    </div>
-  );
-}
-
-function InfoTip({
-  number,
-  title,
-  description,
-}: {
-  number: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="bg-purple-50 border border-purple-100 rounded-xl p-4">
-      <span className="font-display text-[10px] font-bold tracking-widest text-purple-400">
-        PASO {number}
-      </span>
-      <h3 className="font-semibold text-sm text-purple-900 mt-1">{title}</h3>
-      <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-        {description}
-      </p>
     </div>
   );
 }

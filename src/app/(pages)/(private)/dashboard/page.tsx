@@ -9,15 +9,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import HomeModule from "./modules/home/HomeModule";
 import ClientsModule from "./modules/customers/ClientsModule";
 import ReportsModule from "./modules/reports/ReportsModule";
-import ProfileModule from "./modules/profile/ProfileModule";
 import AccountModule from "./modules/account/AccountModule";
 import FurnitureModule from "./modules/furniture/FurnitureModule";
-import WorkshopModule from "./modules/workshop/WorkshopModule";
 import ShapeModule from "./modules/shape/ShapeModule";
 import ModuleSkeleton from "@/app/components/ui/ModuleSkeleton";
 import { FaChartBar, FaHome, FaUserCircle, FaUsers } from "react-icons/fa";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
-import { FaShop } from "react-icons/fa6";
 import { MdChair, MdPayment } from "react-icons/md";
 import { useAppDispatch } from "@/app/hooks/useRedux";
 import { useLogoutMutation } from "@/app/services/authApi";
@@ -56,7 +53,7 @@ export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
 
-  const { data: customers } = useGetCustomersQuery();
+  useGetCustomersQuery();
 
   const [selected, setSelected] = useState<SelectedModule>({
     key: "home",

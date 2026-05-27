@@ -15,7 +15,7 @@ interface PqrsMessageResponse {
 export const pqrsApi = createApi({
     reducerPath: "pqrsApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: "http://localhost:8080/api_BS/pqrs",
+        baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/pqrs`,
     }),
     tagTypes: ["Pqrs"],
     endpoints: (builder) => ({

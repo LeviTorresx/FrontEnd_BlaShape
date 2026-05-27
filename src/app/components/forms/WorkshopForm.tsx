@@ -80,7 +80,7 @@ export default function WorkshopForm({
             className="w-full"
           />
           <p className="text-sm text-red-500 mt-1">
-            *Si es persona natural "No aplica"
+            *Si es persona natural &quot;No aplica&quot;
           </p>
         </div>
 

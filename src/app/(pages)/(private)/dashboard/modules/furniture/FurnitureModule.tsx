@@ -4,7 +4,7 @@ import FurnitureTable from "./components/FurnitureTable";
 import { FaPlus, FaRegAngry, FaRegCheckCircle } from "react-icons/fa";
 import AppModal from "@/app/components/ui/AppModal";
 import FurnitureForm from "@/app/components/forms/FurnitureForm";
-import { Furniture, FurnitureRequest } from "@/app/types/Furniture";
+import { FurnitureRequest, FurnitureResponse } from "@/app/types/Furniture";
 import { MdErrorOutline } from "react-icons/md";
 import NotificationSnackbar from "@/app/components/ui/NotificationSnackbar";
 import FurnitureCard from "./components/FurnitureCard";
@@ -25,9 +25,8 @@ export default function FurnitureModule({
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [openView, setOpenView] = useState(false);
-  const [selectedFurniture, setSelectedFurniture] = useState<Furniture | null>(
-    null,
-  );
+  const [selectedFurniture, setSelectedFurniture] =
+    useState<FurnitureResponse | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const [snackbar, setSnackbar] = useState({
@@ -123,18 +122,18 @@ export default function FurnitureModule({
     setIsEditing(false);
   };
 
-  const handleEditFurniture = (furniture: Furniture) => {
+  const handleEditFurniture = (furniture: FurnitureResponse) => {
     setSelectedFurniture(furniture);
     setIsEditing(true);
     setOpen(true);
   };
 
-  const handleViewFurniture = (furniture: Furniture) => {
+  const handleViewFurniture = (furniture: FurnitureResponse) => {
     setSelectedFurniture(furniture);
     setOpenView(true);
   };
 
-  const handleAddBreakdown = (furniture: Furniture) => {
+  const handleAddBreakdown = (furniture: FurnitureResponse) => {
     onSelect("shape", furniture.furnitureId);
   };
 
@@ -178,7 +177,7 @@ export default function FurnitureModule({
         maxWidth="md"
       >
         <FurnitureForm
-          data={selectedFurniture || undefined}
+          data={selectedFurniture as unknown as FurnitureRequest | undefined}
           onSubmit={isEditing ? handleUpdateFurniture : handleCreateFurniture}
           customers={customers}
           imagenInitUrl={selectedFurniture?.imageInitURL || ""}

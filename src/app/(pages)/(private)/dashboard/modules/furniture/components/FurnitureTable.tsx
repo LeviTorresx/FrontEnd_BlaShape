@@ -2,7 +2,7 @@ import SearchBar from "@/app/components/tables/SearchBar";
 import TableContainer from "@/app/components/tables/TableContainer";
 import ActionButtonsGroup from "@/app/components/ui/ActionsButton";
 import Button from "@/app/components/ui/Button";
-import { Furniture } from "@/app/types/Furniture";
+import { FurnitureResponse } from "@/app/types/Furniture";
 import { formatDate } from "@/app/utils/formatDate";
 import Image from "next/image";
 import { FaCubes, FaPlusCircle } from "react-icons/fa";
@@ -16,10 +16,10 @@ import {
 type Props = {
   search: string;
   setSearch: (value: string) => void;
-  filtered: Furniture[];
-  onAddPieces?: (furniture: Furniture) => void;
-  onView?: (furniture: Furniture) => void;
-  onEdit?: (furniture: Furniture) => void;
+  filtered: FurnitureResponse[];
+  onAddPieces?: (furniture: FurnitureResponse) => void;
+  onView?: (furniture: FurnitureResponse) => void;
+  onEdit?: (furniture: FurnitureResponse) => void;
 };
 
 export default function FurnitureTable({

@@ -6,7 +6,7 @@ import { Plan, Subscription, CheckoutRequest } from "@/app/types/Subscription";
 export const monetizationApi = createApi({
     reducerPath: "monetizationApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: "http://localhost:8080/api_BS/monetization",
+        baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/monetization`,
     }),
     tagTypes: ["Subscription"],
     endpoints: (builder) => ({
@@ -28,7 +28,7 @@ export const monetizationApi = createApi({
 export const stripeApi = createApi({
     reducerPath: "stripeApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: "http://localhost:8080/api_BS/stripe",
+        baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stripe`,
     }),
     endpoints: (builder) => ({
         createCheckoutSession: builder.mutation<string, CheckoutRequest>({

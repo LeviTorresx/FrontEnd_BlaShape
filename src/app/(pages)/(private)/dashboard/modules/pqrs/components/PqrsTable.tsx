@@ -6,7 +6,7 @@ import {
 } from "@/app/components/ui/PqrsBadges";
 import { Pqrs } from "@/app/types/Pqrs";
 import { formatDate } from "@/app/utils/formatDate";
-import { FaEye, FaReply, FaTrash } from "react-icons/fa";
+import { FaEye, FaReply } from "react-icons/fa";
 
 type Props = {
   search: string;

@@ -10,7 +10,7 @@ interface WorkshopResponse {
 export const workshopApi = createApi({
   reducerPath: "workshopApi",
   baseQuery: axiosBaseQuery({
-    baseUrl: "http://localhost:8080/api_BS/workshop",
+    baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/workshop`,
   }),
   endpoints: (builder) => ({
     createWorkshop: builder.mutation<WorkshopResponse, Workshop>({

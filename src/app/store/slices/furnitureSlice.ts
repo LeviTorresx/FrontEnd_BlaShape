@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Furniture, FurnitureResponse } from "@/app/types/Furniture";
+import { FurnitureResponse } from "@/app/types/Furniture";
 import { furnitureApi } from "@/app/services/furnitureApi";
 
 interface FurnitureState {

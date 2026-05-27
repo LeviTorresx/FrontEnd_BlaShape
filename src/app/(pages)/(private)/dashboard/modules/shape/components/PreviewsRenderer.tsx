@@ -2,12 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { SheetPreviewDTO } from "@/app/types/SheetPreview";
-import {
-  MdChevronLeft,
-  MdChevronRight,
-  MdFirstPage,
-  MdLastPage,
-} from "react-icons/md";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 type Props = {
   previews: SheetPreviewDTO[];

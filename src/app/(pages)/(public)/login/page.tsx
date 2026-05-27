@@ -33,11 +33,10 @@ export default function LoginPage() {
     icon: <MdErrorOutline fontSize="inherit" />,
   });
 
-  const [login, { isLoading, isSuccess, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const {
     data: profileData,
     isSuccess: profileSuccess,
-    error: profileError,
   } = useGetProfileQuery(undefined, { skip: !fetchProfile });
 
   const handleSubmit = async (e: React.FormEvent) => {

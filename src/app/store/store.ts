@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import storage from "redux-persist/lib/storage";
-import { persistReducer, persistStore } from "redux-persist";
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import { persistReducer, persistStore, WebStorage } from "redux-persist";
 import {
   FLUSH,
   REHYDRATE,
@@ -27,6 +27,23 @@ import { cuttingApi } from "../services/cuttingApi";
 import cuttingReducer from "./slices/cuttingSlice";
 import { pqrsApi } from "../services/pqrsApi";
 import pqrsReducer from "./slices/pqrsSlice";
+
+const createNoopStorage = (): WebStorage => ({
+  getItem() {
+    return Promise.resolve(null);
+  },
+  setItem() {
+    return Promise.resolve();
+  },
+  removeItem() {
+    return Promise.resolve();
+  },
+});
+
+const storage =
+  typeof window !== "undefined"
+    ? createWebStorage("local")
+    : createNoopStorage();
 
 const persistConfig = {
   key: "auth",

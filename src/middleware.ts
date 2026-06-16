@@ -1,29 +1,26 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-
 const AUTH_COOKIE = "jwt";
 
 const PUBLIC_ONLY_ROUTES = ["/login", "/register", "/verify-email"];
 const PRIVATE_ROUTES = ["/dashboard", "/workshop-register"];
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) { 
   const { pathname } = request.nextUrl;
   const isAuthenticated = request.cookies.has(AUTH_COOKIE);
 
-  // Unauthenticated user → redirect to login
+  // Usuario no autenticado → a login
   if (PRIVATE_ROUTES.some((route) => pathname.startsWith(route))) {
     if (!isAuthenticated) {
-      const loginUrl = new URL("/login", request.url);
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  // Authenticated user → redirect to dashboard
+  // Usuario autenticado → al dashboard
   if (PUBLIC_ONLY_ROUTES.some((route) => pathname.startsWith(route))) {
     if (isAuthenticated) {
-      const dashboardUrl = new URL("/dashboard", request.url);
-      return NextResponse.redirect(dashboardUrl);
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
 
@@ -31,10 +28,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/workshop-register/:path*",
-    "/login",
-    "/register",
-  ],
+  matcher: ["/dashboard/:path*", "/workshop-register/:path*", "/login", "/register"],
 };

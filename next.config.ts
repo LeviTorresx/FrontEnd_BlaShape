@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const BACKEND_URL = process.env.BACKEND_URL;
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -15,10 +17,8 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      {
-        source: "/dashboard/:path*",
-        destination: "/dashboard",
-      },
+      { source: "/dashboard/:path*", destination: "/dashboard" },
+      { source: "/api/:path*", destination: `${BACKEND_URL}/:path*` },
     ];
   },
 };
